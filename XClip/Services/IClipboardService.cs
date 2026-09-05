@@ -6,7 +6,7 @@ using XClip.Models;
 
 namespace XClip.Services;
 
-internal abstract class AClipboardService()
+internal abstract class AClipboardService
 {
     protected static IClipboard? GetClipboard()
     {
@@ -15,8 +15,8 @@ internal abstract class AClipboardService()
 
         return null;
     }
-    public abstract Task<ClipboardItem?> GetDataAsync();
-    public abstract Task CreateSignature(ClipboardItem item);
-    public abstract Task CopyData(ClipboardItem value);
+    public abstract Task<AClipboardItem?> GetDataAsync();
+    public abstract Task CreateSignature(AClipboardItem item);
+    public abstract Task CopyData(AClipboardItem value);
     public abstract object GetClipboardData();
 }

@@ -3,7 +3,7 @@
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:models="clr-namespace:XClip.Models"
              x:Class="XClip.Views.Controls.StorageItemsControl"
-             x:DataType="models:ClipboardItem">
+             x:DataType="models:TextClipboardItem">
 
     <Border Padding="8,6" CornerRadius="4">
         <Grid ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto">

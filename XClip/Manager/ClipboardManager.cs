@@ -14,13 +14,13 @@ namespace XClip.Manager;
 
 public static class ClipboardManager
 {
-    public static Action<ClipboardItem>? OnClipboardItemAdded;
-    public static Action<ClipboardItem>? OnSelectExistingClipboardItem;
-    public static Action<ClipboardItem>? OnRemoveExistingClipboardItem;
-    private static List<ClipboardItem> ClipboardHistory { get; set; } = new();
+    public static Action<AClipboardItem>? OnClipboardItemAdded;
+    public static Action<AClipboardItem>? OnSelectExistingClipboardItem;
+    public static Action<AClipboardItem>? OnRemoveExistingClipboardItem;
+    private static List<AClipboardItem> ClipboardHistory { get; set; } = new();
 
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> _clipboardServices;
-    private static ClipboardItem? _selectedClipboardItem;
+    private static AClipboardItem? _selectedClipboardItem;
     private static IClipboard? GetClipboard()
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -28,7 +28,7 @@ public static class ClipboardManager
 
         return null;
     }
-    public static ClipboardItem? SelectedClipboardItem
+    public static AClipboardItem? SelectedClipboardItem
     {
         get => _selectedClipboardItem;
         set
@@ -46,6 +46,7 @@ public static class ClipboardManager
     {
         _clipboardServices = new Dictionary<ClipboardDataFormat, AClipboardService>();
         _clipboardServices[ClipboardDataFormat.Text] = new TextClipboardService();
+        _clipboardServices[ClipboardDataFormat.Image] = new ImageClipboardService();
     }
 
 
@@ -59,7 +60,7 @@ public static class ClipboardManager
             var type = await GetDataTypeAsync(clipboard);
             if (type == null)
                 return;
-            ClipboardItem? item = null;
+            AClipboardItem? item = null;
             item = await GetItemAsync(type.Value);
             if (item == null)
                 return;
@@ -81,7 +82,6 @@ public static class ClipboardManager
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw;
         }
     }
 
@@ -95,18 +95,21 @@ public static class ClipboardManager
         return null;
     }
 
-    private static async Task<ClipboardItem?> GetItemAsync(ClipboardDataFormat type)
+    private static async Task<AClipboardItem?> GetItemAsync(ClipboardDataFormat type)
     {
-        ClipboardItem? item = null;
-        item = await _clipboardServices[type].GetDataAsync();
-        if (item == null) return item;
-        await _clipboardServices[type].CreateSignature(item);
-        item.OnDelete += DeleteClipboardItem;
+        AClipboardItem? item = null;
+        if(_clipboardServices.TryGetValue(type, out var service))
+        {
+            item = await service.GetDataAsync();
+            if (item == null) return item;
+            await service.CreateSignature(item);
+            item.OnDelete += DeleteClipboardItem;
+        }
         return item;
     }
 
 
-    public static async Task SetClipboardItemAsync(ClipboardItem targetItem)
+    public static async Task SetClipboardItemAsync(AClipboardItem targetItem)
     { 
         await _clipboardServices[targetItem.Format].CopyData(targetItem);
     }
@@ -126,7 +129,7 @@ public static class ClipboardManager
         }
     }
 
-    public static async void DeleteClipboardItem(ClipboardItem item)
+    public static async void DeleteClipboardItem(AClipboardItem item)
     {
         if (SelectedClipboardItem == item)
             SelectedClipboardItem = null;

@@ -9,7 +9,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using FuzzySharp;
 using XClip.Manager;
 using XClip.Models;
 using XClip.Services;
@@ -20,16 +19,14 @@ namespace XClip.ViewModels;
 public partial class MainViewModel : ViewModelBase, IDisposable
 {
     public Action? OnHideToTray;
+    public Action? OnOpenSettings;
     private readonly GlobalHotkeyService _hotkeyService;
     private bool _isInternalSelectionChange;
-    public string? LastClipboardSignature { get; private set; }
-    public DateTime LastImageHashCheckUtc { get; private set; } = DateTime.MinValue;
-    private string? _lastImageMetaSignature;
     private CancellationTokenSource? _monitorCts;
-    private string _searchText = string.Empty;
     private readonly System.Timers.Timer _searchDebounceTimer;
-    private string registerNumber = string.Empty;
-    public ObservableCollection<ClipboardItem> FilteredHistory { get; private set; } = new();
+    private string _registerNumber = string.Empty;
+
+    public ObservableCollection<AClipboardItem> FilteredHistory { get; private set; } = new();
 
     public MainViewModel(GlobalHotkeyService hotkeyService)
     {
@@ -47,14 +44,14 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     public string SearchText
     {
-        get => _searchText;
+        get;
         set
         {
-            if (SetProperty(ref _searchText, value))
+            if (SetProperty(ref field, value))
             {
             }
         }
-    }
+    } = string.Empty;
 
     public bool IsAutoStartEnabled
     {
@@ -79,7 +76,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     } = true;
 
-    public ClipboardItem? SelectedItem
+    public AClipboardItem? SelectedItem
     {
         get;
         set
@@ -117,18 +114,18 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _monitorCts = null;
     }
 
-    private void OnClipboardItemAdded(ClipboardItem clipboardItem)
+    private void OnClipboardItemAdded(AClipboardItem textClipboardItem)
     {
-        clipboardItem.DisplayIndex = FilteredHistory.Count + 1;
-        FilteredHistory.Insert(0, clipboardItem);
+        textClipboardItem.DisplayIndex = FilteredHistory.Count + 1;
+        FilteredHistory.Insert(0, textClipboardItem);
     }
 
-    private void OnSelectExistingClipboardItem(ClipboardItem clipboardItem)
+    private void OnSelectExistingClipboardItem(AClipboardItem textClipboardItem)
     {
-        SelectedItem = clipboardItem;
+        SelectedItem = textClipboardItem;
     }
 
-    private void OnRemoveExistingClipboardItem(ClipboardItem obj)
+    private void OnRemoveExistingClipboardItem(AClipboardItem obj)
     {
         FilteredHistory.Remove(obj);
     }
@@ -143,27 +140,17 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     }
 
 
-    private void AddToFilteredHistory(ClipboardItem item)
-    {
-        // Apply filter to determine if the item should be added to FilteredHistory
-        if (string.IsNullOrWhiteSpace(SearchText) || Fuzz.PartialRatio(SearchText, item.DisplayText) > 70)
-        {
-            FilteredHistory.Insert(0, item);
-        }
-    }
-
     public async Task DoubleClickAsync()
     {
         await CopyAsync(SelectedItem);
     }
 
     [RelayCommand]
-    private async Task CopyAsync(Models.ClipboardItem? item)
+    private async Task CopyAsync(AClipboardItem? item)
     {
         var targetItem = item ?? SelectedItem;
         if (targetItem == null) return;
 
-        LastClipboardSignature = targetItem.Signature;
         await SetClipboardItemAsync(targetItem);
 
         _isInternalSelectionChange = true;
@@ -181,10 +168,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private async Task ClearClipboardAsync()
     {
-        LastClipboardSignature = null;
-        _lastImageMetaSignature = null;
-        LastImageHashCheckUtc = DateTime.MinValue;
-
         _isInternalSelectionChange = true;
         SelectedItem = null;
         _isInternalSelectionChange = false;
@@ -192,21 +175,14 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     }
 
     [RelayCommand]
-    private async Task OpenSettingsAsync()
+    private Task OpenSettingsAsync()
     {
-        if (_hotkeyService == null)
-            return;
-
-        var settingsVm = new SettingsViewModel(_hotkeyService);
-        var settingsWindow = new SettingsWindow { DataContext = settingsVm };
-
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            if (desktop?.MainWindow != null)
-                await settingsWindow.ShowDialog(desktop.MainWindow);
+        OnOpenSettings?.Invoke();
+        return Task.CompletedTask;
     }
 
 
-    private async Task SetClipboardItemAsync(ClipboardItem targetItem)
+    private async Task SetClipboardItemAsync(AClipboardItem targetItem)
     {
         await ClipboardManager.SetClipboardItemAsync(targetItem);
     }
@@ -223,7 +199,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         if (number.HasValue)
         {
-            registerNumber += number.Value; // Or number.Value.ToString() if registerNumber is a string
+            _registerNumber += number.Value; // Or number.Value.ToString() if registerNumber is a string
             _searchDebounceTimer.Stop();
             _searchDebounceTimer.Start();
         }
@@ -241,9 +217,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private async Task FastKeyExecute()
     {
-        if (!string.IsNullOrEmpty(registerNumber))
+        if (!string.IsNullOrEmpty(_registerNumber))
         {
-            var item = FilteredHistory.FirstOrDefault(q => q.DisplayIndex == int.Parse(registerNumber));
+            var item = FilteredHistory.FirstOrDefault(q => q.DisplayIndex == int.Parse(_registerNumber));
             if (item != null)
             {
                 ClipboardManager.SelectedClipboardItem = item;
@@ -251,7 +227,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             OnHideToTray?.Invoke();
             await _hotkeyService.SimulatePasteAsync();
 
-            registerNumber = string.Empty;
+            _registerNumber = string.Empty;
         }
     }
 }

@@ -11,6 +11,8 @@ public class AppSettings
     public EventMask Modifiers { get; set; } = EventMask.LeftAlt | EventMask.LeftShift;
     public KeyCode Key { get; set; } = KeyCode.VcK;
     public bool IsAutoStartEnabled { get; set; }
+    public double WindowWidth { get; set; } = 450;
+    public double WindowHeight { get; set; } = 600;
 }
 
 public static class SettingsManager
@@ -20,6 +22,14 @@ public static class SettingsManager
         "XClip");
 
     private static readonly string FilePath = Path.Combine(FolderPath, "settings.json");
+
+    static SettingsManager()
+    {
+        if (!Directory.Exists(FolderPath))
+        {
+            Directory.CreateDirectory(FolderPath);
+        }
+    }
 
     public static AppSettings Load()
     {
@@ -45,7 +55,6 @@ public static class SettingsManager
         {
             Directory.CreateDirectory(FolderPath);
             var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-            File.ReadAllText(FilePath);
             File.WriteAllText(FilePath, json);
         }
         catch (Exception ex)

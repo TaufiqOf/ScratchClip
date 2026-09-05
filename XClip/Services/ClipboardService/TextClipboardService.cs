@@ -15,9 +15,9 @@ internal class TextClipboardService : AClipboardService
     {
     }
 
-    public override async Task<ClipboardItem?> GetDataAsync()
+    public override async Task<AClipboardItem?> GetDataAsync()
     {
-        ClipboardItem? item = null;
+        TextClipboardItem? item = null;
         var clipboard = GetClipboard();
         if (clipboard == null) return await Task.FromResult(item);
         var text = await clipboard.TryGetTextAsync();
@@ -25,7 +25,7 @@ internal class TextClipboardService : AClipboardService
         var testEmpty = StripText(str);
         if (string.IsNullOrEmpty(testEmpty)) return await Task.FromResult(item);
         var displayText = DisplayText(str);
-        item = new ClipboardItem
+        item = new TextClipboardItem
         {
             Format = ClipboardDataFormat.Text,
             Text = str,
@@ -37,13 +37,13 @@ internal class TextClipboardService : AClipboardService
     }
 
 
-    public override Task CreateSignature(ClipboardItem item)
+    public override Task CreateSignature(AClipboardItem item)
     {
         item.Signature = item.Text.GetHashCode().ToString();
         return Task.CompletedTask;
     }
 
-    public override Task CopyData(ClipboardItem value)
+    public override Task CopyData(AClipboardItem value)
     {
         var clipboard = GetClipboard();
         return clipboard!.SetTextAsync(value.Text);

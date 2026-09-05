@@ -22,6 +22,7 @@ namespace XClip.ViewModels;
 
 public partial class MainViewModelCopy : ViewModelBase, IDisposable
 {
+    public Action? OnOpenSettings;
     private static readonly TimeSpan ImageHashRecheckInterval = TimeSpan.FromSeconds(10);
 
     private sealed record ClipboardStorageItemInfo(string Path, bool IsFolder);
@@ -397,17 +398,10 @@ public partial class MainViewModelCopy : ViewModelBase, IDisposable
     }
 
     [RelayCommand]
-    private async Task OpenSettingsAsync()
+    private Task OpenSettingsAsync()
     {
-        if (_hotkeyService == null)
-            return;
-
-        var settingsVm = new SettingsViewModel(_hotkeyService);
-        var settingsWindow = new SettingsWindow { DataContext = settingsVm };
-
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            if (desktop?.MainWindow != null)
-                await settingsWindow.ShowDialog(desktop.MainWindow);
+        OnOpenSettings?.Invoke();
+        return Task.CompletedTask;
     }
 
     public void SelectAndPasteByIndex(int index)

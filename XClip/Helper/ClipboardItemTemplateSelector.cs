@@ -14,7 +14,7 @@ public class ClipboardItemTemplateSelector : IDataTemplate
 
     public Control? Build(object? param)
     {
-        if (param is ClipboardItem item && Templates.TryGetValue(item.Format, out var template))
+        if (param is AClipboardItem item && Templates.TryGetValue(item.Format, out var template))
         {
             return template.Build(param);
         }
@@ -24,6 +24,6 @@ public class ClipboardItemTemplateSelector : IDataTemplate
 
     public bool Match(object? data)
     {
-        return data is ClipboardItem item && Templates.ContainsKey(item.Format);
+        return data is AClipboardItem item && Templates.ContainsKey(item.Format);
     }
 }

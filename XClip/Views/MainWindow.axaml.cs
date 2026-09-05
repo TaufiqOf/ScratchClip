@@ -1,13 +1,14 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using XClip.Helper;
 using XClip.Services;
 using XClip.ViewModels;
+using XClip.Views.Page;
 
 // Required for RoutingStrategies
 
@@ -15,36 +16,44 @@ namespace XClip.Views;
 
 public partial class MainWindow : Window
 {
-    private const int NumericSelectionMaxDigits = 2;
-    private static readonly TimeSpan NumericSelectionDelay = TimeSpan.FromMilliseconds(350);
     private readonly GlobalHotkeyService _hotkeyService;
-
-    private string _inputBuffer = string.Empty;
-    private DispatcherTimer? _inputTimer;
     private bool _isClosingForReal;
     private readonly MainViewModel _viewModel;
+    private readonly MainPageControl _mainPage;
+    private SettingPageControl? _settingsPage;
+
+
+    public MainWindow() : this(new GlobalHotkeyService(() => { }))
+    {
+    }
 
     public MainWindow(GlobalHotkeyService hotkeyService)
     {
+        _hotkeyService = hotkeyService;
+        InitializeComponent();
         _viewModel = new MainViewModel(hotkeyService);
         _viewModel.OnHideToTray += HideToTray;
-        _hotkeyService = hotkeyService;
+        _viewModel.OnOpenSettings += ShowSettingsPage;
         DataContext = _viewModel;
-        InitializeComponent();
+        _mainPage = new MainPageControl();
+        _mainPage.DataContext = _viewModel;
+        PageHost.Content = _mainPage;
+
         Opened += OnOpened;
         Closed += OnClosed;
         Deactivated += OnWindowDeactivated;
-        DoubleTapped += OnDoubleTapped;
         // Use Tunnel routing strategy to catch key presses before ListBox consumes them
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
+        var settings = SettingsManager.Load();
+        Width = settings.WindowWidth;
+        Height = settings.WindowHeight;
     }
 
-    private void OnDoubleTapped(object? sender, TappedEventArgs e)
-    {
-        HideToTray();
-        _ = _viewModel.DoubleClickAsync();
-        _ = _hotkeyService.SimulatePasteAsync();
-    }
+    private TextBox? SearchTextBoxControl =>
+        _mainPage.FindControl<TextBox>("SearchTextBox");
+
+    private ListBox? HistoryListBox =>
+        _mainPage.FindControl<ListBox>("ListBox");
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
@@ -56,11 +65,15 @@ public partial class MainWindow : Window
 
     private void OnWindowKeyDown(object? sender, KeyEventArgs e)
     {
+        if (!ReferenceEquals(PageHost.Content, _mainPage))
+            return;
+
         if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             e.Handled = true;
-            SearchTextBox.Focus();
-            SearchTextBox.SelectAll();
+            var searchBox = SearchTextBoxControl;
+            searchBox?.Focus();
+            searchBox?.SelectAll();
         }
         if(e.Key == Key.Escape)
         {
@@ -113,6 +126,7 @@ public partial class MainWindow : Window
 
     public void ShowFromTray()
     {
+        ShowMainPage();
         ShowInTaskbar = true;
         Show();
         WindowState = WindowState.Normal;
@@ -123,6 +137,10 @@ public partial class MainWindow : Window
 
     private void FocusControls()
     {
+        var listBox = HistoryListBox;
+        if (listBox == null)
+            return;
+
         // Bring window to front natively
         if (WindowState == WindowState.Minimized)
         {
@@ -136,32 +154,57 @@ public partial class MainWindow : Window
         {
             if (DataContext is MainViewModel vm && vm.FilteredHistory.Any())
             {
-                if (ListBox.SelectedIndex < 0)
-                    ListBox.SelectedIndex = 0;
+                if (listBox.SelectedIndex < 0)
+                    listBox.SelectedIndex = 0;
 
-                var container = ListBox.ContainerFromIndex(ListBox.SelectedIndex);
+                var container = listBox.ContainerFromIndex(listBox.SelectedIndex);
                 if (container is Control control)
                 {
                     control.Focus();
                 }
                 else
                 {
-                    ListBox.Focus();
+                    listBox.Focus();
                 }
             }
             else
             {
-                ListBox.Focus();
+                listBox.Focus();
             }
         }, DispatcherPriority.Render);
     }
 
+    private void ShowMainPage()
+    {
+        PageHost.Content = _mainPage;
+    }
+
+    private void ShowSettingsPage()
+    {
+        if (_settingsPage == null)
+        {
+            _settingsPage = new SettingPageControl();
+            _settingsPage.CloseRequested += OnSettingsCloseRequested;
+        }
+
+        _settingsPage.DataContext = new SettingsViewModel(_hotkeyService);
+        PageHost.Content = _settingsPage;
+    }
+
+    private void OnSettingsCloseRequested(object? sender, EventArgs e)
+    {
+        ShowMainPage();
+        Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
+    }
+
     private void OnClosed(object? sender, EventArgs e)
     {
-        _inputTimer?.Stop();
-        _inputTimer = null;
 
-        if (DataContext is IDisposable disposableVm) disposableVm.Dispose();
+        _viewModel.OnHideToTray -= HideToTray;
+        _viewModel.OnOpenSettings -= ShowSettingsPage;
+        _viewModel.Dispose();
+        if (_settingsPage != null)
+            _settingsPage.CloseRequested -= OnSettingsCloseRequested;
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)
@@ -173,7 +216,10 @@ public partial class MainWindow : Window
             e.Cancel = true;
             HideToTray();
         }
-
+        var settings = SettingsManager.Load();
+        settings.WindowWidth = Width;
+        settings.WindowHeight = Height;
+        SettingsManager.Save(settings);
         base.OnClosing(e);
     }
 }
