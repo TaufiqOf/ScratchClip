@@ -224,6 +224,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             {
                 ClipboardManager.SelectedClipboardItem = item;
             }
+
             OnHideToTray?.Invoke();
             await _hotkeyService.SimulatePasteAsync();
 
