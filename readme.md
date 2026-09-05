@@ -25,11 +25,11 @@ It runs in the system tray, keeps your recent copied text items, and lets you qu
 
 ### Main window
 
-![XClip main window](Docs/dark-2.png)
+![XClip main window](Docs/dark-1.png)
 
 ### Theme variants
 
-![XClip light theme](Docs/light-2.png)
+![XClip light theme](Docs/light-1.png)
 
 ## Tech Stack
 
