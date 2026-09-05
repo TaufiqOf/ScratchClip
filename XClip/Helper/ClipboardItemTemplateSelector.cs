@@ -9,15 +9,12 @@ namespace XClip.Helper;
 public class ClipboardItemTemplateSelector : IDataTemplate
 {
     // Allows defining DataTemplates directly inside XAML dictionary
-    [Content]
-    public Dictionary<ClipboardDataFormat, IDataTemplate> Templates { get; } = new();
+    [Content] public Dictionary<ClipboardDataFormat, IDataTemplate> Templates { get; } = new();
 
     public Control? Build(object? param)
     {
         if (param is AClipboardItem item && Templates.TryGetValue(item.Format, out var template))
-        {
             return template.Build(param);
-        }
 
         return null;
     }

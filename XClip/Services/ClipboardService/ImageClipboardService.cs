@@ -1,8 +1,8 @@
 using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
-using Avalonia.Media.Imaging;
 using XClip.Models;
 
 namespace XClip.Services.ClipboardService;
@@ -38,7 +38,7 @@ internal class ImageClipboardService : AClipboardService
 
         // Better to use a stable hash of the image bytes.
         item.Signature = Convert.ToHexString(
-            System.Security.Cryptography.SHA256.HashData(stream.ToArray())
+            SHA256.HashData(stream.ToArray())
         );
 
         return Task.CompletedTask;

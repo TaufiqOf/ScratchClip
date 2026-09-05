@@ -4,29 +4,25 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using XClip.Manager;
 using XClip.Models;
 using XClip.Services;
-using XClip.Views;
+using Timer = System.Timers.Timer;
 
 namespace XClip.ViewModels;
 
 public partial class MainViewModel : ViewModelBase, IDisposable
 {
+    private readonly GlobalHotkeyService _hotkeyService;
+    private readonly Timer _searchDebounceTimer;
     public Action? OnHideToTray;
     public Action? OnOpenSettings;
-    private readonly GlobalHotkeyService _hotkeyService;
     private bool _isInternalSelectionChange;
     private CancellationTokenSource? _monitorCts;
-    private readonly System.Timers.Timer _searchDebounceTimer;
     private string _registerNumber = string.Empty;
-
-    public ObservableCollection<AClipboardItem> FilteredHistory { get; private set; } = new();
 
     public MainViewModel(GlobalHotkeyService hotkeyService)
     {
@@ -36,10 +32,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
         ClipboardManager.OnRemoveExistingClipboardItem += OnRemoveExistingClipboardItem;
         StartMonitoringClipboard();
-        _searchDebounceTimer = new System.Timers.Timer(300);
+        _searchDebounceTimer = new Timer(300);
         _searchDebounceTimer.Stop();
         _searchDebounceTimer.Elapsed += SearchDebounceTimerOnElapsed;
     }
+
+    public ObservableCollection<AClipboardItem> FilteredHistory { get; } = new();
 
 
     public string SearchText
@@ -90,14 +88,14 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public async Task SimulatePasteAsync()
-    {
-        await _hotkeyService.SimulatePasteAsync();
-    }
-
     public void Dispose()
     {
         StopMonitoringClipboard();
+    }
+
+    public async Task SimulatePasteAsync()
+    {
+        await _hotkeyService.SimulatePasteAsync();
     }
 
     private void StartMonitoringClipboard()
@@ -220,10 +218,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         if (!string.IsNullOrEmpty(_registerNumber))
         {
             var item = FilteredHistory.FirstOrDefault(q => q.DisplayIndex == int.Parse(_registerNumber));
-            if (item != null)
-            {
-                ClipboardManager.SelectedClipboardItem = item;
-            }
+            if (item != null) ClipboardManager.SelectedClipboardItem = item;
 
             OnHideToTray?.Invoke();
             await _hotkeyService.SimulatePasteAsync();

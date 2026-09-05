@@ -25,10 +25,7 @@ public static class SettingsManager
 
     static SettingsManager()
     {
-        if (!Directory.Exists(FolderPath))
-        {
-            Directory.CreateDirectory(FolderPath);
-        }
+        if (!Directory.Exists(FolderPath)) Directory.CreateDirectory(FolderPath);
     }
 
     public static AppSettings Load()

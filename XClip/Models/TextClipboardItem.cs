@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 namespace XClip.Models;

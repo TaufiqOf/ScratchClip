@@ -17,9 +17,9 @@ namespace XClip.Views;
 public partial class MainWindow : Window
 {
     private readonly GlobalHotkeyService _hotkeyService;
-    private bool _isClosingForReal;
-    private readonly MainViewModel _viewModel;
     private readonly MainPageControl _mainPage;
+    private readonly MainViewModel _viewModel;
+    private bool _isClosingForReal;
     private SettingPageControl? _settingsPage;
 
 
@@ -57,10 +57,7 @@ public partial class MainWindow : Window
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
-        if (IsVisible)
-        {
-            HideToTray();
-        }
+        if (IsVisible) HideToTray();
     }
 
     private void OnWindowKeyDown(object? sender, KeyEventArgs e)
@@ -75,13 +72,14 @@ public partial class MainWindow : Window
             searchBox?.Focus();
             searchBox?.SelectAll();
         }
-        if(e.Key == Key.Escape)
+
+        if (e.Key == Key.Escape)
         {
             e.Handled = true;
             HideToTray();
         }
 
-        if (e.Key== Key.Enter)
+        if (e.Key == Key.Enter)
         {
             HideToTray();
             _ = _viewModel.DoubleClickAsync();
@@ -142,10 +140,7 @@ public partial class MainWindow : Window
             return;
 
         // Bring window to front natively
-        if (WindowState == WindowState.Minimized)
-        {
-            WindowState = WindowState.Normal;
-        }
+        if (WindowState == WindowState.Minimized) WindowState = WindowState.Normal;
 
         Activate();
 
@@ -159,13 +154,9 @@ public partial class MainWindow : Window
 
                 var container = listBox.ContainerFromIndex(listBox.SelectedIndex);
                 if (container is Control control)
-                {
                     control.Focus();
-                }
                 else
-                {
                     listBox.Focus();
-                }
             }
             else
             {
@@ -199,7 +190,6 @@ public partial class MainWindow : Window
 
     private void OnClosed(object? sender, EventArgs e)
     {
-
         _viewModel.OnHideToTray -= HideToTray;
         _viewModel.OnOpenSettings -= ShowSettingsPage;
         _viewModel.Dispose();
@@ -216,6 +206,7 @@ public partial class MainWindow : Window
             e.Cancel = true;
             HideToTray();
         }
+
         var settings = SettingsManager.Load();
         settings.WindowWidth = Width;
         settings.WindowHeight = Height;

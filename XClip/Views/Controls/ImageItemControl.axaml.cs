@@ -4,5 +4,8 @@ namespace XClip.Views.Controls;
 
 public partial class ImageItemControl : UserControl
 {
-    public ImageItemControl() => InitializeComponent();
+    public ImageItemControl()
+    {
+        InitializeComponent();
+    }
 }

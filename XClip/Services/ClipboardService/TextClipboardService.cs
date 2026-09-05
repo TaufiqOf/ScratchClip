@@ -1,9 +1,5 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
 using Avalonia.Input.Platform;
 using XClip.Models;
 
@@ -11,10 +7,6 @@ namespace XClip.Services.ClipboardService;
 
 internal class TextClipboardService : AClipboardService
 {
-    public TextClipboardService()
-    {
-    }
-
     public override async Task<AClipboardItem?> GetDataAsync()
     {
         TextClipboardItem? item = null;
@@ -72,25 +64,19 @@ internal class TextClipboardService : AClipboardService
 
         // Determine leading whitespace from the first line
         var firstLine = lines[0];
-        int leadingWhitespaceLength = 0;
+        var leadingWhitespaceLength = 0;
         while (leadingWhitespaceLength < firstLine.Length && char.IsWhiteSpace(firstLine[leadingWhitespaceLength]))
-        {
             leadingWhitespaceLength++;
-        }
 
         if (leadingWhitespaceLength == 0)
             return truncated;
 
-        string indentPrefix = firstLine.Substring(0, leadingWhitespaceLength);
+        var indentPrefix = firstLine.Substring(0, leadingWhitespaceLength);
 
         // Remove the exact prefix from each line if it starts with it
-        for (int i = 0; i < lines.Length; i++)
-        {
+        for (var i = 0; i < lines.Length; i++)
             if (lines[i].StartsWith(indentPrefix))
-            {
                 lines[i] = lines[i].Substring(indentPrefix.Length);
-            }
-        }
 
         return string.Join(Environment.NewLine, lines);
     }

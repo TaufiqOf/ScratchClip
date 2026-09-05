@@ -10,12 +10,12 @@ namespace XClip.Views.Page;
 
 public partial class SettingPageControl : UserControl
 {
-    public event EventHandler? CloseRequested;
-
     public SettingPageControl()
     {
         InitializeComponent();
     }
+
+    public event EventHandler? CloseRequested;
 
     private void HotkeyTextBox_OnKeyDown(object? sender, KeyEventArgs e)
     {
@@ -75,5 +75,3 @@ public partial class SettingPageControl : UserControl
         CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 }
-
-

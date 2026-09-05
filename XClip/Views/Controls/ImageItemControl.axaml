@@ -8,9 +8,9 @@
     <Border CornerRadius="6" ClipToBounds="True">
         <Grid>
             <!-- Image Content (Fills entire background area) -->
-            <Image Source="{Binding Image}" 
-                   Stretch="UniformToFill" 
-                   HorizontalAlignment="Center" 
+            <Image Source="{Binding Image}"
+                   Stretch="UniformToFill"
+                   HorizontalAlignment="Center"
                    VerticalAlignment="Center" />
 
             <!-- Semi-Transparent Bottom Bar Overlay -->
@@ -22,44 +22,44 @@
                     <!-- Index Badge -->
                     <Border Grid.Column="0"
                             Background="{DynamicResource SystemControlHighlightAccentBrush}"
-                            CornerRadius="3" 
+                            CornerRadius="3"
                             Width="24" Height="24"
                             VerticalAlignment="Center">
-                        <TextBlock Text="{Binding DisplayIndex}" 
-                                   FontSize="11" 
+                        <TextBlock Text="{Binding DisplayIndex}"
+                                   FontSize="11"
                                    FontWeight="Bold"
                                    Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
-                                   HorizontalAlignment="Center" 
+                                   HorizontalAlignment="Center"
                                    VerticalAlignment="Center" />
                     </Border>
 
                     <!-- Format Tag & Timestamp -->
-                    <StackPanel Grid.Column="1" 
-                                Orientation="Horizontal" 
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
                                 Spacing="8"
                                 Margin="8,0"
                                 VerticalAlignment="Center">
-                        <Border Background="#33FFFFFF" 
-                                CornerRadius="3" 
+                        <Border Background="#33FFFFFF"
+                                CornerRadius="3"
                                 Padding="6,2"
                                 VerticalAlignment="Center">
-                            <TextBlock Text="IMAGE" 
-                                       FontSize="10" 
+                            <TextBlock Text="IMAGE"
+                                       FontSize="10"
                                        FontWeight="SemiBold"
                                        Foreground="#FFFFFF"
-                                       VerticalAlignment="Center"/>
+                                       VerticalAlignment="Center" />
                         </Border>
                         <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
-                                   FontSize="11" 
+                                   FontSize="11"
                                    Foreground="#CCCCCC"
                                    VerticalAlignment="Center" />
                     </StackPanel>
 
                     <!-- Delete Button -->
                     <Button Grid.Column="2"
-                            Command="{Binding DeleteCommand}" 
-                            Background="Transparent" 
-                            BorderThickness="0" 
+                            Command="{Binding DeleteCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
                             CornerRadius="3"
                             Padding="5"
                             Width="26" Height="26"

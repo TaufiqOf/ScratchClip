@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 using XClip.Models;
-using XClip.ViewModels;
 
 namespace XClip.Converters;
 

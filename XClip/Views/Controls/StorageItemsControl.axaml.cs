@@ -4,5 +4,8 @@ namespace XClip.Views.Controls;
 
 public partial class StorageItemsControl : UserControl
 {
-    public StorageItemsControl() => InitializeComponent();
+    public StorageItemsControl()
+    {
+        InitializeComponent();
+    }
 }
