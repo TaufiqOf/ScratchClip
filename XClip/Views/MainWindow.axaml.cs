@@ -1,163 +1,96 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using XClip.Helper;
 using XClip.Services;
 using XClip.ViewModels;
+using XClip.Views.Page;
+
 // Required for RoutingStrategies
 
 namespace XClip.Views;
 
 public partial class MainWindow : Window
 {
-    private const int NumericSelectionMaxDigits = 2;
-    private static readonly TimeSpan NumericSelectionDelay = TimeSpan.FromMilliseconds(350);
     private readonly GlobalHotkeyService _hotkeyService;
-
-    private string _inputBuffer = string.Empty;
-    private DispatcherTimer? _inputTimer;
     private bool _isClosingForReal;
+    private readonly MainViewModel _viewModel;
+    private readonly MainPageControl _mainPage;
+    private SettingPageControl? _settingsPage;
+
+
+    public MainWindow() : this(new GlobalHotkeyService(() => { }))
+    {
+    }
 
     public MainWindow(GlobalHotkeyService hotkeyService)
     {
         _hotkeyService = hotkeyService;
-        DataContext = new MainViewModel(_hotkeyService);
         InitializeComponent();
+        _viewModel = new MainViewModel(hotkeyService);
+        _viewModel.OnHideToTray += HideToTray;
+        _viewModel.OnOpenSettings += ShowSettingsPage;
+        DataContext = _viewModel;
+        _mainPage = new MainPageControl();
+        _mainPage.DataContext = _viewModel;
+        PageHost.Content = _mainPage;
+
         Opened += OnOpened;
         Closed += OnClosed;
-
+        Deactivated += OnWindowDeactivated;
         // Use Tunnel routing strategy to catch key presses before ListBox consumes them
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
+        var settings = SettingsManager.Load();
+        Width = settings.WindowWidth;
+        Height = settings.WindowHeight;
     }
 
-    private async void OnWindowKeyDown(object? sender, KeyEventArgs e)
+    private TextBox? SearchTextBoxControl =>
+        _mainPage.FindControl<TextBox>("SearchTextBox");
+
+    private ListBox? HistoryListBox =>
+        _mainPage.FindControl<ListBox>("ListBox");
+
+    private void OnWindowDeactivated(object? sender, EventArgs e)
     {
-        // Handle Ctrl+S key combination to focus SearchTextBox
+        if (IsVisible)
+        {
+            HideToTray();
+        }
+    }
+
+    private void OnWindowKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (!ReferenceEquals(PageHost.Content, _mainPage))
+            return;
+
         if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             e.Handled = true;
-            SearchTextBox.Focus();
-            SearchTextBox.SelectAll();
-            return;
+            var searchBox = SearchTextBoxControl;
+            searchBox?.Focus();
+            searchBox?.SelectAll();
         }
-
-        if (DataContext is MainViewModel vm)
-        {
-            // Don't intercept digit shortcuts if user is currently typing in SearchTextBox
-            if (!SearchTextBox.IsFocused && TryGetDigitFromKey(e.Key, out var digit))
-                if (await HandleBufferedNumericSelectionAsync(vm, digit))
-                {
-                    e.Handled = true;
-                    return;
-                }
-
-            if (e.Key == Key.Enter || e.Key == Key.Return)
-            {
-                if (vm.SelectedItem != null)
-                {
-                    e.Handled = true;
-                    await ExecutePasteForSelectedAsync(vm);
-                }
-            }
-            else if (e.Key == Key.Escape)
-            {
-                e.Handled = true;
-                HideToTray();
-            }
-        }
-    }
-
-    private async void OnListBoxDoubleTapped(object? sender, TappedEventArgs e)
-    {
-        if (DataContext is MainViewModel vm && vm.SelectedItem != null)
+        if(e.Key == Key.Escape)
         {
             e.Handled = true;
-            await ExecutePasteForSelectedAsync(vm);
+            HideToTray();
         }
-    }
 
-    private async Task ExecutePasteForSelectedAsync(MainViewModel vm)
-    {
-        HideToTray();
-        await vm.CopyAsync(vm.SelectedItem);
-        await _hotkeyService.SimulatePasteAsync();
-    }
-
-    private async Task ProcessBufferSelectionAsync(MainViewModel vm)
-    {
-        if (int.TryParse(_inputBuffer, out var targetNumber) && targetNumber > 0)
+        if (e.Key== Key.Enter)
         {
-            var targetIndex = targetNumber - 1; // Convert 1-based display to 0-based index
-
-            if (targetIndex < vm.FilteredHistory.Count)
-            {
-                vm.SelectAndPasteByIndex(targetIndex);
-                HideToTray();
-                await vm.CopyAsync(vm.SelectedItem);
-                await _hotkeyService.SimulatePasteAsync();
-            }
+            HideToTray();
+            _ = _viewModel.DoubleClickAsync();
+            _ = _viewModel.SimulatePasteAsync();
         }
 
-        _inputBuffer = string.Empty; // Clear buffer
+        _viewModel.OnWindowKeyDown(e);
     }
 
-    private async Task<bool> HandleBufferedNumericSelectionAsync(MainViewModel vm, int digit)
-    {
-        if (string.IsNullOrEmpty(_inputBuffer) && digit == 0) return false;
-
-        _inputBuffer += digit;
-
-        _inputTimer ??= new DispatcherTimer();
-        _inputTimer.Stop();
-        _inputTimer.Interval = NumericSelectionDelay;
-        _inputTimer.Tick -= OnInputTimerTick;
-        _inputTimer.Tick += OnInputTimerTick;
-
-        if (_inputBuffer.Length >= NumericSelectionMaxDigits)
-        {
-            await ProcessBufferSelectionAsync(vm);
-            _inputTimer.Stop();
-        }
-        else
-        {
-            _inputTimer.Start();
-        }
-
-        return true;
-    }
-
-    private async void OnInputTimerTick(object? sender, EventArgs e)
-    {
-        _inputTimer?.Stop();
-
-        if (DataContext is MainViewModel vm)
-            await ProcessBufferSelectionAsync(vm);
-        else
-            _inputBuffer = string.Empty;
-    }
-
-    private static bool TryGetDigitFromKey(Key key, out int digit)
-    {
-        digit = -1;
-
-        if (key >= Key.D0 && key <= Key.D9)
-        {
-            digit = key - Key.D0;
-            return true;
-        }
-
-        if (key >= Key.NumPad0 && key <= Key.NumPad9)
-        {
-            digit = key - Key.NumPad0;
-            return true;
-        }
-
-        return false;
-    }
 
     private void OnOpened(object? sender, EventArgs e)
     {
@@ -193,41 +126,85 @@ public partial class MainWindow : Window
 
     public void ShowFromTray()
     {
+        ShowMainPage();
         ShowInTaskbar = true;
         Show();
         WindowState = WindowState.Normal;
         PositionInBottomRight();
-
         Activate();
         Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
     }
 
     private void FocusControls()
     {
+        var listBox = HistoryListBox;
+        if (listBox == null)
+            return;
+
+        // Bring window to front natively
+        if (WindowState == WindowState.Minimized)
+        {
+            WindowState = WindowState.Normal;
+        }
+
         Activate();
 
-        if (DataContext is MainViewModel vm && vm.ClipboardHistory.Any())
+        // Give the OS window manager a frame to settle activation before setting control focus
+        Dispatcher.UIThread.Post(() =>
         {
-            if (ListBox.SelectedItem == null) ListBox.SelectedIndex = 0;
+            if (DataContext is MainViewModel vm && vm.FilteredHistory.Any())
+            {
+                if (listBox.SelectedIndex < 0)
+                    listBox.SelectedIndex = 0;
 
-            var container = ListBox.ContainerFromIndex(ListBox.SelectedIndex);
-            if (container != null)
-                container.Focus();
+                var container = listBox.ContainerFromIndex(listBox.SelectedIndex);
+                if (container is Control control)
+                {
+                    control.Focus();
+                }
+                else
+                {
+                    listBox.Focus();
+                }
+            }
             else
-                ListBox.Focus();
-        }
-        else
+            {
+                listBox.Focus();
+            }
+        }, DispatcherPriority.Render);
+    }
+
+    private void ShowMainPage()
+    {
+        PageHost.Content = _mainPage;
+    }
+
+    private void ShowSettingsPage()
+    {
+        if (_settingsPage == null)
         {
-            ListBox.Focus();
+            _settingsPage = new SettingPageControl();
+            _settingsPage.CloseRequested += OnSettingsCloseRequested;
         }
+
+        _settingsPage.DataContext = new SettingsViewModel(_hotkeyService);
+        PageHost.Content = _settingsPage;
+    }
+
+    private void OnSettingsCloseRequested(object? sender, EventArgs e)
+    {
+        ShowMainPage();
+        Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
     }
 
     private void OnClosed(object? sender, EventArgs e)
     {
-        _inputTimer?.Stop();
-        _inputTimer = null;
 
-        if (DataContext is IDisposable disposableVm) disposableVm.Dispose();
+        _viewModel.OnHideToTray -= HideToTray;
+        _viewModel.OnOpenSettings -= ShowSettingsPage;
+        _viewModel.Dispose();
+        if (_settingsPage != null)
+            _settingsPage.CloseRequested -= OnSettingsCloseRequested;
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)
@@ -239,7 +216,10 @@ public partial class MainWindow : Window
             e.Cancel = true;
             HideToTray();
         }
-
+        var settings = SettingsManager.Load();
+        settings.WindowWidth = Width;
+        settings.WindowHeight = Height;
+        SettingsManager.Save(settings);
         base.OnClosing(e);
     }
 }
