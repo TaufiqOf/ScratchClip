@@ -62,22 +62,6 @@
                 <avalonia:FluentIcon Icon="Settings" FontSize="16" />
             </Button>
         </Grid>
-
-        <!-- Search Input Box -->
-        <Grid Grid.Row="1" Margin="8,4" ColumnDefinitions="*,Auto">
-            <TextBox x:Name="SearchTextBox"
-                     Grid.Column="0"
-                     Text="{Binding SearchText, Mode=TwoWay}"
-                     PlaceholderText="Search history (Ctrl+S)..." />
-            <Button Grid.Column="1"
-                    Command="{Binding ClearSearchCommand}"
-                    ToolTip.Tip="Clear Search"
-                    Background="Transparent"
-                    BorderThickness="0">
-                <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
-            </Button>
-        </Grid>
-
         <!-- Tag Filter -->
         <Grid Grid.Row="2" Margin="8,0,8,4" ColumnDefinitions="*,Auto">
             <DropDownButton Grid.Column="0"
@@ -110,6 +94,22 @@
                 <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
             </Button>
         </Grid>
+
+        <!-- Search Input Box -->
+        <Grid Grid.Row="1" Margin="8,4" ColumnDefinitions="*,Auto">
+            <TextBox x:Name="SearchTextBox"
+                     Grid.Column="0"
+                     Text="{Binding SearchText, Mode=TwoWay}"
+                     PlaceholderText="Search history (Ctrl+S)..." />
+            <Button Grid.Column="1"
+                    Command="{Binding ClearSearchCommand}"
+                    ToolTip.Tip="Clear Search"
+                    Background="Transparent"
+                    BorderThickness="0">
+                <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
+            </Button>
+        </Grid>
+
 
         <!-- Clipboard List -->
         <Grid Grid.Row="3" Margin="8,4,8,8">

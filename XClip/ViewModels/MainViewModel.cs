@@ -64,7 +64,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             return selectedTags.Count switch
             {
                 0 => "All tags",
-                <= 2 => string.Join(", ", selectedTags),
+                <= 4 => string.Join(", ", selectedTags),
                 _ => $"{selectedTags.Count} tags selected"
             };
         }
@@ -332,20 +332,18 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private static int GetFuzzyScore(string query, AClipboardItem item)
     {
-        var text = item.Text ?? string.Empty;
-        var display = item.DisplayText ?? string.Empty;
+        var text = item.Text;
+        var display = item.DisplayText;
+
         var bestScore = Math.Max(
             Fuzz.PartialRatio(query, text),
             Fuzz.PartialRatio(query, display));
 
-        if (item is TextClipboardItem textItem)
+        if (item is TextClipboardItem { TextType: WebsiteTextType websiteTextType })
         {
-            if (textItem.TextType is WebsiteTextType websiteTextType)
-            {
-                bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteTitle ?? string.Empty));
-                bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteDescription ?? string.Empty));
-                bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteHost ?? string.Empty));
-            }
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteTitle));
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteDescription));
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteHost));
         }
 
         return bestScore;
