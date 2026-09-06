@@ -1,13 +1,23 @@
+using System;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using FluentIcons.Common;
 
 namespace XClip.Models.TextType;
 
 public class CodeTextType : ATextType
 {
+    public CodeTextType(string text) : base(text)
+    {
+        Icon = Icon.CodeBlock;
+        Text = text.Substring(0, Math.Min(text.Length, 600));  
+    }
+
     public override string DisplayName => "Code";
+
+
 
     public override bool IsMatch(string text)
     {
@@ -33,6 +43,11 @@ public class CodeTextType : ATextType
 
 public class XmlTextType : ATextType
 {
+    public XmlTextType(string text) : base(text)
+    {
+        Icon = Icon.Markdown;
+    }
+
     public override string DisplayName => "XML";
 
     public override bool IsMatch(string text)
@@ -59,6 +74,10 @@ public class XmlTextType : ATextType
 
 public class JsonTextType : ATextType
 {
+    public JsonTextType(string text) : base(text)
+    {
+        Icon = Icon.Markdown;
+    }
     public override string DisplayName => "JSON";
 
     public override bool IsMatch(string text)
@@ -85,6 +104,10 @@ public class JsonTextType : ATextType
 
 public class MarkdownTextType : ATextType
 {
+    public MarkdownTextType(string text) : base(text)
+    {
+        Icon = Icon.Markdown;
+    }
     public override string DisplayName => "Markdown";
 
     public override bool IsMatch(string text)
@@ -106,6 +129,3 @@ public class MarkdownTextType : ATextType
         return Task.CompletedTask;
     }
 }
-
-
-

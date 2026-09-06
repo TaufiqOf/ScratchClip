@@ -9,14 +9,14 @@ namespace XClip.Models;
 
 public partial class TextClipboardItem : AClipboardItem
 {
-    private ATextType _textType = new PlainTextType();
+    private ATextType? _textType;
 
     public TextClipboardItem()
     {
         Tags.Add("Text");
     }
 
-    public ATextType TextType
+    public ATextType? TextType
     {
         get => _textType;
         private set
@@ -59,11 +59,11 @@ public partial class TextClipboardItem : AClipboardItem
         var candidates = new ATextType[]
         {
             new TextType.WebsiteTextType(text),
-            new JsonTextType(),
-            new XmlTextType(),
-            new CodeTextType(),
-            new MarkdownTextType(),
-            new PlainTextType()
+            new JsonTextType(text),
+            new XmlTextType(text),
+            new CodeTextType(text),
+            new MarkdownTextType(text),
+            new PlainTextType(text)
         };
 
         return candidates.First(type => type.IsMatch(text));

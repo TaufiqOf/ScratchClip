@@ -1,12 +1,18 @@
+using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FluentIcons.Common;
 
 namespace XClip.Models.TextType;
 
 public partial class PlainTextType : ATextType
 {
-    [ObservableProperty]
-    private string _text;
+    public PlainTextType(string text) : base(text)
+    {
+        Icon = Icon.Note;
+        Text = text.Substring(0, Math.Min(text.Length, 600));   
+    }
+    
     public override string DisplayName => "Plain Text";
 
     public override bool IsMatch(string text)
@@ -16,7 +22,6 @@ public partial class PlainTextType : ATextType
 
     public override Task PopulateMetadataAsync(string text)
     {
-        Text = text;
         return Task.CompletedTask;
     }
 }

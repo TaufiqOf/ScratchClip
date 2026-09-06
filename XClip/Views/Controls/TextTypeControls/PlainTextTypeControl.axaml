@@ -19,7 +19,7 @@
                     Background="Transparent">
 
                 <Grid>
-                    <fluent:FluentIcon Icon="Note"
+                    <fluent:FluentIcon Icon="{Binding Icon}"
                                          FontSize="40"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center" />

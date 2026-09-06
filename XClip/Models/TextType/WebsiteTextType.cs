@@ -8,30 +8,20 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Media.Imaging;
+using FluentIcons.Common;
 
 namespace XClip.Models.TextType;
 
 public partial class WebsiteTextType : ATextType
 {
-    public WebsiteTextType(string text)
+    public WebsiteTextType(string text): base(text)
     {
-        Text = text;
+        Icon = Icon.Globe;
     }
-
-    public string Text { get; set; }
 
     public override string DisplayName => "Website";
 
-    public Bitmap? Icon
-    {
-        get;
-        private set
-        {
-            if (Equals(field, value)) return;
-            field = value;
-            OnPropertyChanged();
-        }
-    }
+   
 
     static WebsiteTextType()
     {
@@ -52,7 +42,16 @@ public partial class WebsiteTextType : ATextType
     {
         await PopulateWebsiteMetadataAsync();
     }
-
+    public Bitmap? WebsiteIcon
+    {
+        get; 
+        set
+        {
+            if (Equals(field, value)) return;
+            field = value;
+            OnPropertyChanged();
+        }
+    }
     public bool IsWebSite
     {
         get;
@@ -182,7 +181,7 @@ public partial class WebsiteTextType : ATextType
                     continue;
 
                 using var stream = new MemoryStream(bytes);
-                Icon = new Bitmap(stream);
+                WebsiteIcon = new Bitmap(stream);
                 return;
             }
             catch
@@ -191,7 +190,7 @@ public partial class WebsiteTextType : ATextType
             }
         }
 
-        Icon = null;
+        WebsiteIcon = null;
     }
 
     private static string ExtractTitle(string html)
