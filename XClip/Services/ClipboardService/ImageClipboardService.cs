@@ -34,15 +34,15 @@ internal class ImageClipboardService : AClipboardService
         if (item is not ImageClipboardItem imageItem || imageItem.Image == null)
             return Task.CompletedTask;
 
-        using var stream = new MemoryStream();
-        imageItem.Image.Save(stream, 100);
+        return Task.Run(() =>
+        {
+            using var stream = new MemoryStream();
+            imageItem.Image.Save(stream, 100);
+            stream.Position = 0;
 
-        // Better to use a stable hash of the image bytes.
-        item.Signature = Convert.ToHexString(
-            SHA256.HashData(stream.ToArray())
-        );
-
-        return Task.CompletedTask;
+            // Run hashing off the UI thread to avoid frame stalls on large images.
+            item.Signature = Convert.ToHexString(SHA256.HashData(stream));
+        });
     }
 
     public override async Task CopyData(AClipboardItem value)

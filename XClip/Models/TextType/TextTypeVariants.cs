@@ -26,13 +26,28 @@ public class CodeTextType : ATextType
 
         var trimmed = text.Trim();
 
-        if (trimmed.Contains('\n') && (trimmed.Contains('{') || trimmed.Contains(';') || trimmed.Contains("=>")))
+        if (Regex.IsMatch(trimmed,
+                @"^\s*(public|private|protected|internal)\s+(class|interface|struct|enum)\b|^\s*(if|for|foreach|while|switch|try|catch)\s*\(",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline))
             return true;
 
-        return Regex.IsMatch(
+        var keywordCount = Regex.Matches(
             trimmed,
-            @"\b(class|interface|struct|enum|namespace|public|private|protected|internal|using|return|function|def|let|const|var|import|export)\b",
-            RegexOptions.IgnoreCase);
+            @"\b(class|interface|struct|enum|namespace|public|private|protected|internal|using|return|function|def|let|const|var|import|export|async|await|new|void|static)\b",
+            RegexOptions.IgnoreCase).Count;
+
+        var strongSymbolCount = Regex.Matches(trimmed, @"(=>|==|!=|<=|>=|\{|\}|\[|\]|;)").Count;
+        var operatorCount = Regex.Matches(trimmed, @"(=>|==|!=|<=|>=|&&|\|\||\+\+|--)" ).Count;
+        var isMultiline = trimmed.Contains('\n');
+
+        // Treat as code only when there are multiple matching signals.
+        if (isMultiline && strongSymbolCount >= 2 && keywordCount >= 1)
+            return true;
+
+        if (keywordCount >= 2 && (strongSymbolCount >= 1 || operatorCount >= 1))
+            return true;
+
+        return false;
     }
 
     public override Task PopulateMetadataAsync(string text)

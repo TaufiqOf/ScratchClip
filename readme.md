@@ -20,12 +20,14 @@ It runs in the system tray, keeps your recent copied text items, and lets you qu
 - Light/dark tray and window icon switching based on theme
 - Limited support for wayland (Linux)
 - Image and Text clipboard supported
+- Code, XML, JSON, and Markdown text type recognition
+- Shows Metadata on links copied to clipboard (title, description, icon, etc.)
 
 ## Screenshots
 
 ### Main window
 
-![XClip main window](Docs/dark-1.png)
+![XClip main window](Docs/types.png)
 
 ### Theme variants
 
