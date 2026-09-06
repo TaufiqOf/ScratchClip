@@ -4,6 +4,7 @@
              xmlns:converters="clr-namespace:XClip.Converters"
              xmlns:models="clr-namespace:XClip.Models"
              xmlns:textTypes="clr-namespace:XClip.Views.Controls.TextTypeControls"
+             xmlns:textType="clr-namespace:XClip.Models.TextType"
              x:Class="XClip.Views.Controls.TextItemControl"
              x:DataType="models:TextClipboardItem">
 
@@ -11,36 +12,37 @@
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
     </UserControl.Resources>
 
-    <Border CornerRadius="4">
+    <Border CornerRadius="4"
+            DoubleTapped="OnDoubleTapped">
         <Grid RowDefinitions="*,Auto">
             <StackPanel Grid.Row="0" Spacing="8">
-                <TextBlock FontSize="14"
-                           Text="{Binding DisplayText}"
-                           ToolTip.Tip="{Binding DisplayText}"
-                           TextWrapping="Wrap" MaxLines="20" TextTrimming="CharacterEllipsis" />
+                <!-- <TextBlock FontSize="14" -->
+                <!--            Text="{Binding DisplayText}" -->
+                <!--            ToolTip.Tip="{Binding DisplayText}" -->
+                <!--            TextWrapping="Wrap" MaxLines="20" TextTrimming="CharacterEllipsis" /> -->
                 <ContentControl Content="{Binding TextType}">
                     <ContentControl.DataTemplates>
-                        <DataTemplate DataType="models:PlainTextType">
-                            <textTypes:TextTypeInfoControl />
+                        <DataTemplate DataType="textType:PlainTextType">
+                            <textTypes:PlainTextTypeControl />
                         </DataTemplate>
 
-                        <DataTemplate DataType="models:WebsiteTextType">
+                        <DataTemplate DataType="textType:WebsiteTextType">
                             <textTypes:WebsiteTextTypeControl />
                         </DataTemplate>
 
-                        <DataTemplate DataType="models:CodeTextType">
+                        <DataTemplate DataType="textType:CodeTextType">
                             <textTypes:TextTypeInfoControl />
                         </DataTemplate>
 
-                        <DataTemplate DataType="models:XmlTextType">
+                        <DataTemplate DataType="textType:XmlTextType">
                             <textTypes:TextTypeInfoControl />
                         </DataTemplate>
 
-                        <DataTemplate DataType="models:JsonTextType">
+                        <DataTemplate DataType="textType:JsonTextType">
                             <textTypes:TextTypeInfoControl />
                         </DataTemplate>
 
-                        <DataTemplate DataType="models:MarkdownTextType">
+                        <DataTemplate DataType="textType:MarkdownTextType">
                             <textTypes:TextTypeInfoControl />
                         </DataTemplate>
                     </ContentControl.DataTemplates>

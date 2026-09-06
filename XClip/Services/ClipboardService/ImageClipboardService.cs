@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
 using XClip.Models;
+using ImageClipboardItem = XClip.Models.TextType.ImageClipboardItem;
 
 namespace XClip.Services.ClipboardService;
 

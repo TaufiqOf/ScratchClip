@@ -3,14 +3,17 @@
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:models="clr-namespace:XClip.Models"
              xmlns:converters="clr-namespace:XClip.Converters"
+             xmlns:textType="clr-namespace:XClip.Models.TextType"
              x:Class="XClip.Views.Controls.ImageItemControl"
-             x:DataType="models:ImageClipboardItem">
+             x:DataType="textType:ImageClipboardItem">
 
     <UserControl.Resources>
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
     </UserControl.Resources>
 
-    <Border CornerRadius="6" ClipToBounds="True">
+    <Border CornerRadius="6"
+            ClipToBounds="True"
+            DoubleTapped="OnDoubleTapped">
         <Grid>
             <!-- Image Content (Fills entire background area) -->
             <Image Source="{Binding Image}"

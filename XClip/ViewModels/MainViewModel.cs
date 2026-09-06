@@ -13,6 +13,7 @@ using XClip.Manager;
 using XClip.Models;
 using XClip.Services;
 using Timer = System.Timers.Timer;
+using WebsiteTextType = XClip.Models.TextType.WebsiteTextType;
 
 namespace XClip.ViewModels;
 
@@ -135,7 +136,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         while (!cancellationToken.IsCancellationRequested && await timer.WaitForNextTickAsync(cancellationToken))
             await Dispatcher.UIThread.InvokeAsync(() => _ = ClipboardManager.CheckClipboard());
     }
-
+    
+    [RelayCommand]
     public async Task DoubleClickAsync()
     {
         await CopyAsync(SelectedItem);

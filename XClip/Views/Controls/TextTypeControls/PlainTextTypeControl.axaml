@@ -1,8 +1,36 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="XClip.Views.Controls.TextTypeControls.PlainTextTypeControl"
-             x:DataType="models:PlainTextType"
-             xmlns:models="clr-namespace:XClip.Models">
-    <!-- Plain text has no extra metadata panel. -->
-</UserControl>
+             x:DataType="textType:PlainTextType"
+             xmlns:models="clr-namespace:XClip.Models"
+             xmlns:textType="clr-namespace:XClip.Models.TextType"
+             xmlns:fluent="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent">
+    <Border Padding="10"
+            CornerRadius="8"
+            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+        <Grid ColumnDefinitions="Auto,*"
+              ColumnSpacing="10">
 
+            <!-- Website Icon -->
+            <Border Width="42"
+                    Height="42"
+                    CornerRadius="8"
+                    VerticalAlignment="Top"
+                    Background="Transparent">
+
+                <Grid>
+                    <fluent:FluentIcon Icon="Note"
+                                         FontSize="40"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
+
+                </Grid>
+            </Border>
+            <StackPanel Grid.Column="1" Spacing="2">
+                <TextBlock Text="{Binding Text}"
+                           FontSize="11"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

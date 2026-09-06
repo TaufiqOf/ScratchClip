@@ -1,27 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Media.Imaging;
 
-namespace XClip.Models;
-
-public class PlainTextType : ATextType
-{
-    public override string DisplayName => "Plain Text";
-
-    public override bool IsMatch(string text)
-    {
-        return true;
-    }
-
-    public override Task PopulateMetadataAsync(string text)
-    {
-        return Task.CompletedTask;
-    }
-}
+namespace XClip.Models.TextType;
 
 public partial class WebsiteTextType : ATextType
 {
@@ -33,6 +21,17 @@ public partial class WebsiteTextType : ATextType
     public string Text { get; set; }
 
     public override string DisplayName => "Website";
+
+    public Bitmap? Icon
+    {
+        get;
+        private set
+        {
+            if (Equals(field, value)) return;
+            field = value;
+            OnPropertyChanged();
+        }
+    }
 
     static WebsiteTextType()
     {
@@ -146,6 +145,8 @@ public partial class WebsiteTextType : ATextType
         {
             var html = await MetadataClient.GetStringAsync(uri);
 
+            await PopulateIconAsync(uri, html);
+
             var title = ExtractTitle(html);
             if (!string.IsNullOrWhiteSpace(title))
                 WebsiteTitle = title;
@@ -158,6 +159,39 @@ public partial class WebsiteTextType : ATextType
         {
             // Keep URL-only display when metadata fetch fails.
         }
+    }
+
+    private async Task PopulateIconAsync(Uri baseUri, string html)
+    {
+        var candidates = new List<Uri>();
+
+        foreach (var href in ExtractIconHrefs(html))
+        {
+            if (TryBuildUri(baseUri, href, out var iconUri))
+                candidates.Add(iconUri);
+        }
+
+        candidates.Add(new Uri(baseUri, "/favicon.ico"));
+
+        foreach (var iconUri in candidates)
+        {
+            try
+            {
+                var bytes = await MetadataClient.GetByteArrayAsync(iconUri);
+                if (bytes.Length == 0)
+                    continue;
+
+                using var stream = new MemoryStream(bytes);
+                Icon = new Bitmap(stream);
+                return;
+            }
+            catch
+            {
+                // Try next candidate.
+            }
+        }
+
+        Icon = null;
     }
 
     private static string ExtractTitle(string html)
@@ -188,6 +222,46 @@ public partial class WebsiteTextType : ATextType
         }
 
         return string.Empty;
+    }
+
+    private static IEnumerable<string> ExtractIconHrefs(string html)
+    {
+        var links = Regex.Matches(html, "<link\\s+[^>]*>", RegexOptions.IgnoreCase);
+
+        foreach (Match link in links)
+        {
+            var rel = GetAttribute(link.Value, "rel");
+            var href = GetAttribute(link.Value, "href");
+
+            if (string.IsNullOrWhiteSpace(rel) || string.IsNullOrWhiteSpace(href))
+                continue;
+
+            if (rel.Contains("icon", StringComparison.OrdinalIgnoreCase) ||
+                rel.Contains("apple-touch-icon", StringComparison.OrdinalIgnoreCase) ||
+                rel.Contains("shortcut icon", StringComparison.OrdinalIgnoreCase))
+            {
+                yield return href;
+            }
+        }
+    }
+
+    private static bool TryBuildUri(Uri baseUri, string href, out Uri uri)
+    {
+        uri = null!;
+
+        if (Uri.TryCreate(href, UriKind.Absolute, out var absolute))
+        {
+            uri = absolute;
+            return true;
+        }
+
+        if (Uri.TryCreate(baseUri, href, out var relative))
+        {
+            uri = relative;
+            return true;
+        }
+
+        return false;
     }
 
     private static string GetAttribute(string tag, string attributeName)

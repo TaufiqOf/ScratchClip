@@ -5,6 +5,7 @@
              xmlns:helper="clr-namespace:XClip.Helper"
              xmlns:controls="clr-namespace:XClip.Views.Controls"
              xmlns:vm="clr-namespace:XClip.ViewModels"
+             xmlns:textType="clr-namespace:XClip.Models.TextType"
              x:DataType="vm:MainViewModel"
              x:Class="XClip.Views.Page.MainPageControl">
     <UserControl.Resources>
@@ -18,7 +19,7 @@
             </DataTemplate>
 
             <!-- IMAGE FORMAT TEMPLATE -->
-            <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Image}" x:DataType="models:ImageClipboardItem">
+            <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Image}" x:DataType="textType:ImageClipboardItem">
                 <controls:ImageItemControl />
             </DataTemplate>
 

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -82,12 +83,18 @@ public partial class MainWindow : Window
 
         if (e.Key == Key.Enter)
         {
-            HideToTray();
-            _ = _viewModel.DoubleClickAsync();
-            _ = _viewModel.SimulatePasteAsync();
+            e.Handled = true;
+            _ = ActivateSelectedItemAsync();
         }
 
         _viewModel.OnWindowKeyDown(e);
+    }
+
+    public async Task ActivateSelectedItemAsync()
+    {
+        HideToTray();
+        await _viewModel.DoubleClickAsync();
+        await _viewModel.SimulatePasteAsync();
     }
 
 

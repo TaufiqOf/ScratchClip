@@ -1,7 +1,7 @@
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 
-namespace XClip.Models;
+namespace XClip.Models.TextType;
 
 public partial class ImageClipboardItem : AClipboardItem
 {

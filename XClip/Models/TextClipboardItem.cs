@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using XClip.Manager;
+using XClip.Models.TextType;
 
 namespace XClip.Models;
 
@@ -28,13 +30,19 @@ public partial class TextClipboardItem : AClipboardItem
 
     public TextClipboardItemType Type => TextType switch
     {
-        WebsiteTextType => TextClipboardItemType.Website,
+        Models.TextType.WebsiteTextType => TextClipboardItemType.Website,
         CodeTextType => TextClipboardItemType.Code,
         XmlTextType => TextClipboardItemType.Xml,
         JsonTextType => TextClipboardItemType.Json,
         MarkdownTextType => TextClipboardItemType.Markdown,
         _ => TextClipboardItemType.PlainText
     };
+
+    [RelayCommand]
+    private void ItemClicked()
+    {
+        
+    }
 
     public async Task PopulateMetadataAsync()
     {
@@ -50,7 +58,7 @@ public partial class TextClipboardItem : AClipboardItem
     {
         var candidates = new ATextType[]
         {
-            new WebsiteTextType(text),
+            new TextType.WebsiteTextType(text),
             new JsonTextType(),
             new XmlTextType(),
             new CodeTextType(),
@@ -87,6 +95,11 @@ public partial class TextClipboardItem : AClipboardItem
         Tags.Clear();
         foreach (var tag in tags.Distinct())
             Tags.Add(tag);
+    }
+    [RelayCommand]
+    private async Task CopyToClipboardAsync()
+    {
+        await ClipboardManager.SetClipboardItemAsync(this);
     }
 
     [RelayCommand]

@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using Avalonia.Media.Imaging;
 using XClip.Models;
+using ImageClipboardItem = XClip.Models.TextType.ImageClipboardItem;
 
 namespace XClip.Manager;
 
