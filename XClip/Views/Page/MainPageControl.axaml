@@ -32,7 +32,7 @@
         </helper:ClipboardItemTemplateSelector>
     </UserControl.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
         <!-- Toolbar Bar -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="8,8,8,4">
             <!-- Left Aligned Controls -->
@@ -78,8 +78,41 @@
             </Button>
         </Grid>
 
+        <!-- Tag Filter -->
+        <Grid Grid.Row="2" Margin="8,0,8,4" ColumnDefinitions="*,Auto">
+            <DropDownButton Grid.Column="0"
+                            MinWidth="180"
+                            HorizontalAlignment="Stretch"
+                            Content="{Binding SelectedTagsSummary}">
+                <DropDownButton.Flyout>
+                    <Flyout Placement="BottomEdgeAlignedLeft">
+                        <Border Padding="8" MinWidth="220" MaxHeight="250">
+                            <ScrollViewer MaxHeight="230">
+                                <ItemsControl ItemsSource="{Binding TagFilterOptions}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Content="{Binding Name}"
+                                                      IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
+                    </Flyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+
+            <Button Grid.Column="1"
+                    Command="{Binding ClearTagFilterCommand}"
+                    ToolTip.Tip="Clear Tag Filter"
+                    Background="Transparent"
+                    BorderThickness="0">
+                <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
+            </Button>
+        </Grid>
+
         <!-- Clipboard List -->
-        <Grid Grid.Row="2" Margin="8,4,8,8">
+        <Grid Grid.Row="3" Margin="8,4,8,8">
             <ListBox
                 x:Name="ListBox"
                 ItemsSource="{Binding FilteredHistory}"

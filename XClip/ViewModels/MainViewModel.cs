@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -28,6 +29,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public Action? OnHideToTray;
     public Action? OnOpenSettings;
     private bool _isInternalSelectionChange;
+    private bool _isUpdatingTagOptions;
     private CancellationTokenSource? _monitorCts;
     private string _registerNumber = string.Empty;
 
@@ -41,6 +43,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         foreach (var item in ClipboardManager.GetClipboardHistorySnapshot())
             _historyItems.Add(item);
 
+        TagFilterOptions.CollectionChanged += OnTagFilterOptionsCollectionChanged;
+        RefreshTagFilterOptions();
         ApplyFilter();
 
         StartMonitoringClipboard();
@@ -50,6 +54,21 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     }
 
     public ObservableCollection<AClipboardItem> FilteredHistory { get; } = new();
+    public ObservableCollection<TagFilterOption> TagFilterOptions { get; } = new();
+
+    public string SelectedTagsSummary
+    {
+        get
+        {
+            var selectedTags = GetSelectedTags();
+            return selectedTags.Count switch
+            {
+                0 => "All tags",
+                <= 2 => string.Join(", ", selectedTags),
+                _ => $"{selectedTags.Count} tags selected"
+            };
+        }
+    }
 
     public string SearchText
     {
@@ -90,6 +109,14 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     public void Dispose()
     {
+        ClipboardManager.OnClipboardItemAdded -= OnClipboardItemAdded;
+        ClipboardManager.OnSelectExistingClipboardItem -= OnSelectExistingClipboardItem;
+        ClipboardManager.OnRemoveExistingClipboardItem -= OnRemoveExistingClipboardItem;
+        TagFilterOptions.CollectionChanged -= OnTagFilterOptionsCollectionChanged;
+
+        foreach (var option in TagFilterOptions)
+            option.PropertyChanged -= OnTagOptionPropertyChanged;
+
         StopMonitoringClipboard();
     }
 
@@ -115,6 +142,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void OnClipboardItemAdded(AClipboardItem clipboardItem)
     {
         _historyItems.Insert(0, clipboardItem);
+        RefreshTagFilterOptions();
         ApplyFilter();
     }
 
@@ -126,6 +154,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void OnRemoveExistingClipboardItem(AClipboardItem item)
     {
         _historyItems.Remove(item);
+        RefreshTagFilterOptions();
         ApplyFilter();
     }
 
@@ -149,6 +178,18 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     }
 
     [RelayCommand]
+    private void ClearTagFilter()
+    {
+        _isUpdatingTagOptions = true;
+        foreach (var option in TagFilterOptions)
+            option.IsSelected = false;
+        _isUpdatingTagOptions = false;
+
+        OnPropertyChanged(nameof(SelectedTagsSummary));
+        ApplyFilter();
+    }
+
+    [RelayCommand]
     private async Task CopyAsync(AClipboardItem? item)
     {
         var targetItem = item ?? SelectedItem;
@@ -167,6 +208,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.ClearClipboardHistory();
         _historyItems.Clear();
         FilteredHistory.Clear();
+        RefreshTagFilterOptions();
     }
 
     [RelayCommand]
@@ -192,16 +234,18 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private void ApplyFilter()
     {
+        var selectedTags = GetSelectedTags();
         IEnumerable<AClipboardItem> filteredItems;
 
         if (string.IsNullOrWhiteSpace(SearchText))
         {
-            filteredItems = _historyItems;
+            filteredItems = _historyItems.Where(item => MatchesTagFilter(item, selectedTags));
         }
         else
         {
             var query = SearchText.Trim();
             filteredItems = _historyItems
+                .Where(item => MatchesTagFilter(item, selectedTags))
                 .Select(item => new
                 {
                     Item = item,
@@ -218,8 +262,72 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             FilteredHistory.Add(item);
 
         UpdateDisplayIndexes();
-        
-        
+    }
+
+    private static bool MatchesTagFilter(AClipboardItem item, IReadOnlySet<string> selectedTags)
+    {
+        if (selectedTags.Count == 0)
+            return true;
+
+        return item.Tags.Any(tag => selectedTags.Contains(tag));
+    }
+
+    private HashSet<string> GetSelectedTags()
+    {
+        return TagFilterOptions
+            .Where(x => x.IsSelected)
+            .Select(x => x.Name)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private void RefreshTagFilterOptions()
+    {
+        var selectedTags = GetSelectedTags();
+        var availableTags = _historyItems
+            .SelectMany(item => item.Tags)
+            .Select(tag => tag.Trim())
+            .Where(tag => !string.IsNullOrWhiteSpace(tag))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(tag => tag, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        _isUpdatingTagOptions = true;
+        TagFilterOptions.Clear();
+        foreach (var tag in availableTags)
+        {
+            var option = new TagFilterOption(tag)
+            {
+                IsSelected = selectedTags.Contains(tag)
+            };
+            TagFilterOptions.Add(option);
+        }
+
+        _isUpdatingTagOptions = false;
+        OnPropertyChanged(nameof(SelectedTagsSummary));
+    }
+
+    private void OnTagOptionPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(TagFilterOption.IsSelected) || _isUpdatingTagOptions)
+            return;
+
+        OnPropertyChanged(nameof(SelectedTagsSummary));
+        ApplyFilter();
+    }
+
+    private void OnTagFilterOptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.OldItems != null)
+        {
+            foreach (TagFilterOption option in e.OldItems)
+                option.PropertyChanged -= OnTagOptionPropertyChanged;
+        }
+
+        if (e.NewItems != null)
+        {
+            foreach (TagFilterOption option in e.NewItems)
+                option.PropertyChanged += OnTagOptionPropertyChanged;
+        }
     }
 
     private static int GetFuzzyScore(string query, AClipboardItem item)
@@ -286,3 +394,15 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 }
+
+public class TagFilterOption(string name) : ViewModelBase
+{
+    public string Name { get; } = name;
+
+    public bool IsSelected
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+}
+
