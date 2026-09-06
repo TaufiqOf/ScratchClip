@@ -9,7 +9,7 @@
         <local:ViewLocator />
     </Application.DataTemplates>
     <TrayIcon.Icons>
-        <TrayIcons x:Name="AppTrayIcons">
+        <TrayIcons>
             <TrayIcon Icon="avares://XClip/Assets/icon-dark.ico"
                       ToolTipText="XClip"
                       Clicked="TrayIcon_OnClicked">

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -10,6 +12,7 @@ using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using XClip.Manager;
+using XClip.Models;
 using XClip.Services;
 using XClip.Views;
 
@@ -18,6 +21,8 @@ namespace XClip;
 public class App : Application
 {
     private const string PipeName = "XClip_IPC_Pipe";
+    private const int MaxRootItems = 9;
+    private const int MaxItemsPerTag = 9;
     private GlobalHotkeyService? _hotkeyService;
     private bool _isCleanedUp;
 
@@ -81,7 +86,11 @@ public class App : Application
         {
             _trayIcon = trayIcons[0];
             _trayIcon.ToolTipText = "XClip";
+            RebuildTrayMenu();
         }
+
+        ClipboardManager.OnClipboardItemAdded += OnClipboardHistoryChanged;
+        ClipboardManager.OnRemoveExistingClipboardItem += OnClipboardHistoryChanged;
 
         UpdateIcons(ActualThemeVariant);
         ActualThemeVariantChanged += OnActualThemeVariantChanged;
@@ -166,8 +175,15 @@ public class App : Application
         });
     }
 
-    private void TrayIcon_OnClicked(object? sender, EventArgs e)
+    private async void TrayIcon_OnClicked(object? sender, EventArgs e)
     {
+        var item = ClipboardManager.SelectedClipboardItem ?? ClipboardManager.GetClipboardHistorySnapshot().FirstOrDefault();
+        if (item != null)
+        {
+            await PasteItemToFocusedWindowAsync(item);
+            return;
+        }
+
         ToggleMainWindow();
     }
 
@@ -242,7 +258,131 @@ public class App : Application
         }
 
         ActualThemeVariantChanged -= OnActualThemeVariantChanged;
+        ClipboardManager.OnClipboardItemAdded -= OnClipboardHistoryChanged;
+        ClipboardManager.OnRemoveExistingClipboardItem -= OnClipboardHistoryChanged;
         _hotkeyService?.Dispose();
         _hotkeyService = null;
     }
+
+    private void OnClipboardHistoryChanged(AClipboardItem _)
+    {
+        Dispatcher.UIThread.Post(RebuildTrayMenu);
+    }
+
+    private void RebuildTrayMenu()
+    {
+        if (_trayIcon == null)
+            return;
+
+        var history = ClipboardManager.GetClipboardHistorySnapshot().OrderByDescending(x => x.Timestamp).ToList();
+        var rootMenu = new NativeMenu();
+
+        var showAppItem = new NativeMenuItem("Show App");
+        showAppItem.Click += ShowApp_OnClick;
+        rootMenu.Items.Add(showAppItem);
+        rootMenu.Items.Add(new NativeMenuItemSeparator());
+
+        if (history.Count == 0)
+        {
+            rootMenu.Items.Add(new NativeMenuItem("No clipboard items") { IsEnabled = false });
+        }
+        else
+        {
+            for (var i = 0; i < Math.Min(MaxRootItems, history.Count); i++)
+            {
+                var clipboardItem = history[i];
+                var menuItem = new NativeMenuItem(BuildItemHeader(i + 1, clipboardItem));
+                menuItem.Click += async (_, _) => await PasteItemToFocusedWindowAsync(clipboardItem);
+                rootMenu.Items.Add(menuItem);
+            }
+        }
+
+        rootMenu.Items.Add(new NativeMenuItemSeparator());
+
+        var tagsRoot = BuildTagsMenu(history);
+        rootMenu.Items.Add(tagsRoot);
+
+        rootMenu.Items.Add(new NativeMenuItemSeparator());
+        var exitItem = new NativeMenuItem("Exit");
+        exitItem.Click += ExitApp_OnClick;
+        rootMenu.Items.Add(exitItem);
+
+        _trayIcon.Menu = rootMenu;
+    }
+
+    private NativeMenuItem BuildTagsMenu(IReadOnlyList<AClipboardItem> history)
+    {
+        var tagsMenu = new NativeMenuItem("Tags")
+        {
+            Menu = new NativeMenu()
+        };
+
+        var groupedByTag = history
+            .SelectMany(item => item.Tags
+                .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                .Select(tag => new { Tag = tag.Trim(), Item = item }))
+            .GroupBy(x => x.Tag, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(g => g.Key, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (groupedByTag.Count == 0)
+        {
+            tagsMenu.Menu!.Items.Add(new NativeMenuItem("No tags") { IsEnabled = false });
+            return tagsMenu;
+        }
+
+        for (var i = 0; i < groupedByTag.Count; i++)
+        {
+            var group = groupedByTag[i];
+            var tagMenu = new NativeMenuItem(BuildNumberedHeader(i + 1, group.Key))
+            {
+                Menu = new NativeMenu()
+            };
+
+            var items = group
+                .Select(x => x.Item)
+                .Distinct()
+                .OrderByDescending(x => x.Timestamp)
+                .Take(MaxItemsPerTag)
+                .ToList();
+
+            for (var itemIndex = 0; itemIndex < items.Count; itemIndex++)
+            {
+                var clipboardItem = items[itemIndex];
+                var subMenuItem = new NativeMenuItem(BuildItemHeader(itemIndex + 1, clipboardItem));
+                subMenuItem.Click += async (_, _) => await PasteItemToFocusedWindowAsync(clipboardItem);
+                tagMenu.Menu!.Items.Add(subMenuItem);
+            }
+
+            tagsMenu.Menu!.Items.Add(tagMenu);
+        }
+
+        return tagsMenu;
+    }
+
+    private async Task PasteItemToFocusedWindowAsync(AClipboardItem item)
+    {
+        await ClipboardManager.SetClipboardItemAsync(item);
+        await Task.Delay(120);
+
+        if (_hotkeyService is { IsSupported: true })
+            await _hotkeyService.SimulatePasteAsync();
+    }
+
+    private static string BuildItemHeader(int index, AClipboardItem item)
+    {
+        var text = string.IsNullOrWhiteSpace(item.DisplayText) ? item.Text : item.DisplayText;
+        var singleLine = text.Replace('\n', ' ').Replace('\r', ' ').Trim();
+        var preview = singleLine.Length > 60 ? singleLine[..60] + "..." : singleLine;
+        return BuildNumberedHeader(index, preview);
+    }
+
+    private static string BuildNumberedHeader(int index, string label)
+    {
+        if (index is >= 1 and <= 9)
+            return $"_{index}. {label}";
+
+        return $"{index}. {label}";
+    }
+
 }

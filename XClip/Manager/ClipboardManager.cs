@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
-using Avalonia.Media.Imaging;
 using XClip.Models;
-using XClip.Models.TextType;
 using XClip.Services;
 using XClip.Services.ClipboardService;
 
@@ -86,15 +83,14 @@ public static class ClipboardManager
             if (type == null)
                 return;
             if (_lastSignature != null)
-                if (!await HasCheckDataChanged(clipboard, type.Value, _lastSignature))
+                if (!await HasCheckDataChanged(type.Value, _lastSignature))
                     return;
 
-            AClipboardItem? item = null;
-            item = await GetItemAsync(type.Value);
+            var item = await GetItemAsync(type.Value);
             if (item == null)
                 return;
             _lastSignature = item.Signature;
-            var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == item?.Signature);
+            var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == item.Signature);
             if (existingItem != null)
             {
                 if (SelectedClipboardItem != existingItem)
@@ -140,7 +136,6 @@ public static class ClipboardManager
     }
 
     private static async Task<bool> HasCheckDataChanged(
-        IClipboard clipboard,
         ClipboardDataFormat type,
         string signature)
     {
@@ -162,15 +157,11 @@ public static class ClipboardManager
     public static async Task SetClipboardItemAsync(AClipboardItem targetItem)
     {
         _lastSignature = targetItem.Signature;
-        Task.Factory.StartNew(async () =>
-        {
-            var clipboard = GetClipboard();
-            if (clipboard != null)
-            {
-                await ClipboardServices[targetItem.Format].CopyData(targetItem);
-            }
-        });
- 
+        var clipboard = GetClipboard();
+        if (clipboard == null)
+            return;
+
+        await ClipboardServices[targetItem.Format].CopyData(targetItem);
     }
 
     public static void ClearClipboardHistory()
