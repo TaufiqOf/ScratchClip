@@ -3,6 +3,7 @@
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:converters="clr-namespace:XClip.Converters"
              xmlns:models="clr-namespace:XClip.Models"
+             xmlns:textTypes="clr-namespace:XClip.Views.Controls.TextTypeControls"
              x:Class="XClip.Views.Controls.TextItemControl"
              x:DataType="models:TextClipboardItem">
 
@@ -17,36 +18,34 @@
                            Text="{Binding DisplayText}"
                            ToolTip.Tip="{Binding DisplayText}"
                            TextWrapping="Wrap" MaxLines="20" TextTrimming="CharacterEllipsis" />
+                <ContentControl Content="{Binding TextType}">
+                    <ContentControl.DataTemplates>
+                        <DataTemplate DataType="models:PlainTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
 
-                <Button IsVisible="{Binding IsWebSite}"
-                        Command="{Binding OpenWebsiteCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        Padding="0"
-                        HorizontalAlignment="Stretch"
-                        ToolTip.Tip="Open website">
-                    <Border Padding="8"
-                            CornerRadius="6"
-                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                        <StackPanel Spacing="4">
-                            <TextBlock Text="{Binding WebsiteTitle}"
-                                       FontWeight="SemiBold"
-                                       FontSize="13"
-                                       TextWrapping="Wrap"
-                                       MaxLines="2"
-                                       TextTrimming="CharacterEllipsis" />
-                            <TextBlock Text="{Binding WebsiteHost}"
-                                       FontSize="11"
-                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                            <TextBlock Text="{Binding WebsiteDescription}"
-                                       FontSize="12"
-                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                                       TextWrapping="Wrap"
-                                       MaxLines="3"
-                                       TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
-                    </Border>
-                </Button>
+                        <DataTemplate DataType="models:WebsiteTextType">
+                            <textTypes:WebsiteTextTypeControl />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="models:CodeTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="models:XmlTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="models:JsonTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="models:MarkdownTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
+                    </ContentControl.DataTemplates>
+                </ContentControl>
+           
             </StackPanel>
 
             <Border Grid.Row="1"

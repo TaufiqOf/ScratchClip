@@ -27,7 +27,7 @@ internal class TextClipboardService : AClipboardService
             DisplayText = displayText
         };
 
-        _ = item.PopulateWebsiteMetadataAsync();
+        _ = item.PopulateMetadataAsync();
 
         return await Task.FromResult(item);
     }

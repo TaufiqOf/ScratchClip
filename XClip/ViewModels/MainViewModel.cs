@@ -230,9 +230,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         if (item is TextClipboardItem textItem)
         {
-            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, textItem.WebsiteTitle ?? string.Empty));
-            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, textItem.WebsiteDescription ?? string.Empty));
-            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, textItem.WebsiteHost ?? string.Empty));
+            if (textItem.TextType is WebsiteTextType websiteTextType)
+            {
+                bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteTitle ?? string.Empty));
+                bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteDescription ?? string.Empty));
+                bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteHost ?? string.Empty));
+            }
         }
 
         return bestScore;

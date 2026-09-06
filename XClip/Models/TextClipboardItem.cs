@@ -1,8 +1,5 @@
-using System;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Http;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 
@@ -10,188 +7,86 @@ namespace XClip.Models;
 
 public partial class TextClipboardItem : AClipboardItem
 {
-    private static readonly HttpClient MetadataClient = new()
-    {
-        Timeout = TimeSpan.FromSeconds(4)
-    };
+    private ATextType _textType = new PlainTextType();
 
     public TextClipboardItem()
     {
         Tags.Add("Text");
     }
 
-    static TextClipboardItem()
+    public ATextType TextType
     {
-        
-        MetadataClient.DefaultRequestHeaders.UserAgent.ParseAdd("XClip/1.0 (+https://localhost)");
-    }
-
-    public bool IsWebSite
-    {
-        get;
+        get => _textType;
         private set
         {
-            if (value == field) return;
-            field = value;
-            if(!value)
-            {
-                WebsiteTitle = string.Empty;
-                WebsiteDescription = string.Empty;
-                WebsiteHost = string.Empty;
-            }
-            else
-            {
-                Tags.Add("Website");
-            }
+            if (ReferenceEquals(_textType, value)) return;
+            _textType = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(Type));
         }
     }
 
-    public string WebsiteTitle
+    public TextClipboardItemType Type => TextType switch
     {
-        get;
-        set
-        {
-            if (value == field) return;
-            field = value;
-            OnPropertyChanged();
-        }
-    } = string.Empty;
+        WebsiteTextType => TextClipboardItemType.Website,
+        CodeTextType => TextClipboardItemType.Code,
+        XmlTextType => TextClipboardItemType.Xml,
+        JsonTextType => TextClipboardItemType.Json,
+        MarkdownTextType => TextClipboardItemType.Markdown,
+        _ => TextClipboardItemType.PlainText
+    };
 
-    public string WebsiteDescription
+    public async Task PopulateMetadataAsync()
     {
-        get;
-        set
-        {
-            if (value == field) return;
-            field = value;
-            OnPropertyChanged();
-        }
-    } = string.Empty;
+        var text = Text;
 
-    public string WebsiteHost
-    {
-        get;
-        set
-        {
-            if (value == field) return;
-            field = value;
-            OnPropertyChanged();
-        }
-    } = string.Empty;
+        TextType = CreateTextType(text);
+        UpdateTags();
 
-    public async Task PopulateWebsiteMetadataAsync()
-    {
-        if (!TryGetWebsiteUri(Text, out var uri))
-        {
-            IsWebSite = false;
-            WebsiteTitle = string.Empty;
-            WebsiteDescription = string.Empty;
-            WebsiteHost = string.Empty;
-            return;
-        }
-
-        IsWebSite = true;
-        WebsiteHost = uri.Host;
-
-        try
-        {
-            var html = await MetadataClient.GetStringAsync(uri);
-
-            var title = ExtractTitle(html);
-            if (!string.IsNullOrWhiteSpace(title))
-                WebsiteTitle = title;
-
-            var description = ExtractDescription(html);
-            if (!string.IsNullOrWhiteSpace(description))
-                WebsiteDescription = description;
-        }
-        catch
-        {
-            // Keep URL-only display when metadata fetch fails.
-        }
+        await TextType.PopulateMetadataAsync(text);
     }
 
-    [RelayCommand]
-    private void OpenWebsite()
+    private static ATextType CreateTextType(string text)
     {
-        if (!TryGetWebsiteUri(Text, out var uri))
-            return;
+        var candidates = new ATextType[]
+        {
+            new WebsiteTextType(text),
+            new JsonTextType(),
+            new XmlTextType(),
+            new CodeTextType(),
+            new MarkdownTextType(),
+            new PlainTextType()
+        };
 
-        try
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = uri.ToString(),
-                UseShellExecute = true
-            });
-        }
-        catch
-        {
-            // Ignore open failures; clipboard entry still remains usable as text.
-        }
+        return candidates.First(type => type.IsMatch(text));
     }
 
-    private static bool TryGetWebsiteUri(string? text, out Uri uri)
+    private void UpdateTags()
     {
-        uri = null!;
-        if (string.IsNullOrWhiteSpace(text))
-            return false;
+        var tags = new List<string> { "Text" };
 
-        if (!Uri.TryCreate(text.Trim(), UriKind.Absolute, out var parsed))
-            return false;
-
-        if (parsed.Scheme != Uri.UriSchemeHttp && parsed.Scheme != Uri.UriSchemeHttps)
-            return false;
-
-        uri = parsed;
-        return true;
-    }
-
-    private static string ExtractTitle(string html)
-    {
-        var match = Regex.Match(html, "<title[^>]*>(.*?)</title>", RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        if (!match.Success)
-            return string.Empty;
-
-        return NormalizeHtmlText(match.Groups[1].Value);
-    }
-
-    private static string ExtractDescription(string html)
-    {
-        var metaTags = Regex.Matches(html, "<meta\\s+[^>]*>", RegexOptions.IgnoreCase);
-
-        foreach (Match tag in metaTags)
+        switch (Type)
         {
-            var name = GetAttribute(tag.Value, "name");
-            var property = GetAttribute(tag.Value, "property");
-            var content = GetAttribute(tag.Value, "content");
-
-            if (string.IsNullOrWhiteSpace(content))
-                continue;
-
-            if (string.Equals(name, "description", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(property, "og:description", StringComparison.OrdinalIgnoreCase))
-                return NormalizeHtmlText(content);
+            case TextClipboardItemType.Website:
+                tags.Add("Website");
+                break;
+            case TextClipboardItemType.Code:
+                tags.Add("Code");
+                break;
+            case TextClipboardItemType.Xml:
+                tags.Add("Xml");
+                break;
+            case TextClipboardItemType.Json:
+                tags.Add("Json");
+                break;
+            case TextClipboardItemType.Markdown:
+                tags.Add("Markdown");
+                break;
         }
 
-        return string.Empty;
-    }
-
-    private static string GetAttribute(string tag, string attributeName)
-    {
-        var match = Regex.Match(
-            tag,
-            $"{attributeName}\\s*=\\s*(['\"])(.*?)\\1",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline);
-
-        return match.Success ? match.Groups[2].Value : string.Empty;
-    }
-
-    private static string NormalizeHtmlText(string value)
-    {
-        var decoded = WebUtility.HtmlDecode(value);
-        return Regex.Replace(decoded, "\\s+", " ").Trim();
+        Tags.Clear();
+        foreach (var tag in tags.Distinct())
+            Tags.Add(tag);
     }
 
     [RelayCommand]

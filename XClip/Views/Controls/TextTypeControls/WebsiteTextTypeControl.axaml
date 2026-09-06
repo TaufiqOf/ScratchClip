@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:converters="clr-namespace:XClip.Converters"
+             xmlns:models="clr-namespace:XClip.Models"
+             x:Class="XClip.Views.Controls.TextTypeControls.WebsiteTextTypeControl"
+             x:DataType="models:WebsiteTextType">
+    <Button IsVisible="{Binding IsWebSite}"
+            Command="{Binding OpenWebsiteCommand}"
+            Background="Transparent"
+            BorderThickness="0"
+            Padding="0"
+            HorizontalAlignment="Stretch"
+            ToolTip.Tip="Open website">
+        <Border Padding="8"
+                CornerRadius="6"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding WebsiteTitle}"
+                           FontWeight="SemiBold"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           MaxLines="2"
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding WebsiteHost}"
+                           FontSize="11"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                <TextBlock Text="{Binding WebsiteDescription}"
+                           FontSize="12"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                           TextWrapping="Wrap"
+                           MaxLines="3"
+                           TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+        </Border>
+    </Button>
+</UserControl>

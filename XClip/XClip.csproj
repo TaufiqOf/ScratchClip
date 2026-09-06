@@ -34,5 +34,11 @@
         <Compile Update="Views\Page\SettingPageControl.axaml.cs">
             <DependentUpon>SettingPageControl.axaml</DependentUpon>
         </Compile>
+        <Compile Update="Views\Controls\TextTypeControls\PlainTextTypeControl.axaml.cs">
+          <DependentUpon>PlainTextTypeControl.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\Controls\TextTypeControls\TextTypeInfoControl.axaml.cs">
+          <DependentUpon>TextTypeInfoControl.axaml</DependentUpon>
+        </Compile>
     </ItemGroup>
 </Project>

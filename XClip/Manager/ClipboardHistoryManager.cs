@@ -73,10 +73,6 @@ public static class ClipboardHistoryManager
                 DisplayText = textItem.DisplayText,
                 Signature = textItem.Signature,
                 Timestamp = textItem.Timestamp,
-                IsWebSite = textItem.IsWebSite,
-                WebsiteTitle = textItem.WebsiteTitle,
-                WebsiteDescription = textItem.WebsiteDescription,
-                WebsiteHost = textItem.WebsiteHost
             };
         }
 
@@ -112,12 +108,10 @@ public static class ClipboardHistoryManager
                     DisplayText = string.IsNullOrWhiteSpace(record.DisplayText) ? text : record.DisplayText,
                     Signature = string.IsNullOrWhiteSpace(record.Signature) ? HashText(text) : record.Signature,
                     Timestamp = record.Timestamp == default ? DateTime.Now : record.Timestamp,
-                    WebsiteTitle = record.WebsiteTitle ?? string.Empty,
-                    WebsiteDescription = record.WebsiteDescription ?? string.Empty,
-                    WebsiteHost = record.WebsiteHost ?? string.Empty
+
                 };
 
-                _ = item.PopulateWebsiteMetadataAsync();
+                _ = item.PopulateMetadataAsync();
 
                 return item;
             }
