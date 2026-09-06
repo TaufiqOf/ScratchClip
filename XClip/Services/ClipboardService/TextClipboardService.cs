@@ -57,6 +57,14 @@ internal class TextClipboardService : AClipboardService
         return text ?? null;
     }
 
+    public override Task<bool> IsDataSame(AClipboardItem existingItem, object data)
+    {
+         var textData = data as string;
+        if (textData == null)
+            return Task.FromResult(false);
+        return Task.FromResult(existingItem.Text == textData);
+    }
+
 
     private static string DisplayText(string text)
     {

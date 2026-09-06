@@ -19,9 +19,16 @@ public class JsonTextType : ATextType
         if (string.IsNullOrWhiteSpace(text))
             return false;
 
+        var trimmed = text.Trim();
+
+        // Treat only structured JSON as JSON type; scalars are valid JSON,
+        // but they are usually plain text in clipboard usage.
+        if (!(trimmed.StartsWith("{") || trimmed.StartsWith("[")))
+            return false;
+
         try
         {
-            using var _ = JsonDocument.Parse(text.Trim());
+            using var _ = JsonDocument.Parse(trimmed);
             return true;
         }
         catch

@@ -20,4 +20,5 @@ internal abstract class AClipboardService
     public abstract Task CreateSignature(AClipboardItem item);
     public abstract Task CopyData(AClipboardItem value);
     public abstract Task<object?> GetClipboardData();
+    public abstract Task<bool> IsDataSame(AClipboardItem existingItem, object data);
 }

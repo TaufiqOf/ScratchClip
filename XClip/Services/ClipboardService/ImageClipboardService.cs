@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
+using Avalonia.Media.Imaging;
 using XClip.Models;
 using ImageClipboardItem = XClip.Models.TextType.ImageClipboardItem;
 
@@ -62,5 +63,37 @@ internal class ImageClipboardService : AClipboardService
             return null;
 
         return await clipboard.TryGetBitmapAsync();
+    }
+
+    public override async Task<bool> IsDataSame(AClipboardItem existingItem, object data)
+    {
+        var imageData = data as Bitmap;
+        if (imageData == null || existingItem is not ImageClipboardItem imageItem || imageItem.Image == null)
+            return false;
+        return await BitmapsAreEqual(imageItem.Image, imageData);
+    }
+    private static async Task<bool> BitmapsAreEqual(Bitmap a, Bitmap b)
+    {
+        if (a.PixelSize != b.PixelSize)
+            return false;
+
+        if (a.Dpi != b.Dpi)
+            return false;
+
+        var bytesA = await Task.Run(() =>
+        {
+            using var stream = new MemoryStream();
+            a.Save(stream);
+            return stream.ToArray();
+        });
+
+        var bytesB = await Task.Run(() =>
+        {
+            using var stream = new MemoryStream();
+            b.Save(stream);
+            return stream.ToArray();
+        });
+
+        return bytesA.AsSpan().SequenceEqual(bytesB);
     }
 }

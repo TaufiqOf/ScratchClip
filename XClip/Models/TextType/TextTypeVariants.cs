@@ -215,6 +215,10 @@ public class CodeTextType : ATextType
 
         var trimmed = text.Trim();
 
+        // Reject plain scalar values like "40", "3.14", "true" early.
+        if (Regex.IsMatch(trimmed, @"^(?:[+-]?\d+(?:\.\d+)?|true|false|null)$", RegexOptions.IgnoreCase))
+            return false;
+
         // Very obvious programming constructs.
         if (HasStrongCodePattern(trimmed))
         {
@@ -350,6 +354,10 @@ public class CodeTextType : ATextType
         var fingerprintScore =
             CalculateFingerprintScore(source, definition.Keywords);
 
+        // Parser acceptance alone is too permissive for short/plain text.
+        if (fingerprintScore <= 0)
+            return null;
+
         /*
          * Syntax parsing is the strongest signal.
          *
@@ -446,9 +454,7 @@ public class CodeTextType : ATextType
             }
         }
 
-        // Require at least 30% of keywords to be present for a positive score
-        var score = (double)matches / keywords.Count;
-        return score < 0.30 ? 0 : score;
+        return (double)matches / keywords.Count;
     }
 
     private readonly record struct DetectionResult(

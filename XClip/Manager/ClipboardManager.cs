@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -85,9 +86,9 @@ public static class ClipboardManager
             if (type == null)
                 return;
             if (_lastSignature != null)
-                if(!await HasCheckDataChanged(clipboard, type.Value, _lastSignature))
+                if (!await HasCheckDataChanged(clipboard, type.Value, _lastSignature))
                     return;
-                    
+
             AClipboardItem? item = null;
             item = await GetItemAsync(type.Value);
             if (item == null)
@@ -138,47 +139,38 @@ public static class ClipboardManager
         return item;
     }
 
-    private static async Task<bool> HasCheckDataChanged(IClipboard clipboard, ClipboardDataFormat type, string signature)
+    private static async Task<bool> HasCheckDataChanged(
+        IClipboard clipboard,
+        ClipboardDataFormat type,
+        string signature)
     {
-        var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == signature);
-        if(existingItem == null)
-        {
+        var existingItem = ClipboardHistory
+            .FirstOrDefault(q => q.Signature == signature);
+
+        if (existingItem == null)
             return true;
-        }
-        else
-        {
-            if(existingItem.Format != type)
-            {
-                return true;
-            }
-        }
-        if (type == ClipboardDataFormat.Text)
-        {
-            var text = await ClipboardServices[type].GetClipboardData() as string;
-            if (existingItem.Text != text)
-            {
-                return true;
-            }
-        }
-        else if (type == ClipboardDataFormat.Image)
-        {
-            if (existingItem is ImageClipboardItem imageItem)
-            {
-                var bitmap = await ClipboardServices[type].GetClipboardData() as Bitmap;
-                if (bitmap != null && !bitmap.Equals(imageItem.Image))
-                {
-                    return true;
-                }
-            }
-        }
 
-        return false;
+        if (existingItem.Format != type)
+            return true;
+        var data = await ClipboardServices[type].GetClipboardData();
+        if(data == null)
+            return false;
+        return !await ClipboardServices[type].IsDataSame(existingItem, data);
     }
-
-
+    
+    
     public static async Task SetClipboardItemAsync(AClipboardItem targetItem)
     {
-        await ClipboardServices[targetItem.Format].CopyData(targetItem);
+        _lastSignature = targetItem.Signature;
+        Task.Factory.StartNew(async () =>
+        {
+            var clipboard = GetClipboard();
+            if (clipboard != null)
+            {
+                await ClipboardServices[targetItem.Format].CopyData(targetItem);
+            }
+        });
+ 
     }
 
     public static void ClearClipboardHistory()

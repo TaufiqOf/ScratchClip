@@ -20,7 +20,7 @@
                     VerticalAlignment="Top">
 
                 <avalonia:FluentIcon Icon="{Binding Icon}"
-                                     FontSize="32"
+                                     FontSize="40"
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center" />
             </Border>
