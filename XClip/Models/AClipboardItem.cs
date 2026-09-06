@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using XClip.ViewModels;
 
 namespace XClip.Models;
@@ -6,6 +7,8 @@ namespace XClip.Models;
 public abstract class AClipboardItem : ViewModelBase
 {
     public Action<AClipboardItem>? OnDelete { get; set; }
+
+    public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
 
     public string Text
     {

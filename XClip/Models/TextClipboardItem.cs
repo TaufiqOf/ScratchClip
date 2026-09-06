@@ -15,8 +15,14 @@ public partial class TextClipboardItem : AClipboardItem
         Timeout = TimeSpan.FromSeconds(4)
     };
 
+    public TextClipboardItem()
+    {
+        Tags.Add("Text");
+    }
+
     static TextClipboardItem()
     {
+        
         MetadataClient.DefaultRequestHeaders.UserAgent.ParseAdd("XClip/1.0 (+https://localhost)");
     }
 
@@ -27,6 +33,16 @@ public partial class TextClipboardItem : AClipboardItem
         {
             if (value == field) return;
             field = value;
+            if(!value)
+            {
+                WebsiteTitle = string.Empty;
+                WebsiteDescription = string.Empty;
+                WebsiteHost = string.Empty;
+            }
+            else
+            {
+                Tags.Add("Website");
+            }
             OnPropertyChanged();
         }
     }

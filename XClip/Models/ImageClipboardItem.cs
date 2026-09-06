@@ -5,6 +5,11 @@ namespace XClip.Models;
 
 public partial class ImageClipboardItem : AClipboardItem
 {
+    public ImageClipboardItem()
+    {
+        Tags.Add("Image");
+    }
+    
     public Bitmap? Image
     {
         get;

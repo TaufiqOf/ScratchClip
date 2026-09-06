@@ -75,20 +75,32 @@
                                 Spacing="8"
                                 Margin="8,0"
                                 VerticalAlignment="Center">
-                        <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                CornerRadius="3"
-                                Padding="6,2"
-                                VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Format, Converter={StaticResource ToUpperConverter}}"
-                                       FontSize="10"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
-                                       VerticalAlignment="Center" />
-                        </Border>
                         <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
                                    FontSize="11"
                                    Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                                    VerticalAlignment="Center" />
+                        <ItemsControl ItemsSource="{Binding Tags}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="4" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                            CornerRadius="3"
+                                            Padding="6,2"
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                                   FontSize="10"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
 
                     <!-- Delete Button -->

@@ -2,8 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:models="clr-namespace:XClip.Models"
+             xmlns:converters="clr-namespace:XClip.Converters"
              x:Class="XClip.Views.Controls.ImageItemControl"
              x:DataType="models:ImageClipboardItem">
+
+    <UserControl.Resources>
+        <converters:ToUpperConverter x:Key="ToUpperConverter" />
+    </UserControl.Resources>
 
     <Border CornerRadius="6" ClipToBounds="True">
         <Grid>
@@ -39,20 +44,32 @@
                                 Spacing="8"
                                 Margin="8,0"
                                 VerticalAlignment="Center">
-                        <Border Background="#33FFFFFF"
-                                CornerRadius="3"
-                                Padding="6,2"
-                                VerticalAlignment="Center">
-                            <TextBlock Text="IMAGE"
-                                       FontSize="10"
-                                       FontWeight="SemiBold"
-                                       Foreground="#FFFFFF"
-                                       VerticalAlignment="Center" />
-                        </Border>
                         <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
                                    FontSize="11"
-                                   Foreground="#CCCCCC"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                                    VerticalAlignment="Center" />
+                        <ItemsControl ItemsSource="{Binding Tags}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="4" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                            CornerRadius="3"
+                                            Padding="6,2"
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                                   FontSize="10"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
 
                     <!-- Delete Button -->

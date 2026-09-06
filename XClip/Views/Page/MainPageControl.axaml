@@ -63,10 +63,18 @@
         </Grid>
 
         <!-- Search Input Box -->
-        <Grid Grid.Row="1" Margin="8,4">
+        <Grid Grid.Row="1" Margin="8,4" ColumnDefinitions="*,Auto">
             <TextBox x:Name="SearchTextBox"
+                     Grid.Column="0"
                      Text="{Binding SearchText, Mode=TwoWay}"
                      PlaceholderText="Search history (Ctrl+S)..." />
+            <Button Grid.Column="1"
+                    Command="{Binding ClearSearchCommand}"
+                    ToolTip.Tip="Clear Search"
+                    Background="Transparent"
+                    BorderThickness="0">
+                <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
+            </Button>
         </Grid>
 
         <!-- Clipboard List -->

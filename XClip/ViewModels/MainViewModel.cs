@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -7,6 +8,7 @@ using System.Timers;
 using Avalonia.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using FuzzySharp;
 using XClip.Manager;
 using XClip.Models;
 using XClip.Services;
@@ -16,8 +18,12 @@ namespace XClip.ViewModels;
 
 public partial class MainViewModel : ViewModelBase, IDisposable
 {
+    private const int FuzzyThreshold = 60;
+
     private readonly GlobalHotkeyService _hotkeyService;
     private readonly Timer _searchDebounceTimer;
+    private readonly List<AClipboardItem> _historyItems = new();
+
     public Action? OnHideToTray;
     public Action? OnOpenSettings;
     private bool _isInternalSelectionChange;
@@ -31,8 +37,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
         ClipboardManager.OnRemoveExistingClipboardItem += OnRemoveExistingClipboardItem;
 
-        foreach (var item in ClipboardManager.GetClipboardHistorySnapshot().OrderBy(q => q.Timestamp))
-            OnClipboardItemAdded(item);
+        foreach (var item in ClipboardManager.GetClipboardHistorySnapshot())
+            _historyItems.Add(item);
+
+        ApplyFilter();
 
         StartMonitoringClipboard();
         _searchDebounceTimer = new Timer(300);
@@ -42,18 +50,15 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     public ObservableCollection<AClipboardItem> FilteredHistory { get; } = new();
 
-
     public string SearchText
     {
         get;
         set
         {
             if (SetProperty(ref field, value))
-            {
-            }
+                ApplyFilter();
         }
     } = string.Empty;
-
 
     public bool IsMonitoringClipboard
     {
@@ -106,22 +111,22 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _monitorCts = null;
     }
 
-    private void OnClipboardItemAdded(AClipboardItem textClipboardItem)
+    private void OnClipboardItemAdded(AClipboardItem clipboardItem)
     {
-        textClipboardItem.DisplayIndex = FilteredHistory.Count + 1;
-        FilteredHistory.Insert(0, textClipboardItem);
+        _historyItems.Insert(0, clipboardItem);
+        ApplyFilter();
     }
 
-    private void OnSelectExistingClipboardItem(AClipboardItem textClipboardItem)
+    private void OnSelectExistingClipboardItem(AClipboardItem clipboardItem)
     {
-        SelectedItem = textClipboardItem;
+        SelectedItem = clipboardItem;
     }
 
-    private void OnRemoveExistingClipboardItem(AClipboardItem obj)
+    private void OnRemoveExistingClipboardItem(AClipboardItem item)
     {
-        FilteredHistory.Remove(obj);
+        _historyItems.Remove(item);
+        ApplyFilter();
     }
-
 
     private async Task MonitorClipboardAsync(CancellationToken cancellationToken)
     {
@@ -131,10 +136,14 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             await Dispatcher.UIThread.InvokeAsync(() => _ = ClipboardManager.CheckClipboard());
     }
 
-
     public async Task DoubleClickAsync()
     {
         await CopyAsync(SelectedItem);
+    }
+    [RelayCommand]
+    private void ClearSearch()
+    {
+        SearchText = string.Empty;
     }
 
     [RelayCommand]
@@ -154,6 +163,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void ClearHistory()
     {
         ClipboardManager.ClearClipboardHistory();
+        _historyItems.Clear();
         FilteredHistory.Clear();
     }
 
@@ -173,12 +183,66 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         return Task.CompletedTask;
     }
 
-
     private async Task SetClipboardItemAsync(AClipboardItem targetItem)
     {
         await ClipboardManager.SetClipboardItemAsync(targetItem);
     }
 
+    private void ApplyFilter()
+    {
+        IEnumerable<AClipboardItem> filteredItems;
+
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            filteredItems = _historyItems;
+        }
+        else
+        {
+            var query = SearchText.Trim();
+            filteredItems = _historyItems
+                .Select(item => new
+                {
+                    Item = item,
+                    Score = GetFuzzyScore(query, item)
+                })
+                .Where(x => x.Score >= FuzzyThreshold)
+                .OrderByDescending(x => x.Score)
+                .ThenByDescending(x => x.Item.Timestamp)
+                .Select(x => x.Item);
+        }
+
+        FilteredHistory.Clear();
+        foreach (var item in filteredItems.OrderByDescending(x => x.Timestamp))
+            FilteredHistory.Add(item);
+
+        UpdateDisplayIndexes();
+        
+        
+    }
+
+    private static int GetFuzzyScore(string query, AClipboardItem item)
+    {
+        var text = item.Text ?? string.Empty;
+        var display = item.DisplayText ?? string.Empty;
+        var bestScore = Math.Max(
+            Fuzz.PartialRatio(query, text),
+            Fuzz.PartialRatio(query, display));
+
+        if (item is TextClipboardItem textItem)
+        {
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, textItem.WebsiteTitle ?? string.Empty));
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, textItem.WebsiteDescription ?? string.Empty));
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, textItem.WebsiteHost ?? string.Empty));
+        }
+
+        return bestScore;
+    }
+
+    private void UpdateDisplayIndexes()
+    {
+        for (var i = FilteredHistory.Count - 1; i >= 0; i--)
+            FilteredHistory[i].DisplayIndex = FilteredHistory.Count - i;
+    }
 
     public void OnWindowKeyDown(KeyEventArgs keyEventArgs)
     {
@@ -191,20 +255,16 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         if (number.HasValue)
         {
-            _registerNumber += number.Value; // Or number.Value.ToString() if registerNumber is a string
+            _registerNumber += number.Value;
             _searchDebounceTimer.Stop();
             _searchDebounceTimer.Start();
         }
     }
 
-
     private async void SearchDebounceTimerOnElapsed(object? sender, ElapsedEventArgs e)
     {
         _searchDebounceTimer.Stop();
-        Dispatcher.UIThread.Post(() =>
-        {
-            _ = FastKeyExecute(); // Fire-and-forget safely or handle exceptions inside FastKeyExecute
-        }, DispatcherPriority.Background);
+        Dispatcher.UIThread.Post(() => { _ = FastKeyExecute(); }, DispatcherPriority.Background);
     }
 
     private async Task FastKeyExecute()
