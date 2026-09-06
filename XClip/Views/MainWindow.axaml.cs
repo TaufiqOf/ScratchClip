@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using XClip.Helper;
+using XClip.Manager;
 using XClip.Services;
 using XClip.ViewModels;
 using XClip.Views.Page;

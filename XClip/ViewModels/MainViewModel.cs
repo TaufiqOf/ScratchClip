@@ -27,7 +27,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public MainViewModel(GlobalHotkeyService hotkeyService)
     {
         _hotkeyService = hotkeyService;
-        IsAutoStartEnabled = AutoStartManager.IsEnabled();
         ClipboardManager.OnClipboardItemAdded += OnClipboardItemAdded;
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
         ClipboardManager.OnRemoveExistingClipboardItem += OnRemoveExistingClipboardItem;
@@ -51,15 +50,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     } = string.Empty;
 
-    public bool IsAutoStartEnabled
-    {
-        get;
-        set
-        {
-            AutoStartManager.SetEnabled(value);
-            SetProperty(ref field, value);
-        }
-    }
+
 
     public bool IsMonitoringClipboard
     {

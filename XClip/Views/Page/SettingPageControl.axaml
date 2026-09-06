@@ -28,6 +28,22 @@
                     </Button>
                 </Grid>
             </StackPanel>
+
+            <StackPanel Spacing="8">
+                <Grid ColumnDefinitions="Auto,*">
+                    <CheckBox IsChecked="{Binding IsAutoStartEnabled}"
+                              Content="Start application on system startup"
+                              VerticalAlignment="Center" />
+     
+                </Grid>
+            </StackPanel>
+            <StackPanel Spacing="8">
+                <Grid ColumnDefinitions="Auto,*">
+                    <CheckBox IsChecked="{Binding IsAutoStartEnabled}"
+                              Content="Save clipboard history on exit"
+                              VerticalAlignment="Center" />
+                </Grid>
+            </StackPanel>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">

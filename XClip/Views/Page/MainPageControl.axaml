@@ -42,14 +42,7 @@
                 <Button Command="{Binding ClearHistoryCommand}" ToolTip.Tip="Clear Clipboard History">
                     <avalonia:FluentIcon Icon="Delete" FontSize="16" />
                 </Button>
-
-                <!-- Auto Start Toggle -->
-                <ToggleButton IsChecked="{Binding IsAutoStartEnabled}"
-                              ToolTip.Tip="Toggle Auto Start">
-                    <StackPanel Orientation="Horizontal" Spacing="6">
-                        <avalonia:FluentIcon Icon="Play" FontSize="16" />
-                    </StackPanel>
-                </ToggleButton>
+                
 
                 <!-- Monitor Clipboard Toggle -->
                 <ToggleButton IsChecked="{Binding IsMonitoringClipboard}"
