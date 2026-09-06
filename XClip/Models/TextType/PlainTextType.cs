@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FluentIcons.Common;
@@ -7,7 +8,7 @@ namespace XClip.Models.TextType;
 
 public partial class PlainTextType : ATextType
 {
-    public PlainTextType(string text) : base(text)
+    public PlainTextType(string text, ObservableCollection<string> tags) : base(text, tags)
     {
         Icon = Icon.Note;
         Text = text.Substring(0, Math.Min(text.Length, 600));   

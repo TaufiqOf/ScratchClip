@@ -6,7 +6,9 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
+using Avalonia.Media.Imaging;
 using XClip.Models;
+using XClip.Models.TextType;
 using XClip.Services;
 using XClip.Services.ClipboardService;
 
@@ -14,18 +16,19 @@ namespace XClip.Manager;
 
 public static class ClipboardManager
 {
+    private static string? _lastSignature;
     public static Action<AClipboardItem>? OnClipboardItemAdded;
     public static Action<AClipboardItem>? OnSelectExistingClipboardItem;
     public static Action<AClipboardItem>? OnRemoveExistingClipboardItem;
 
-    private static readonly Dictionary<ClipboardDataFormat, AClipboardService> _clipboardServices;
+    private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
     private static AClipboardItem? _selectedClipboardItem;
 
     static ClipboardManager()
     {
-        _clipboardServices = new Dictionary<ClipboardDataFormat, AClipboardService>();
-        _clipboardServices[ClipboardDataFormat.Text] = new TextClipboardService();
-        _clipboardServices[ClipboardDataFormat.Image] = new ImageClipboardService();
+        ClipboardServices = new Dictionary<ClipboardDataFormat, AClipboardService>();
+        ClipboardServices[ClipboardDataFormat.Text] = new TextClipboardService();
+        ClipboardServices[ClipboardDataFormat.Image] = new ImageClipboardService();
     }
 
     private static List<AClipboardItem> ClipboardHistory { get; } = new();
@@ -38,7 +41,7 @@ public static class ClipboardManager
             if (value != null && ClipboardHistory.Contains(value))
             {
                 _selectedClipboardItem = value;
-                _clipboardServices[value.Format].CopyData(value);
+                _ = ClipboardServices[value.Format].CopyData(value);
                 OnSelectExistingClipboardItem?.Invoke(value);
             }
         }
@@ -81,10 +84,15 @@ public static class ClipboardManager
             var type = await GetDataTypeAsync(clipboard);
             if (type == null)
                 return;
+            if (_lastSignature != null)
+                if(!await HasCheckDataChanged(clipboard, type.Value, _lastSignature))
+                    return;
+                    
             AClipboardItem? item = null;
             item = await GetItemAsync(type.Value);
             if (item == null)
                 return;
+            _lastSignature = item.Signature;
             var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == item?.Signature);
             if (existingItem != null)
             {
@@ -119,7 +127,7 @@ public static class ClipboardManager
     private static async Task<AClipboardItem?> GetItemAsync(ClipboardDataFormat type)
     {
         AClipboardItem? item = null;
-        if (_clipboardServices.TryGetValue(type, out var service))
+        if (ClipboardServices.TryGetValue(type, out var service))
         {
             item = await service.GetDataAsync();
             if (item == null) return item;
@@ -130,10 +138,47 @@ public static class ClipboardManager
         return item;
     }
 
+    private static async Task<bool> HasCheckDataChanged(IClipboard clipboard, ClipboardDataFormat type, string signature)
+    {
+        var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == signature);
+        if(existingItem == null)
+        {
+            return true;
+        }
+        else
+        {
+            if(existingItem.Format != type)
+            {
+                return true;
+            }
+        }
+        if (type == ClipboardDataFormat.Text)
+        {
+            var text = await ClipboardServices[type].GetClipboardData() as string;
+            if (existingItem.Text != text)
+            {
+                return true;
+            }
+        }
+        else if (type == ClipboardDataFormat.Image)
+        {
+            if (existingItem is ImageClipboardItem imageItem)
+            {
+                var bitmap = await ClipboardServices[type].GetClipboardData() as Bitmap;
+                if (bitmap != null && !bitmap.Equals(imageItem.Image))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
 
     public static async Task SetClipboardItemAsync(AClipboardItem targetItem)
     {
-        await _clipboardServices[targetItem.Format].CopyData(targetItem);
+        await ClipboardServices[targetItem.Format].CopyData(targetItem);
     }
 
     public static void ClearClipboardHistory()

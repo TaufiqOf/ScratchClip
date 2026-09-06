@@ -54,16 +54,18 @@ public partial class TextClipboardItem : AClipboardItem
         await TextType.PopulateMetadataAsync(text);
     }
 
-    private static ATextType CreateTextType(string text)
+
+
+    private ATextType CreateTextType(string text)
     {
         var candidates = new ATextType[]
         {
-            new WebsiteTextType(text),
-            new JsonTextType(text),
-            new XmlTextType(text),
-            new CodeTextType(text),
-            new MarkdownTextType(text),
-            new PlainTextType(text)
+            new WebsiteTextType(text,Tags),
+            new JsonTextType(text,Tags),
+            new XmlTextType(text,Tags),
+            new CodeTextType(text,Tags),
+            new MarkdownTextType(text,Tags),
+            new PlainTextType(text,Tags)
         };
 
         return candidates.First(type => type.IsMatch(text));
@@ -80,6 +82,9 @@ public partial class TextClipboardItem : AClipboardItem
                 break;
             case TextClipboardItemType.Code:
                 tags.Add("Code");
+                // Preserve the detected language if it was added during CodeTextType.IsMatch()
+                if (TextType is CodeTextType codeType && !string.IsNullOrEmpty(codeType.DetectedLanguage))
+                    tags.Add(codeType.DetectedLanguage);
                 break;
             case TextClipboardItemType.Xml:
                 tags.Add("Xml");

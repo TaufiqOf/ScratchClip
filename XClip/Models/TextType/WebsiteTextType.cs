@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -14,14 +15,14 @@ namespace XClip.Models.TextType;
 
 public partial class WebsiteTextType : ATextType
 {
-    public WebsiteTextType(string text): base(text)
+
+    public WebsiteTextType(string text, ObservableCollection<string> tags) : base(text, tags)
     {
         Icon = Icon.Globe;
     }
 
     public override string DisplayName => "Website";
 
-   
 
     static WebsiteTextType()
     {
@@ -42,9 +43,10 @@ public partial class WebsiteTextType : ATextType
     {
         await PopulateWebsiteMetadataAsync();
     }
+
     public Bitmap? WebsiteIcon
     {
-        get; 
+        get;
         set
         {
             if (Equals(field, value)) return;
@@ -52,6 +54,7 @@ public partial class WebsiteTextType : ATextType
             OnPropertyChanged();
         }
     }
+
     public bool IsWebSite
     {
         get;

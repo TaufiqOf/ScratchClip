@@ -6,13 +6,9 @@
              x:Class="XClip.Views.Controls.TextTypeControls.WebsiteTextTypeControl"
              x:DataType="textType:WebsiteTextType">
 
-    <Button IsVisible="{Binding IsWebSite}"
-
-            Background="Transparent"
-            BorderThickness="0"
-            Padding="0"
-            HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Stretch">
+    <Border Padding="10"
+            CornerRadius="8"
+            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
 
         <Border Padding="10"
                 CornerRadius="8"
@@ -84,5 +80,5 @@
 
             </Grid>
         </Border>
-    </Button>
+    </Border>
 </UserControl>

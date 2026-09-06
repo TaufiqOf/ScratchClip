@@ -1,5 +1,5 @@
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Avalonia.Media.Imaging;
 using FluentIcons.Common;
 using XClip.ViewModels;
 
@@ -7,9 +7,12 @@ namespace XClip.Models;
 
 public abstract class ATextType : ViewModelBase
 {
-    public ATextType(string text)
+    private ObservableCollection<string> _tags;
+
+    public ATextType(string text, ObservableCollection<string> tags)
     {
         Text = text;
+        _tags = tags;
     }
     private string _text = string.Empty;
     public string Text
@@ -21,6 +24,8 @@ public abstract class ATextType : ViewModelBase
             OnPropertyChanged();
         }
     }
+
+    public ObservableCollection<string> Tags => _tags;
     private Icon _icon;
     public Icon Icon
     {
@@ -28,7 +33,7 @@ public abstract class ATextType : ViewModelBase
         set
         {
             _icon = value;
-            OnPropertyChanged();;
+            OnPropertyChanged();
         }
     }
     public abstract string DisplayName { get; }
