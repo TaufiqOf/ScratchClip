@@ -12,14 +12,43 @@
 
     <Border CornerRadius="4">
         <Grid RowDefinitions="*,Auto">
-            <!-- Text Content -->
-            <TextBlock Grid.Row="0"
-                       FontSize="14"
-                       Text="{Binding DisplayText}"
-                       ToolTip.Tip="{Binding DisplayText}"
-                       TextWrapping="Wrap" MaxLines="20" TextTrimming="CharacterEllipsis" />
+            <StackPanel Grid.Row="0" Spacing="8">
+                <TextBlock FontSize="14"
+                           Text="{Binding DisplayText}"
+                           ToolTip.Tip="{Binding DisplayText}"
+                           TextWrapping="Wrap" MaxLines="20" TextTrimming="CharacterEllipsis" />
 
-            <!-- Bottom Bar -->
+                <Button IsVisible="{Binding IsWebSite}"
+                        Command="{Binding OpenWebsiteCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"
+                        HorizontalAlignment="Stretch"
+                        ToolTip.Tip="Open website">
+                    <Border Padding="8"
+                            CornerRadius="6"
+                            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{Binding WebsiteTitle}"
+                                       FontWeight="SemiBold"
+                                       FontSize="13"
+                                       TextWrapping="Wrap"
+                                       MaxLines="2"
+                                       TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding WebsiteHost}"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                            <TextBlock Text="{Binding WebsiteDescription}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                       TextWrapping="Wrap"
+                                       MaxLines="3"
+                                       TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Border>
+                </Button>
+            </StackPanel>
+
             <Border Grid.Row="1"
                     Margin="0,6,0,0"
                     Padding="4"

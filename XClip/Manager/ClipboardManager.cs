@@ -44,6 +44,24 @@ public static class ClipboardManager
         }
     }
 
+    public static IReadOnlyList<AClipboardItem> GetClipboardHistorySnapshot()
+    {
+        return ClipboardHistory.ToList();
+    }
+
+    public static void LoadClipboardHistory(IEnumerable<AClipboardItem> items)
+    {
+        ClipboardHistory.Clear();
+        _selectedClipboardItem = null;
+
+        foreach (var item in items)
+        {
+            item.OnDelete += DeleteClipboardItem;
+            ClipboardHistory.Add(item);
+            OnClipboardItemAdded?.Invoke(item);
+        }
+    }
+
     private static IClipboard? GetClipboard()
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)

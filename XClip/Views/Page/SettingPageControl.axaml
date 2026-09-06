@@ -39,7 +39,7 @@
             </StackPanel>
             <StackPanel Spacing="8">
                 <Grid ColumnDefinitions="Auto,*">
-                    <CheckBox IsChecked="{Binding IsAutoStartEnabled}"
+                    <CheckBox IsChecked="{Binding IsSaveHistoryOnExitEnabled}"
                               Content="Save clipboard history on exit"
                               VerticalAlignment="Center" />
                 </Grid>

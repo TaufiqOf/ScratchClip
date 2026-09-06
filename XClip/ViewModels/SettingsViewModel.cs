@@ -18,10 +18,12 @@ public partial class SettingsViewModel : ObservableObject
         _hotkeyService = hotkeyService;
 
         // Initialize with current settings
+        var settings = SettingsManager.Load();
         PendingModifiers = _hotkeyService.TargetModifiers;
         PendingKey = _hotkeyService.TargetKey;
         HotkeyDisplay = $"{PendingModifiers} + {PendingKey}".Replace("Left", "").Replace("Right", "");
         IsAutoStartEnabled = AutoStartManager.IsEnabled();
+        IsSaveHistoryOnExitEnabled = settings.IsSaveHistoryOnExitEnabled;
     }
     public bool IsAutoStartEnabled
     {
@@ -32,7 +34,7 @@ public partial class SettingsViewModel : ObservableObject
             SetProperty(ref field, value);
         }
     }
-    
+
     public bool IsSaveHistoryOnExitEnabled
     {
         get;
@@ -63,13 +65,11 @@ public partial class SettingsViewModel : ObservableObject
         _hotkeyService.UpdateHotkey(PendingModifiers, PendingKey);
 
         // 2. Persist to disk
-        var settings = new AppSettings
-        {
-            IsSaveHistoryOnExitEnabled = IsSaveHistoryOnExitEnabled,
-            Modifiers = PendingModifiers,
-            Key = PendingKey,
-            IsAutoStartEnabled = AutoStartManager.IsEnabled()
-        };
+        var settings = SettingsManager.Load();
+        settings.IsSaveHistoryOnExitEnabled = IsSaveHistoryOnExitEnabled;
+        settings.Modifiers = PendingModifiers;
+        settings.Key = PendingKey;
+        settings.IsAutoStartEnabled = AutoStartManager.IsEnabled();
 
         SettingsManager.Save(settings);
     }

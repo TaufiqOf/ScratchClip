@@ -1,4 +1,6 @@
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
 using XClip.Models;
@@ -25,13 +27,15 @@ internal class TextClipboardService : AClipboardService
             DisplayText = displayText
         };
 
+        _ = item.PopulateWebsiteMetadataAsync();
+
         return await Task.FromResult(item);
     }
 
 
     public override Task CreateSignature(AClipboardItem item)
     {
-        item.Signature = item.Text.GetHashCode().ToString();
+        item.Signature = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(item.Text)));
         return Task.CompletedTask;
     }
 

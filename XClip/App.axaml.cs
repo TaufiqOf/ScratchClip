@@ -49,6 +49,12 @@ public class App : Application
             // --- PRIMARY INSTANCE SETUP ---
             var settings = SettingsManager.Load();
 
+            if (settings.IsSaveHistoryOnExitEnabled)
+            {
+                var persistedItems = ClipboardHistoryManager.Load();
+                ClipboardManager.LoadClipboardHistory(persistedItems);
+            }
+
             _hotkeyService = new GlobalHotkeyService(ToggleMainWindow)
             {
                 TargetModifiers = settings.Modifiers,
@@ -228,6 +234,14 @@ public class App : Application
         if (_isCleanedUp) return;
 
         _isCleanedUp = true;
+
+        var settings = SettingsManager.Load();
+        if (settings.IsSaveHistoryOnExitEnabled)
+        {
+            var history = ClipboardManager.GetClipboardHistorySnapshot();
+            ClipboardHistoryManager.Save(history);
+        }
+
         ActualThemeVariantChanged -= OnActualThemeVariantChanged;
         _hotkeyService?.Dispose();
         _hotkeyService = null;

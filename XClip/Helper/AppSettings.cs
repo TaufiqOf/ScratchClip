@@ -9,5 +9,5 @@ public class AppSettings
     public bool IsAutoStartEnabled { get; set; }
     public double WindowWidth { get; set; } = 450;
     public double WindowHeight { get; set; } = 600;
-    public bool IsSaveHistoryOnExitEnabled { get; set; } = false;
+    public bool IsSaveHistoryOnExitEnabled { get; set; } = true;
 }

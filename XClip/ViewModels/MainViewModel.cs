@@ -30,6 +30,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.OnClipboardItemAdded += OnClipboardItemAdded;
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
         ClipboardManager.OnRemoveExistingClipboardItem += OnRemoveExistingClipboardItem;
+
+        foreach (var item in ClipboardManager.GetClipboardHistorySnapshot().OrderBy(q => q.Timestamp))
+            OnClipboardItemAdded(item);
+
         StartMonitoringClipboard();
         _searchDebounceTimer = new Timer(300);
         _searchDebounceTimer.Stop();
@@ -49,7 +53,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             }
         }
     } = string.Empty;
-
 
 
     public bool IsMonitoringClipboard
