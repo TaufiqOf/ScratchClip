@@ -30,7 +30,7 @@ public partial class TextClipboardItem : AClipboardItem
 
     public TextClipboardItemType Type => TextType switch
     {
-        Models.TextType.WebsiteTextType => TextClipboardItemType.Website,
+        WebsiteTextType => TextClipboardItemType.Website,
         CodeTextType => TextClipboardItemType.Code,
         XmlTextType => TextClipboardItemType.Xml,
         JsonTextType => TextClipboardItemType.Json,
@@ -58,7 +58,7 @@ public partial class TextClipboardItem : AClipboardItem
     {
         var candidates = new ATextType[]
         {
-            new TextType.WebsiteTextType(text),
+            new WebsiteTextType(text),
             new JsonTextType(text),
             new XmlTextType(text),
             new CodeTextType(text),

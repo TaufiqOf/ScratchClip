@@ -26,7 +26,9 @@
 
                 </Grid>
             </Border>
-            <StackPanel Grid.Column="1" Spacing="2">
+            <StackPanel Grid.Column="1"
+                        ToolTip.Tip="{Binding Text}"
+                        Spacing="2">
                 <TextBlock Text="{Binding Text}"
                            FontSize="11"
                            TextWrapping="Wrap" />
