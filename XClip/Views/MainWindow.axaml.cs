@@ -94,9 +94,25 @@ public partial class MainWindow : Window
     {
         PositionInBottomRight();
     }
+    private static bool IsWayland()
+    {
+        if (!OperatingSystem.IsLinux())
+            return false;
+
+        // Most reliable runtime hints
+        var sessionType = Environment.GetEnvironmentVariable("XDG_SESSION_TYPE");
+        var waylandDisplay = Environment.GetEnvironmentVariable("WAYLAND_DISPLAY");
+
+        return string.Equals(sessionType, "wayland", StringComparison.OrdinalIgnoreCase)
+               || !string.IsNullOrWhiteSpace(waylandDisplay);
+    }
 
     private void PositionInBottomRight()
     {
+        // Wayland compositors usually ignore app-requested absolute position.
+        if (IsWayland())
+            return;
+
         var screen = Screens.Primary;
         if (screen == null) return;
 
@@ -109,6 +125,7 @@ public partial class MainWindow : Window
 
         Position = new PixelPoint(x, y);
     }
+ 
 
     public void ForceExit()
     {
