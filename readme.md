@@ -17,6 +17,7 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 - **Quick Selection:** Press numbers `1–99` to pick visible clipboard entries instantly.
 - **Auto-Paste Integration:** Selecting or hitting `Enter` copies the chosen item and automatically pastes it into your previously active application.
 - **Tray Management:** Minimizes to the system tray with a right-click menu, dynamic tray icon adaptation for light/dark themes, and startup toggles.
+- **Compact View Mode:** Switch to a minimalistic view that shows only the most recent clipboard entries for quick access.
 
 ---
 
