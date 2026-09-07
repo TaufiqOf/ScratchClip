@@ -5,7 +5,7 @@
              xmlns:models="clr-namespace:XClip.Models"
              xmlns:textTypes="clr-namespace:XClip.Views.Controls.TextTypeControls"
              xmlns:textType="clr-namespace:XClip.Models.TextType"
-             x:Class="XClip.Views.Controls.TextItemControl"
+             x:Class="XClip.Views.Controls.TypeControls.TextItemControl"
              x:DataType="models:TextClipboardItem">
 
     <UserControl.Resources>

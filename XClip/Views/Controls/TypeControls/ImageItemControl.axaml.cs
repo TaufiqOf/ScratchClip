@@ -1,12 +1,11 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using XClip.Views;
 
-namespace XClip.Views.Controls;
+namespace XClip.Views.Controls.TypeControls;
 
-public partial class TextItemControl : UserControl
+public partial class ImageItemControl : UserControl
 {
-    public TextItemControl()
+    public ImageItemControl()
     {
         InitializeComponent();
     }

@@ -47,5 +47,21 @@
         <Compile Update="Views\Controls\TextTypeControls\TextTypeInfoControl.axaml.cs">
           <DependentUpon>TextTypeInfoControl.axaml</DependentUpon>
         </Compile>
+        <Compile Update="Views\Controls\TypeControls\ImageItemControl.axaml.cs">
+          <DependentUpon>ImageItemControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Controls\TypeControls\StorageItemsControl.axaml.cs">
+          <DependentUpon>StorageItemsControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Controls\TypeControls\TextItemControl.axaml.cs">
+          <DependentUpon>TextItemControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Controls\ListLightControl.axaml.cs">
+          <DependentUpon>ListLightControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

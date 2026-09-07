@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
@@ -13,6 +14,7 @@ using FuzzySharp;
 using XClip.Manager;
 using XClip.Models;
 using XClip.Services;
+using XClip.Views.Controls;
 using Timer = System.Timers.Timer;
 using WebsiteTextType = XClip.Models.TextType.WebsiteTextType;
 
@@ -32,9 +34,19 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private bool _isUpdatingTagOptions;
     private CancellationTokenSource? _monitorCts;
     private string _registerNumber = string.Empty;
+    private readonly ListViewModel _listViewModel
+        ;
 
     public MainViewModel(GlobalHotkeyService hotkeyService)
     {
+        _listViewModel = new ListViewModel()
+        {
+            FilteredHistory = FilteredHistory,
+            SelectedItem = SelectedItem
+        };
+       
+        _listViewModel.OnItemSelected += OnItemSelected;
+        IsDetailedMode = true;
         _hotkeyService = hotkeyService;
         ClipboardManager.OnClipboardItemAdded += OnClipboardItemAdded;
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
@@ -53,8 +65,47 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _searchDebounceTimer.Elapsed += SearchDebounceTimerOnElapsed;
     }
 
+    public bool IsDetailedMode
+    {
+        get => field;
+        set
+        {
+            if (SetProperty(ref field, value))
+                SetListContentControl(_listViewModel, value ? ViewMode.Detail : ViewMode.Light);
+        }
+    }
+    
+    private void SetListContentControl(ListViewModel listViewModel, ViewMode mode)
+    {
+        if(mode == ViewMode.Detail)
+        {
+            ListContent = new ListDetailControl()
+            {
+                DataContext = listViewModel
+            };
+        }
+        else if(mode == ViewMode.Light)
+        {
+            ListContent = new ListLightControl()
+            {
+                DataContext = listViewModel
+            };
+        }
+    }
+
+    private void OnItemSelected(AClipboardItem obj)
+    {
+        SelectedItem = obj;
+    }
+
     public ObservableCollection<AClipboardItem> FilteredHistory { get; } = new();
     public ObservableCollection<TagFilterOption> TagFilterOptions { get; } = new();
+
+    public UserControl ListContent
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
 
     public string SelectedTagsSummary
     {
@@ -391,6 +442,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             _registerNumber = string.Empty;
         }
     }
+}
+
+public enum ViewMode
+{
+    Light,
+    Detail
 }
 
 public class TagFilterOption(string name) : ViewModelBase

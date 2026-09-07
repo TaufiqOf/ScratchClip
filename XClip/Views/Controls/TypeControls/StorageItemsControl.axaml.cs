@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-namespace XClip.Views.Controls;
+namespace XClip.Views.Controls.TypeControls;
 
 public partial class StorageItemsControl : UserControl
 {

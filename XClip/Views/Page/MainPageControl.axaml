@@ -6,30 +6,13 @@
              xmlns:controls="clr-namespace:XClip.Views.Controls"
              xmlns:vm="clr-namespace:XClip.ViewModels"
              xmlns:textType="clr-namespace:XClip.Models.TextType"
+             xmlns:typeControls="clr-namespace:XClip.Views.Controls.TypeControls"
              x:DataType="vm:MainViewModel"
              x:Class="XClip.Views.Page.MainPageControl">
     <UserControl.Resources>
         <!-- Clipboard Item Template Selector -->
         <!-- Clipboard Item Template Selector -->
-        <helper:ClipboardItemTemplateSelector x:Key="ClipboardItemSelector">
-
-            <!-- TEXT FORMAT TEMPLATE -->
-            <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Text}" x:DataType="models:TextClipboardItem">
-                <controls:TextItemControl />
-            </DataTemplate>
-
-            <!-- IMAGE FORMAT TEMPLATE -->
-            <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Image}" x:DataType="textType:ImageClipboardItem">
-                <controls:ImageItemControl />
-            </DataTemplate>
-
-            <!-- STORAGE ITEMS (FILES) TEMPLATE -->
-            <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Storage}"
-                          x:DataType="models:TextClipboardItem">
-                <controls:StorageItemsControl />
-            </DataTemplate>
-
-        </helper:ClipboardItemTemplateSelector>
+       
     </UserControl.Resources>
 
     <Grid RowDefinitions="Auto,Auto,Auto,*">
@@ -48,6 +31,14 @@
                 <!-- Monitor Clipboard Toggle -->
                 <ToggleButton IsChecked="{Binding IsMonitoringClipboard}"
                               ToolTip.Tip="Toggle Clipboard Monitoring">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <avalonia:FluentIcon Icon="Eye" FontSize="16" />
+                    </StackPanel>
+                </ToggleButton>
+                
+                <!-- Mode Toggle -->
+                <ToggleButton IsChecked="{Binding IsDetailedMode}"
+                              ToolTip.Tip="Toggle Detailed Mode">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <avalonia:FluentIcon Icon="Eye" FontSize="16" />
                     </StackPanel>
@@ -109,25 +100,7 @@
                 <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
             </Button>
         </Grid>
+        <ContentControl Grid.Row="3" Content="{Binding ListContent}"></ContentControl>
 
-
-        <!-- Clipboard List -->
-        <Grid Grid.Row="3" Margin="8,4,8,8">
-            <ListBox
-                x:Name="ListBox"
-                ItemsSource="{Binding FilteredHistory}"
-                SelectionMode="Single"
-                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                ItemTemplate="{StaticResource ClipboardItemSelector}">
-                <ListBox.Styles>
-                    <Style Selector="ListBoxItem" x:DataType="models:TextClipboardItem">
-                        <!-- Remove default padding and margins applied by the Avalonia theme -->
-                        <Setter Property="Padding" Value="5" />
-                        <Setter Property="Margin" Value="5" />
-
-                    </Style>
-                </ListBox.Styles>
-            </ListBox>
-        </Grid>
     </Grid>
 </UserControl>
