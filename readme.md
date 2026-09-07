@@ -27,9 +27,9 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 |:-------------------------------------:|:----------------------------------:|
 | ![XClip main window](Docs/dark-1.png) | ![XClip light theme](Docs/light-1.png) |
 
-|              Compact View               |
-|:---------------------------------------:|
-| ![XClip link preview](Docs/compact.png) 
+|              Compact View               |              Light Theme               |
+|:---------------------------------------:|:--------------------------------------:|
+| ![XClip link preview](Docs/compact.png) | ![XClip light theme](Docs/storage.png) |
 
 ---
 
