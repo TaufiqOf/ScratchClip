@@ -1,111 +1,68 @@
 # XClip
 
-XClip is a lightweight desktop clipboard history manager built with **Avalonia UI** and **.NET 10**.
-It runs in the system tray, keeps your recent copied text items, and lets you quickly search, re-copy, and paste previous entries back into the app you were using.
+**XClip** is a lightweight cross-platform desktop clipboard history manager built with **Avalonia UI** and **.NET 10**.
 
-## Features
+It runs silently in the system tray, tracks your recent copied items, and lets you quickly search, re-copy, and automatically paste previous entries back into active applications.
 
-- Monitors clipboard text in near real time
-- Maintains clipboard history (newest items on top)
-- Re-copy an item by selecting it
-- Global hotkey to show/hide the window from anywhere (default: `Alt + Shift + K`)
-- Fuzzy search to quickly find items in the clipboard list
-- Press `Enter` to copy the selected item and paste it into the previously active window
-- Type `1-99` to quickly pick a visible clipboard item
-- Delete individual entries or clear full history
-- Clear current system clipboard
-- Toggle clipboard monitoring on/off
-- Toggle app auto-start on login (Windows/Linux/macOS support in code)
-- Minimize-to-tray behavior with tray menu actions
-- Light/dark tray and window icon switching based on theme
-- Limited support for wayland (Linux)
-- Image and Text clipboard supported
-- Code,Programming Languages, XML, JSON, and Markdown text type recognition
-- Shows Metadata on links copied to clipboard (title, description, icon, etc.)
-- Filters clipboard items by type (text, image, link, code, etc.)
-- File and Folder clipboard support.
+---
 
-## Screenshots
+## 🌟 Key Features
 
-### Main window
+- **Clipboard Monitoring:** Automatically captures text, images, and file/folder clipboard history in near real-time.
+- **OS Theme Adaptation:** Automatically detects and respects system-wide Light and Dark mode preferences in real time.
+- **Smart Type Recognition:** Automatically identifies and highlights links, code (programming languages, XML, JSON), and Markdown.
+- **Rich Link Metadata:** Displays previews for web links, including page titles, descriptions, and site icons.
+- **Filtering & Search:** Easily filter history by content type (text, image, link, code) or use **fuzzy search** to find entries quickly.
+- **Global Hotkey Support:** Show or hide the manager window from anywhere (Default: `Alt + Shift + K`).
+- **Quick Selection:** Press numbers `1–99` to pick visible clipboard entries instantly.
+- **Auto-Paste Integration:** Selecting or hitting `Enter` copies the chosen item and automatically pastes it into your previously active application.
+- **Tray Management:** Minimizes to the system tray with a right-click menu, dynamic tray icon adaptation for light/dark themes, and startup toggles.
 
-![XClip main window](Docs/types.png)
+---
 
-### Theme variants
+## 📸 Screenshots
 
-![XClip light theme](Docs/light-1.png)
+| Main Interface | Light Theme |
+| :---: | :---: |
+| ![XClip main window](Docs/types.png) | ![XClip light theme](Docs/light-1.png) |
 
-## Tech Stack
+---
 
-- .NET `net10.0`
-- Avalonia UI `12.1.1`
-- CommunityToolkit.Mvvm
-- FluentIcons.Avalonia
-- FuzzySharp
-- SharpHook
+## ⌨️ Keyboard Shortcuts
 
-## Prerequisites
+| Shortcut | Action |
+| :--- | :--- |
+| `Alt` + `Shift` + `K` | Show or hide the XClip window globally (configurable in Settings) |
+| `Ctrl` + `S` | Focus the search input field |
+| `Enter` | Copy selected item and paste into the previously focused application |
+| `1` – `99` | Instantly choose the corresponding item in the visible list |
+| `Escape` | Hide the window to the system tray |
 
-- .NET 10 SDK installed
-- Linux, Windows, or macOS desktop environment
+---
 
-## Run Locally
+## 🛠️ Tech Stack & Dependencies
 
-From the repository root:
+- **Framework:** .NET 10 (`net10.0`)
+- **UI Toolkit:** [Avalonia UI](https://avaloniaui.net/) (`12.1.1`)
+- **MVVM Pattern:** CommunityToolkit.Mvvm
+- **Global Hooks & Hotkeys:** SharpHook
+- **Fuzzy Search:** FuzzySharp
+- **Icons:** FluentIcons.Avalonia
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/) installed
+- Windows, macOS, or Linux desktop environment
+
+### Run Locally
+
+Clone the repository and run the application from the root directory:
 
 ```bash
 cd XClip
 dotnet restore
 dotnet run
-```
-
-## Build (Release)
-
-```bash
-cd XClip
-dotnet publish -c Release -f net10.0
-```
-
-Published output is placed under `XClip/bin/Release/net10.0/` (plus runtime-specific folders if you publish with `-r`).
-
-## Keyboard Shortcuts
-
-- `Alt + Shift + K` - Show or hide the XClip window globally
-- `Ctrl + S` - Focus the search box
-- `Enter` - Copy the selected item and paste it into the previously active window
-- `Escape` - Hide the window to tray
-- `1-99` - Quickly choose one of the visible clipboard entries
-
-## Project Structure
-
-- `XClip/` - Avalonia desktop app source
-- `XClip/ViewModels/` - MVVM view models and clipboard logic
-- `XClip/Views/` - UI views (`MainWindow`)
-- `XClip/Assets/` - app and tray icons
-- `Docs/` - screenshots and documentation images
-
-## Notes
-
-- Clipboard tracking currently focuses on text items.
-- Search uses fuzzy matching, so partial or approximate queries can still find relevant clipboard entries.
-- The global hotkey can be changed from the Settings window.
-- Closing the window hides the app to tray; use tray **Exit** to fully quit.
-
-
-
-Important
-
-The commercial licensing option applies only where the copyright holder has the necessary rights to grant such a license.
-
-Third-party libraries and dependencies included in this project may have their own licenses. Those licenses remain applicable and must be followed independently.
-
-## License
-
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
-
-For details:
-- Local license file: [`LICENSE`](LICENSE)
-- Official GNU text: [GNU GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
-
-Repository guidance:
-- Keep the root-level [`LICENSE`](LICENSE) file with the full GPL-3.0 text.
