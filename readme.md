@@ -23,6 +23,8 @@ It runs in the system tray, keeps your recent copied text items, and lets you qu
 - Code,Programming Languages, XML, JSON, and Markdown text type recognition
 - Shows Metadata on links copied to clipboard (title, description, icon, etc.)
 - Filters clipboard items by type (text, image, link, code, etc.)
+- File and Folder clipboard support.
+
 ## Screenshots
 
 ### Main window
