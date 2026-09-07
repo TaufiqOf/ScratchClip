@@ -40,7 +40,7 @@
                 <ToggleButton IsChecked="{Binding IsDetailedMode}"
                               ToolTip.Tip="Toggle Detailed Mode">
                     <StackPanel Orientation="Horizontal" Spacing="6">
-                        <avalonia:FluentIcon Icon="Eye" FontSize="16" />
+                        <avalonia:FluentIcon Icon="AppsListDetail" FontSize="16" />
                     </StackPanel>
                 </ToggleButton>
             </StackPanel>

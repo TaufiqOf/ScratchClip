@@ -34,8 +34,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private bool _isUpdatingTagOptions;
     private CancellationTokenSource? _monitorCts;
     private string _registerNumber = string.Empty;
-    private readonly ListViewModel _listViewModel
-        ;
+    private readonly ListViewModel _listViewModel;
 
     public MainViewModel(GlobalHotkeyService hotkeyService)
     {
@@ -44,9 +43,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             FilteredHistory = FilteredHistory,
             SelectedItem = SelectedItem
         };
-       
+
         _listViewModel.OnItemSelected += OnItemSelected;
-        IsDetailedMode = true;
+        var appSettings = SettingsManager.Load();
+        IsDetailedMode = appSettings.IsDetailsEnabled;
         _hotkeyService = hotkeyService;
         ClipboardManager.OnClipboardItemAdded += OnClipboardItemAdded;
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
@@ -70,21 +70,24 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         get => field;
         set
         {
-            if (SetProperty(ref field, value))
-                SetListContentControl(_listViewModel, value ? ViewMode.Detail : ViewMode.Light);
+            SetProperty(ref field, value);
+            var appSettings = SettingsManager.Load();
+            appSettings.IsDetailsEnabled = value;
+            SettingsManager.Save(appSettings);
+            SetListContentControl(_listViewModel, value ? ViewMode.Detail : ViewMode.Light);
         }
     }
-    
+
     private void SetListContentControl(ListViewModel listViewModel, ViewMode mode)
     {
-        if(mode == ViewMode.Detail)
+        if (mode == ViewMode.Detail)
         {
             ListContent = new ListDetailControl()
             {
                 DataContext = listViewModel
             };
         }
-        else if(mode == ViewMode.Light)
+        else if (mode == ViewMode.Light)
         {
             ListContent = new ListLightControl()
             {
@@ -216,12 +219,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         while (!cancellationToken.IsCancellationRequested && await timer.WaitForNextTickAsync(cancellationToken))
             await Dispatcher.UIThread.InvokeAsync(() => _ = ClipboardManager.CheckClipboard());
     }
-    
+
     [RelayCommand]
     public async Task DoubleClickAsync()
     {
         await CopyAsync(SelectedItem);
     }
+
     [RelayCommand]
     private void ClearSearch()
     {
@@ -460,4 +464,3 @@ public class TagFilterOption(string name) : ViewModelBase
         set => SetProperty(ref field, value);
     }
 }
-
