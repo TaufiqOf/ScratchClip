@@ -177,12 +177,12 @@ public class App : Application
 
     private async void TrayIcon_OnClicked(object? sender, EventArgs e)
     {
-        var item = ClipboardManager.SelectedClipboardItem ?? ClipboardManager.GetClipboardHistorySnapshot().FirstOrDefault();
-        if (item != null)
-        {
-            await PasteItemToFocusedWindowAsync(item);
-            return;
-        }
+        // var item = ClipboardManager.SelectedClipboardItem ?? ClipboardManager.GetClipboardHistorySnapshot().FirstOrDefault();
+        // if (item != null)
+        // {
+        //     await PasteItemToFocusedWindowAsync(item);
+        //     return;
+        // }
 
         ToggleMainWindow();
     }

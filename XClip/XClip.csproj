@@ -5,6 +5,9 @@
         <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
         <Nullable>enable</Nullable>
         <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AssemblyVersion>v0.0.8</AssemblyVersion>
+        <FileVersion>v0.0.8</FileVersion>
+        <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
 
     <ItemGroup>

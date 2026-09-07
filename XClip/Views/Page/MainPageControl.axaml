@@ -24,7 +24,7 @@
             </DataTemplate>
 
             <!-- STORAGE ITEMS (FILES) TEMPLATE -->
-            <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.StorageItems}"
+            <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Storage}"
                           x:DataType="models:TextClipboardItem">
                 <controls:StorageItemsControl />
             </DataTemplate>

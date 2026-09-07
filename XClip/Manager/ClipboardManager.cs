@@ -27,6 +27,7 @@ public static class ClipboardManager
         ClipboardServices = new Dictionary<ClipboardDataFormat, AClipboardService>();
         ClipboardServices[ClipboardDataFormat.Text] = new TextClipboardService();
         ClipboardServices[ClipboardDataFormat.Image] = new ImageClipboardService();
+        ClipboardServices[ClipboardDataFormat.Storage] = new StorageClipboardService();
     }
 
     private static List<AClipboardItem> ClipboardHistory { get; } = new();
@@ -115,9 +116,9 @@ public static class ClipboardManager
     {
         var data = await clipboard.TryGetDataAsync();
         if (data == null) return null;
-        if (data.Formats.Any(q => q == DataFormat.Text)) return ClipboardDataFormat.Text;
+        if (data.Formats.Any(q => q == DataFormat.File)) return ClipboardDataFormat.Storage;
         if (data.Formats.Any(q => q == DataFormat.Bitmap)) return ClipboardDataFormat.Image;
-        if (data.Formats.Any(q => q == DataFormat.File)) return ClipboardDataFormat.StorageItems;
+        if (data.Formats.Any(q => q == DataFormat.Text)) return ClipboardDataFormat.Text;
         return null;
     }
 
