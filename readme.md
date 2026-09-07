@@ -22,9 +22,9 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 
 ## 📸 Screenshots
 
-| Main Interface | Light Theme |
-| :---: | :---: |
-| ![XClip main window](Docs/types.png) | ![XClip light theme](Docs/light-1.png) |
+|            Main Interface             |            Light Theme             |
+|:-------------------------------------:|:----------------------------------:|
+| ![XClip main window](Docs/dark-1.png) | ![XClip light theme](Docs/light-1.png) |
 
 ---
 
