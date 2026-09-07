@@ -13,8 +13,19 @@ public class ListViewModel : ViewModelBase
         get;
         set
         {
-            OnItemSelected?.Invoke(value);
-            SetProperty(ref field, value);
+            
+            if(SetProperty(ref field, value))
+            {
+                if (value != null)
+                {
+                    OnItemSelected?.Invoke(value);
+                }
+            };
         }
+    }
+
+    public ListViewModel()
+    {
+        
     }
 }

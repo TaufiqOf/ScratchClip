@@ -45,6 +45,9 @@
                         <DataTemplate DataType="textType:MarkdownTextType">
                             <textTypes:TextTypeInfoControl />
                         </DataTemplate>
+                        <DataTemplate DataType="textType:PasswordTextType">
+                            <textTypes:PasswordTypeControl />
+                        </DataTemplate>
                     </ContentControl.DataTemplates>
                 </ContentControl>
            

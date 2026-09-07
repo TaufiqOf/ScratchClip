@@ -35,8 +35,11 @@ public partial class TextClipboardItem : AClipboardItem
         XmlTextType => TextClipboardItemType.Xml,
         JsonTextType => TextClipboardItemType.Json,
         MarkdownTextType => TextClipboardItemType.Markdown,
+        PasswordTextType => TextClipboardItemType.Password,
         _ => TextClipboardItemType.PlainText
     };
+
+    public bool IsPassword => Type == TextClipboardItemType.Password;
 
     [RelayCommand]
     private void ItemClicked()
@@ -65,7 +68,8 @@ public partial class TextClipboardItem : AClipboardItem
             new XmlTextType(text,Tags),
             new CodeTextType(text,Tags),
             new MarkdownTextType(text,Tags),
-            new PlainTextType(text,Tags)
+            new PasswordTextType(text,Tags),
+            new PlainTextType(text,Tags),//must be last, as it will match anything
         };
 
         return candidates.First(type => type.IsMatch(text));
@@ -73,33 +77,10 @@ public partial class TextClipboardItem : AClipboardItem
 
     private void UpdateTags()
     {
-        var tags = new List<string> { "Text" };
-
-        switch (Type)
-        {
-            case TextClipboardItemType.Website:
-                tags.Add("Website");
-                break;
-            case TextClipboardItemType.Code:
-                tags.Add("Code");
-                // Preserve the detected language if it was added during CodeTextType.IsMatch()
-                if (TextType is CodeTextType codeType && !string.IsNullOrEmpty(codeType.DetectedLanguage))
-                    tags.Add(codeType.DetectedLanguage);
-                break;
-            case TextClipboardItemType.Xml:
-                tags.Add("Xml");
-                break;
-            case TextClipboardItemType.Json:
-                tags.Add("Json");
-                break;
-            case TextClipboardItemType.Markdown:
-                tags.Add("Markdown");
-                break;
-        }
-
-        Tags.Clear();
-        foreach (var tag in tags.Distinct())
-            Tags.Add(tag);
+        // var tags = new List<string> { "Text" };
+        Tags.Add(Type.ToString());
+        // foreach (var tag in tags.Distinct())
+        //     Tags.Add(tag);
     }
     [RelayCommand]
     private async Task CopyToClipboardAsync()

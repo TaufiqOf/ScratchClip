@@ -219,6 +219,10 @@ public class CodeTextType : ATextType
         if (Regex.IsMatch(trimmed, @"^(?:[+-]?\d+(?:\.\d+)?|true|false|null)$", RegexOptions.IgnoreCase))
             return false;
 
+        // Prose Guard: Reject natural prose paragraphs before checking heuristics
+        if (LooksLikeNaturalProse(trimmed))
+            return false;
+
         // Very obvious programming constructs.
         if (HasStrongCodePattern(trimmed))
         {
@@ -228,7 +232,6 @@ public class CodeTextType : ATextType
             {
                 DetectedLanguage = result.Value.Language;
                 DetectionConfidence = result.Value.Confidence;
-                Tags.Add(DetectedLanguage);
                 return true;
             }
 
@@ -236,11 +239,18 @@ public class CodeTextType : ATextType
         }
 
         // General code heuristics.
-        var keywordCount = Regex.Matches(
+        var words = trimmed.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+        
+        var keywordMatches = Regex.Matches(
             trimmed,
             @"\b(class|interface|struct|enum|namespace|public|private|protected|internal|using|return|function|def|let|const|var|import|export|async|await|new|void|static|fn|func|package|impl|trait)\b",
             RegexOptions.IgnoreCase
-        ).Count;
+        );
+
+        var keywordCount = keywordMatches.Count;
+
+        // Require keyword density relative to word count (prevents matching long paragraphs with 1-2 keywords)
+        var keywordDensity = words.Length > 0 ? (double)keywordCount / words.Length : 0;
 
         var strongSymbolCount = Regex.Matches(
             trimmed,
@@ -256,7 +266,7 @@ public class CodeTextType : ATextType
 
         var looksLikeCode =
             (isMultiline && strongSymbolCount >= 2 && keywordCount >= 1) ||
-            (keywordCount >= 2 && (strongSymbolCount >= 1 || operatorCount >= 1));
+            (keywordCount >= 2 && keywordDensity >= 0.08 && (strongSymbolCount >= 1 || operatorCount >= 1));
 
         if (!looksLikeCode)
             return false;
@@ -268,8 +278,34 @@ public class CodeTextType : ATextType
 
         DetectedLanguage = result2.Value.Language;
         DetectionConfidence = result2.Value.Confidence;
-        Tags.Add(DetectedLanguage);
         return true;
+    }
+
+    private static bool LooksLikeNaturalProse(string text)
+    {
+        // 1. Check for standard sentence structure ending with punctuation
+        var sentenceCount = Regex.Matches(text, @"\b[A-Z][^.!?]*[.!?]").Count;
+        
+        // 2. High space-to-symbol ratio (prose has mostly letters and spaces, few syntax characters)
+        var letterOrSpaceCount = text.Count(c => char.IsLetter(c) || char.IsWhiteSpace(c));
+        var symbolCount = text.Count(c => !char.IsLetterOrDigit(c) && !char.IsWhiteSpace(c));
+
+        var totalChars = text.Length;
+        var letterSpaceRatio = (double)letterOrSpaceCount / totalChars;
+
+        // 3. Absolute lack of mandatory code punctuation
+        var codePunctuationCount = text.Count(c => c is ';' or '{' or '}' or '=' or '<' or '>' or '[' or ']');
+
+        // If it's a multi-sentence paragraph with >92% letters/spaces and almost zero code punctuation, it's prose.
+        if (sentenceCount >= 2 && letterSpaceRatio > 0.90 && codePunctuationCount < 2)
+            return true;
+
+        // If single paragraph prose with high word count and no code structural markers
+        var words = text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+        if (words.Length > 15 && sentenceCount >= 1 && codePunctuationCount == 0 && symbolCount < 5)
+            return true;
+
+        return false;
     }
 
     private static bool HasStrongCodePattern(string text)
@@ -301,6 +337,10 @@ public class CodeTextType : ATextType
 
     public override Task PopulateMetadataAsync(string text)
     {
+        if (!string.IsNullOrEmpty(DetectedLanguage))
+        {
+            Tags.Add(DetectedLanguage);
+        }
         return Task.CompletedTask;
     }
 
@@ -445,13 +485,35 @@ public class CodeTextType : ATextType
 
         foreach (var keyword in keywords)
         {
-            // Only count keywords that are likely in code context
-            // (surrounded by word boundaries, not mid-sentence)
-            var pattern = $@"\b{Regex.Escape(keyword.Trim())}\b";
-            if (Regex.IsMatch(source, pattern, RegexOptions.IgnoreCase))
+            var trimmed = keyword.Trim();
+
+            if (string.IsNullOrWhiteSpace(trimmed))
+                continue;
+
+            bool matched;
+
+            // Plain identifier/keyword
+            if (Regex.IsMatch(trimmed, @"^\w+$"))
             {
-                matches++;
+                matched = Regex.IsMatch(
+                    source,
+                    $@"\b{Regex.Escape(trimmed)}\b",
+                    RegexOptions.IgnoreCase);
             }
+            else
+            {
+                // Literal code fragment such as:
+                // "using "
+                // "Console."
+                // "Task<"
+                // "=>"
+                matched = source.Contains(
+                    trimmed,
+                    StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (matched)
+                matches++;
         }
 
         return (double)matches / keywords.Count;

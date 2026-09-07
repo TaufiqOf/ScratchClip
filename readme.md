@@ -15,10 +15,10 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 - **Filtering & Search:** Easily filter history by content type (text, image, link, code) or use **fuzzy search** to find entries quickly.
 - **Global Hotkey Support:** Show or hide the manager window from anywhere (Default: `Alt + Shift + K`).
 - **Quick Selection:** Press numbers `1–99` to pick visible clipboard entries instantly.
-- **Auto-Paste Integration:** Selecting or hitting `Enter` copies the chosen item and automatically pastes it into your previously active application.
+- **Auto-Paste Integration:** Selecting or hitting `Enter` or `Double Clicking` copies the chosen item and automatically pastes it into your previously active application.
 - **Tray Management:** Minimizes to the system tray with a right-click menu, dynamic tray icon adaptation for light/dark themes, and startup toggles.
 - **Compact View Mode:** Switch to a minimalistic view that shows only the most recent clipboard entries for quick access.
-
+- **Detects Password Fields:** Automatically detects password and hides the text.
 ---
 
 ## 📸 Screenshots

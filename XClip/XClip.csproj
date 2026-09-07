@@ -5,8 +5,8 @@
         <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
         <Nullable>enable</Nullable>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AssemblyVersion>0.0.10</AssemblyVersion>
-        <FileVersion>0.0.10</FileVersion>
+        <AssemblyVersion>0.0.11</AssemblyVersion>
+        <FileVersion>0.0.11</FileVersion>
         <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
 
@@ -61,6 +61,10 @@
         </Compile>
         <Compile Update="Views\Controls\ListLightControl.axaml.cs">
           <DependentUpon>ListLightControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Controls\TextTypeControls\PasswordTypeControl.axaml.cs">
+          <DependentUpon>PasswordTypeControl.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
     </ItemGroup>

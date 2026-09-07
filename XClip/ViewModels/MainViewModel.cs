@@ -154,7 +154,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         {
             if (!SetProperty(ref field, value) || value == null)
                 return;
-
+            _listViewModel.SelectedItem = value;
             if (_isInternalSelectionChange)
                 return;
             _ = SetClipboardItemAsync(value);
@@ -198,6 +198,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _historyItems.Insert(0, clipboardItem);
         RefreshTagFilterOptions();
         ApplyFilter();
+        SelectedItem = clipboardItem;
     }
 
     private void OnSelectExistingClipboardItem(AClipboardItem clipboardItem)

@@ -26,13 +26,14 @@
 
                 </Grid>
             </Border>
-            <StackPanel Grid.Column="1"
-                        ToolTip.Tip="{Binding Text}"
-                        Spacing="2">
+            <Grid Grid.Column="1"
+                        VerticalAlignment="Stretch"
+                        ToolTip.Tip="{Binding Text}">
                 <TextBlock Text="{Binding Text}"
+                           VerticalAlignment="Center"
                            FontSize="11"
                            TextWrapping="Wrap" />
-            </StackPanel>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

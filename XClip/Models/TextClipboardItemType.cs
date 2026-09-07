@@ -8,4 +8,5 @@ public enum TextClipboardItemType
     Xml,
     Json,
     Markdown,
+    Password
 }
