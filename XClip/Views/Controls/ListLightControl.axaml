@@ -111,7 +111,7 @@
                             <!-- Content Area -->
                             <Grid Grid.Row="1" Grid.Column="1">
                                 <!-- Revealed Content: Visible if NOT a password OR if Toggle is Checked -->
-                                <SelectableTextBlock Text="{Binding DisplayText}"
+                                <SelectableTextBlock Text="{Binding ((textType:PlainTextType)TextType).Text}"
                                                      FontSize="12"
                                                      Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
                                                      TextWrapping="Wrap">
@@ -122,6 +122,27 @@
                                         </MultiBinding>
                                     </SelectableTextBlock.IsVisible>
                                 </SelectableTextBlock>
+                                <Button VerticalAlignment="Bottom" 
+                                        HorizontalAlignment="Right" 
+                                        Content="{Binding ((textType:PlainTextType)TextType).ShowMoreText}" 
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="0"
+                                        FontSize="10"
+                                        Foreground="Blue" 
+                                        IsVisible="{Binding ((textType:PlainTextType)TextType).ShowMore}" 
+                                        Command="{Binding ((textType:PlainTextType)TextType).MoreCommand}">
+                                    <Button.Styles>
+                                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="Foreground" Value="DarkBlue" />
+                                        </Style>
+                                        <Style Selector="Button:pressed /template/ ContentPresenter">
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="Foreground" Value="Blue" />
+                                        </Style>
+                                    </Button.Styles>
+                                </Button>
 
                                 <!-- Masked Content: Visible ONLY if it IS a password AND Toggle is UNCHECKED -->
                                 <TextBlock Text="••••••••••••"

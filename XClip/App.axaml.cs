@@ -21,8 +21,8 @@ namespace XClip;
 public class App : Application
 {
     private const string PipeName = "XClip_IPC_Pipe";
-    private const int MaxRootItems = 9;
-    private const int MaxItemsPerTag = 9;
+    private const int MaxRootItems = 50;
+    private const int MaxItemsPerTag = 50;
     private GlobalHotkeyService? _hotkeyService;
     private bool _isCleanedUp;
 

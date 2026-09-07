@@ -27,12 +27,33 @@
                 </Grid>
             </Border>
             <Grid Grid.Column="1"
-                        VerticalAlignment="Stretch"
-                        ToolTip.Tip="{Binding Text}">
+                        VerticalAlignment="Stretch">
                 <TextBlock Text="{Binding Text}"
                            VerticalAlignment="Center"
                            FontSize="11"
+                           ToolTip.Tip="{Binding Text}"
                            TextWrapping="Wrap" />
+                <Button VerticalAlignment="Bottom" 
+                        HorizontalAlignment="Right" 
+                        Content="{Binding ShowMoreText}" 
+                        Opacity="0.7"
+                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                        FontSize="10"
+                        Foreground="Blue" 
+                        IsVisible="{Binding ShowMore}" 
+                        Command="{Binding MoreCommand}" >
+                    <Button.Styles>
+                        <!-- Removes hover and pressed background highlights -->
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" />
+                            <Setter Property="Foreground" Value="DarkBlue" />
+                        </Style>
+                        <Style Selector="Button:pressed /template/ ContentPresenter">
+                            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" />
+                            <Setter Property="Foreground" Value="Blue" />
+                        </Style>
+                    </Button.Styles>
+                </Button>
             </Grid>
         </Grid>
     </Border>
