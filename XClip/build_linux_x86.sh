@@ -96,6 +96,8 @@ dotnet restore "$PROJECT_FILE" \
 echo
 echo "==> Publishing "$APP_NAME"..."
 
+# Note: IncludeNativeLibrariesForSelfExtract ensures native assets 
+# are emitted to the publish directory during the publish step.
 dotnet publish "$PROJECT_FILE" \
     -c "$CONFIGURATION" \
     -f "$FRAMEWORK" \
@@ -104,6 +106,7 @@ dotnet publish "$PROJECT_FILE" \
     -p:PublishSingleFile=true \
     -p:EnableCompressionInSingleFile=true \
     -p:IncludeNativeLibrariesForSelfExtract=true \
+    -p:IncludeAllContentForSelfExtract=true \
     -p:DebugType=None \
     -p:DebugSymbols=false \
     -o "$PUBLISH_DIR"
@@ -123,29 +126,37 @@ fi
 
 
 # ============================================================
-# Copy executable
+# Copy executable & Native Libraries
 # ============================================================
 
 echo
-echo "==> Installing executable..."
+echo "==> Installing executable and native dependencies..."
 
 cp -a "$PUBLISH_DIR/." "$APPDIR/usr/bin/"
+
+# Copy any extracted or unmanaged native libraries from NuGet cache if missing
+NUGET_NATIVE_DIR="$HOME/.nuget/packages/treesitter.dotnet"
+if [ -d "$NUGET_NATIVE_DIR" ]; then
+    find "$NUGET_NATIVE_DIR" -type f -name "*.so" -exec cp {} "$APPDIR/usr/bin/" \; 2>/dev/null || true
+fi
 
 chmod +x "$APPDIR/usr/bin/$APP_NAME"
 
 
 # ============================================================
-# Create AppRun
+# Create AppRun (with LD_LIBRARY_PATH configured)
 # ============================================================
 
 echo
 echo "==> Creating AppRun..."
 
-# Removed quotes from EOF so $APP_NAME expands correctly
 cat > "$APPDIR/AppRun" <<EOF
 #!/usr/bin/env bash
 
 HERE="\$(dirname "\$(readlink -f "\$0")")"
+
+# Export shared library paths so DllImport finds TreeSitter .so binaries
+export LD_LIBRARY_PATH="\$HERE/usr/bin:\$LD_LIBRARY_PATH"
 
 exec "\$HERE/usr/bin/$APP_NAME" "\$@"
 EOF
@@ -160,7 +171,6 @@ chmod +x "$APPDIR/AppRun"
 echo
 echo "==> Installing icon..."
 
-# Using APP_NAME for consistency with the desktop file
 cp "$ICON_SOURCE" \
     "$APPDIR/$APP_NAME.png"
 
@@ -175,10 +185,8 @@ cp "$ICON_SOURCE" \
 echo
 echo "==> Creating desktop entry..."
 
-# Set DESKTOP_FILE using APP_NAME
 DESKTOP_FILE="$APPDIR/$APP_NAME.desktop"
 
-# Removed surrounding quotes inside the Desktop Entry keys
 cat > "$DESKTOP_FILE" <<EOF
 [Desktop Entry]
 Name=$APP_NAME
@@ -190,6 +198,7 @@ Type=Application
 Categories=Utility;
 StartupNotify=true
 EOF
+
 
 # ============================================================
 # Show AppDir
@@ -262,6 +271,7 @@ echo "==> Cleaning temporary files..."
 rm -rf "$PUBLISH_DIR"
 rm -rf "$APPDIR"
 rm -f "$APPIMAGETOOL"
+
 
 # ============================================================
 # Result
