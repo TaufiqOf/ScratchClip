@@ -21,11 +21,11 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center" />
 
-            <!-- Semi-Transparent Bottom Bar Overlay -->
             <Border VerticalAlignment="Bottom"
-                    Padding="6,4"
-                    Background="#CC000000"
-                    CornerRadius="0,0,6,6">
+                    Margin="0,6,0,0"
+                    Padding="4"
+                    CornerRadius="4"
+                    Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
                 <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
                     <!-- Index Badge -->
                     <Border Grid.Column="0"
@@ -85,7 +85,6 @@
                             Width="26" Height="26"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
-                            Foreground="#FFFFFF"
                             ToolTip.Tip="Delete Item">
                         <avalonia:FluentIcon Icon="Delete" FontSize="14" />
                     </Button>
