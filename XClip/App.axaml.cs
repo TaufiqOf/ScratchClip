@@ -21,7 +21,7 @@ namespace XClip;
 public class App : Application
 {
     private const string PipeName = "XClip_IPC_Pipe";
-    private const int MaxRootItems = 50;
+    private const int MaxRootItems = 15;
     private const int MaxItemsPerTag = 50;
     private GlobalHotkeyService? _hotkeyService;
     private bool _isCleanedUp;
@@ -295,6 +295,25 @@ public class App : Application
                 menuItem.Click += async (_, _) => await PasteItemToFocusedWindowAsync(clipboardItem);
                 rootMenu.Items.Add(menuItem);
             }
+
+            var currentItems = MaxRootItems;
+            var moreRootMenuItems = rootMenu.Items;
+            do
+            {
+                var moreItemsItem = new NativeMenuItem($"_More items({history.Count - currentItems})...");
+                moreRootMenuItems.Add(moreItemsItem);
+                moreItemsItem.Menu = new NativeMenu();
+                moreRootMenuItems = moreItemsItem.Menu?.Items;
+                for (var i = currentItems; i < Math.Min(MaxRootItems+currentItems, history.Count); i++)
+                {
+                    var clipboardItem = history[i];
+                    var menuItem = new NativeMenuItem(BuildItemHeader(i + 1, clipboardItem));
+                    menuItem.Click += async (_, _) => await PasteItemToFocusedWindowAsync(clipboardItem);
+                    moreRootMenuItems.Add(menuItem);
+                }
+                currentItems += MaxRootItems;
+
+            } while (currentItems < history.Count);
         }
 
         rootMenu.Items.Add(new NativeMenuItemSeparator());
@@ -384,5 +403,4 @@ public class App : Application
 
         return $"{index}. {label}";
     }
-
 }
