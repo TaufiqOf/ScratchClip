@@ -9,104 +9,85 @@
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
     </UserControl.Resources>
 
-    <UserControl.Styles>
-        <!-- Flat Reveal Button Styling -->
-        <Style Selector="ToggleButton.listRevealBtn">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="3" />
-            <Setter Property="Padding" Value="4" />
-            <Setter Property="Width" Value="24" />
-            <Setter Property="Height" Value="24" />
-        </Style>
-        <Style Selector="ToggleButton.listRevealBtn:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
-        </Style>
-        <Style Selector="ToggleButton.listRevealBtn:checked /template/ ContentPresenter">
-            <Setter Property="Background" Value="Transparent" />
-        </Style>
-    </UserControl.Styles>
 
-    <DataTemplate DataType="textType:ImageClipboardItem">
-        <Border Padding="8"
-                CornerRadius="6"
-                Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
-            <Grid RowDefinitions="Auto,Auto,Auto"
-                  ColumnDefinitions="Auto,*,Auto"
-                  RowSpacing="4"
-                  ColumnSpacing="8">
-                <Border Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Width="22"
-                        Height="22"
-                        CornerRadius="3"
-                        Background="{DynamicResource SystemControlHighlightAccentBrush}">
-                    <TextBlock Text="{Binding DisplayIndex}"
-                               FontSize="10"
-                               FontWeight="Bold"
-                               Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
-                </Border>
+    <Border Padding="8"
+            CornerRadius="6"
+            Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
+        <Grid RowDefinitions="Auto,Auto,Auto"
+              ColumnDefinitions="Auto,*,Auto"
+              RowSpacing="4"
+              ColumnSpacing="8">
+            <Border Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Width="22"
+                    Height="22"
+                    CornerRadius="3"
+                    Background="{DynamicResource SystemControlHighlightAccentBrush}">
+                <TextBlock Text="{Binding DisplayIndex}"
+                           FontSize="10"
+                           FontWeight="Bold"
+                           Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+            </Border>
 
-                <StackPanel Grid.Row="0"
-                            Grid.Column="1"
-                            Orientation="Horizontal"
-                            Spacing="6"
-                            VerticalAlignment="Center">
-                    <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
-                               FontSize="10"
-                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
-                </StackPanel>
-
-                <Button Grid.Column="2"
-                        Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Command="{Binding DeleteCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        CornerRadius="3"
-                        Padding="4"
-                        Width="24"
-                        Height="24"
-                        VerticalAlignment="Top"
-                        ToolTip.Tip="Delete Item">
-                    <avalonia:FluentIcon Icon="Delete" FontSize="13" />
-                </Button>
-
-                <Border Grid.Row="1"
+            <StackPanel Grid.Row="0"
                         Grid.Column="1"
-                        Padding="4"
-                        CornerRadius="4"
-                        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-                    <Image Source="{Binding Image}"
-                           Height="64"
-                           Stretch="Uniform"
-                           HorizontalAlignment="Left" />
-                </Border>
+                        Orientation="Horizontal"
+                        Spacing="6"
+                        VerticalAlignment="Center">
+                <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
+                           FontSize="10"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+            </StackPanel>
 
-                <ItemsControl Grid.Row="2"
-                              Grid.Column="1"
-                              ItemsSource="{Binding Tags}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="4" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                    CornerRadius="3"
-                                    Padding="5,1">
-                                <TextBlock Text="{Binding Converter={StaticResource ToUpperConverter}}"
-                                           FontSize="9"
-                                           FontWeight="SemiBold"
-                                           Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}" />
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
-        </Border>
-    </DataTemplate>
+            <Button Grid.Column="2"
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Command="{Binding DeleteCommand}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    CornerRadius="3"
+                    Padding="4"
+                    Width="24"
+                    Height="24"
+                    VerticalAlignment="Top"
+                    ToolTip.Tip="Delete Item">
+                <avalonia:FluentIcon Icon="Delete" FontSize="13" />
+            </Button>
+
+            <Border Grid.Row="1"
+                    Grid.Column="1"
+                    Padding="4"
+                    CornerRadius="4"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <Image Source="{Binding Image}"
+                       Height="64"
+                       Stretch="Uniform"
+                       HorizontalAlignment="Left" />
+            </Border>
+
+            <ItemsControl Grid.Row="2"
+                          Grid.Column="1"
+                          ItemsSource="{Binding Tags}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="4" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                CornerRadius="3"
+                                Padding="5,1">
+                            <TextBlock Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                       FontSize="9"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
 </UserControl>

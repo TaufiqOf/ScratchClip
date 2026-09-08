@@ -26,7 +26,6 @@
             <Setter Property="Background" Value="Transparent" />
         </Style>
     </UserControl.Styles>
-    <DataTemplate DataType="models:StorageClipboardItem">
         <Border Padding="8"
                 CornerRadius="6"
                 Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
@@ -103,5 +102,4 @@
                 </ItemsControl>
             </Grid>
         </Border>
-    </DataTemplate>
 </UserControl>
