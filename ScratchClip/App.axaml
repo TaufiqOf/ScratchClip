@@ -1,0 +1,32 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ScratchClip.App"
+             xmlns:local="using:ScratchClip"
+             xmlns:scratchClip="clr-namespace:ScratchClip"
+             RequestedThemeVariant="Default">
+    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <scratchClip:ViewLocator />
+    </Application.DataTemplates>
+    <TrayIcon.Icons>
+        <TrayIcons>
+            <TrayIcon Icon="avares://ScratchClip/Assets/icon-dark.ico"
+                      ToolTipText="ScratchClip"
+                      Clicked="TrayIcon_OnClicked">
+                <TrayIcon.Menu>
+                    <NativeMenu>
+                        <NativeMenuItem Header="Show App" Click="ShowApp_OnClick" />
+                        <NativeMenuItemSeparator />
+                        <NativeMenuItem Header="Exit" Click="ExitApp_OnClick" />
+                    </NativeMenu>
+                </TrayIcon.Menu>
+            </TrayIcon>
+        </TrayIcons>
+    </TrayIcon.Icons>
+    <Application.Styles>
+        <FluentTheme />
+
+        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+    </Application.Styles>
+</Application>

@@ -1,0 +1,117 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:models="clr-namespace:ScratchClip.Models"
+             xmlns:models1="clr-namespace:ScratchClip.Models"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
+             x:Class="ScratchClip.Views.Controls.DetailItemControls.StorageItemsControl"
+             x:DataType="models1:StorageClipboardItem">
+
+    <UserControl.Resources>
+        <converters:ToUpperConverter x:Key="ToUpperConverter" />
+    </UserControl.Resources>
+    <Border CornerRadius="4"
+            DoubleTapped="OnDoubleTapped">
+        <Grid RowDefinitions="*,Auto">
+            <Border Padding="10"
+                    CornerRadius="8"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <Grid ColumnDefinitions="Auto,*"
+                      ColumnSpacing="10">
+
+                    <!-- Website Icon -->
+                    <Border Width="42"
+                            Height="42"
+                            CornerRadius="8"
+                            VerticalAlignment="Top"
+                            Background="Transparent">
+
+                        <Grid>
+                            <avalonia:FluentIcon Icon="{Binding Icon}"
+                                               FontSize="40"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+
+                        </Grid>
+                    </Border>
+                    <!-- Clipboard Content -->
+                    <SelectableTextBlock Grid.Column="1" Text="{Binding Content}"
+                                         FontSize="12"
+                                         Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                         TextWrapping="Wrap"
+                                         VerticalAlignment="Top" />
+                        
+                </Grid>
+            </Border>
+            <Border Grid.Row="1"
+                    Margin="0,6,0,0"
+                    Padding="4"
+                    CornerRadius="4"
+                    Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
+                <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
+                    <!-- Index Badge -->
+                    <Border Grid.Column="0"
+                            Background="{DynamicResource SystemControlHighlightAccentBrush}"
+                            CornerRadius="3"
+                            Width="24" Height="24"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="{Binding DisplayIndex}"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+
+                    <!-- Format Tag & Timestamp -->
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                Spacing="8"
+                                Margin="8,0"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                   VerticalAlignment="Center" />
+                        <ItemsControl ItemsSource="{Binding Tags}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="4" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                            CornerRadius="3"
+                                            Padding="6,2"
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Converter={StaticResource ToUpperConverter}}"
+                                                   FontSize="10"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <!-- Delete Button -->
+                    <Button Grid.Column="2"
+                            Command="{Binding DeleteCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="3"
+                            Padding="5"
+                            Width="26" Height="26"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            ToolTip.Tip="Delete Item">
+                        <avalonia:FluentIcon Icon="Delete" FontSize="14" />
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

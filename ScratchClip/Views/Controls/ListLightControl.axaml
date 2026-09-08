@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
+             xmlns:models1="clr-namespace:ScratchClip.Models"
+             xmlns:lightItemControls1="clr-namespace:ScratchClip.Views.Controls.LightItemControls"
+             x:DataType="viewModels:ListViewModel"
+             x:Class="ScratchClip.Views.Controls.ListLightControl">
+
+    <UserControl.Resources>
+        <converters:ToUpperConverter x:Key="ToUpperConverter" />
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <!-- Flat Reveal Button Styling -->
+        <Style Selector="ToggleButton.listRevealBtn">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="3" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+        </Style>
+        <Style Selector="ToggleButton.listRevealBtn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SystemControlHighlightListLowBrush}" />
+        </Style>
+        <Style Selector="ToggleButton.listRevealBtn:checked /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </UserControl.Styles>
+
+    <!-- Clipboard List -->
+    <Grid Margin="6,2,6,6">
+        <ListBox
+            x:Name="ListBox"
+            ItemsSource="{Binding FilteredHistory}"
+            SelectionMode="Single"
+            SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+            <ListBox.DataTemplates>
+                
+                <!-- Text Clipboard Item Template -->
+                <DataTemplate DataType="models1:TextClipboardItem">
+                    <lightItemControls1:TextItemControl />
+                </DataTemplate>
+
+                <!-- Image Clipboard Item Template -->
+                <DataTemplate DataType="models1:ImageClipboardItem">
+                    <lightItemControls1:ImageItemControl />
+                </DataTemplate>
+
+                <!-- Storage Clipboard Item Template -->
+                <DataTemplate DataType="models1:StorageClipboardItem">
+                    <lightItemControls1:StorageItemsControl />
+                </DataTemplate>
+            </ListBox.DataTemplates>
+
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Padding" Value="2" />
+                    <Setter Property="Margin" Value="2" />
+                </Style>
+            </ListBox.Styles>
+        </ListBox>
+    </Grid>
+</UserControl>

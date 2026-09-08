@@ -1,6 +1,6 @@
-# XClip
+# ScratchClip
 
-**XClip** is a lightweight cross-platform desktop clipboard history manager built with **Avalonia UI** and **.NET 10**.
+**ScratchClip** is a lightweight cross-platform desktop clipboard history manager built with **Avalonia UI** and **.NET 10**.
 
 It runs silently in the system tray, tracks your recent copied items, and lets you quickly search, re-copy, and automatically paste previous entries back into active applications.
 
@@ -25,11 +25,11 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 
 |            Main Interface             |            Light Theme             |
 |:-------------------------------------:|:----------------------------------:|
-| ![XClip main window](Docs/dark-1.png) | ![XClip light theme](Docs/light-1.png) |
+| ![ScratchClip main window](Docs/dark-1.png) | ![ScratchClip light theme](Docs/light-1.png) |
 
 |              Compact View               |       Storage(Files and Folders)       |
 |:---------------------------------------:|:--------------------------------------:|
-| ![XClip link preview](Docs/compact.png) | ![XClip light theme](Docs/storage.png) |
+| ![ScratchClip link preview](Docs/compact.png) | ![ScratchClip light theme](Docs/storage.png) |
 
 ---
 
@@ -37,7 +37,7 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 
 | Shortcut | Action |
 | :--- | :--- |
-| `Alt` + `Shift` + `K` | Show or hide the XClip window globally (configurable in Settings) |
+| `Alt` + `Shift` + `K` | Show or hide the ScratchClip window globally (configurable in Settings) |
 | `Ctrl` + `S` | Focus the search input field |
 | `Enter` | Copy selected item and paste into the previously focused application |
 | `1` – `99` | Instantly choose the corresponding item in the visible list |
@@ -68,6 +68,6 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 Clone the repository and run the application from the root directory:
 
 ```bash
-cd XClip
+cd ScratchClip
 dotnet restore
 dotnet run

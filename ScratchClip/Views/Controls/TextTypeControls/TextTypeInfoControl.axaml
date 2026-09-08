@@ -1,0 +1,55 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:avaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+             xmlns:models1="clr-namespace:ScratchClip.Models"
+             x:Class="ScratchClip.Views.Controls.TextTypeControls.TextTypeInfoControl"
+             x:DataType="models1:ATextType">
+
+    <Border Padding="10"
+            CornerRadius="8"
+            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+
+        <Grid ColumnDefinitions="Auto,*"
+              ColumnSpacing="10">
+
+            <!-- Type Icon -->
+            <Border Width="42"
+                    Height="42"
+                    CornerRadius="8"
+                    VerticalAlignment="Top">
+
+                <avalonia:FluentIcon Icon="{Binding Icon}"
+                                     FontSize="40"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
+            </Border>
+
+            <!-- Code Preview -->
+            <Border Grid.Column="1"
+                    CornerRadius="6"
+                    ClipToBounds="True">
+
+                <StackPanel Grid.Column="1"
+                            Spacing="2">
+
+                    <avaloniaEdit:TextEditor
+                        x:Name="PreviewEditor"
+                        x:CompileBindings="False"
+                        IsReadOnly="True"
+                        ShowLineNumbers="True"
+                        FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+                        FontSize="12"
+                        Padding="8"
+                        MinHeight="40"
+                        MaxHeight="220"
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto" />
+
+                </StackPanel>
+
+            </Border>
+
+        </Grid>
+    </Border>
+</UserControl>

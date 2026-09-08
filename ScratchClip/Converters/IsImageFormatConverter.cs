@@ -1,0 +1,33 @@
+using System;
+using System.Globalization;
+using Avalonia.Data.Converters;
+using ScratchClip.Models;
+
+namespace ScratchClip.Converters;
+
+public sealed class IsImageFormatConverter : IValueConverter
+{
+    public object Convert(
+        object? value,
+        Type targetType,
+        object? parameter,
+        CultureInfo culture)
+    {
+        var isImage = value is ClipboardDataFormat format &&
+                      format == ClipboardDataFormat.Image;
+
+        if (parameter?.ToString() == "Inverse")
+            return !isImage;
+
+        return isImage;
+    }
+
+    public object ConvertBack(
+        object? value,
+        Type targetType,
+        object? parameter,
+        CultureInfo culture)
+    {
+        throw new NotSupportedException();
+    }
+}

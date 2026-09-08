@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+             xmlns:helper="clr-namespace:ScratchClip.Helper"
+             xmlns:models1="clr-namespace:ScratchClip.Models"
+             xmlns:detailItemControls1="clr-namespace:ScratchClip.Views.Controls.DetailItemControls"
+             x:DataType="viewModels:ListViewModel"
+             x:Class="ScratchClip.Views.Controls.ListDetailControl">
+    <UserControl.Resources>
+        <helper:ClipboardItemTemplateSelector x:Key="ClipboardItemSelector">
+
+            <!-- TEXT FORMAT TEMPLATE -->
+            <DataTemplate x:Key="{x:Static models1:ClipboardDataFormat.Text}" 
+                          x:DataType="models1:TextClipboardItem">
+                <detailItemControls1:TextItemControl />
+            </DataTemplate>
+
+            <!-- IMAGE FORMAT TEMPLATE -->
+            <DataTemplate x:Key="{x:Static models1:ClipboardDataFormat.Image}" 
+                          x:DataType="models1:ImageClipboardItem">
+                <detailItemControls1:ImageItemControl />
+            </DataTemplate>
+
+            <!-- STORAGE ITEMS (FILES) TEMPLATE -->
+            <DataTemplate x:Key="{x:Static models1:ClipboardDataFormat.Storage}"
+                          x:DataType="models1:TextClipboardItem">
+                <detailItemControls1:StorageItemsControl />
+            </DataTemplate>
+
+        </helper:ClipboardItemTemplateSelector>
+    </UserControl.Resources>
+    <!-- Clipboard List -->
+    <Grid Grid.Row="3" Margin="8,4,8,8">
+        <ListBox
+            x:Name="ListBox"
+            ItemsSource="{Binding FilteredHistory}"
+            SelectionMode="Single"
+            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+            ItemTemplate="{StaticResource ClipboardItemSelector}">
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem" x:DataType="models1:TextClipboardItem">
+                    <!-- Remove default padding and margins applied by the Avalonia theme -->
+                    <Setter Property="Padding" Value="5" />
+                    <Setter Property="Margin" Value="5" />
+
+                </Style>
+            </ListBox.Styles>
+        </ListBox>
+    </Grid>
+</UserControl>
