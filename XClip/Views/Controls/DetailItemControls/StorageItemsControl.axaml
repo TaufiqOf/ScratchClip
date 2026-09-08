@@ -1,58 +1,47 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
-             xmlns:converters="clr-namespace:XClip.Converters"
              xmlns:models="clr-namespace:XClip.Models"
-             xmlns:textTypes="clr-namespace:XClip.Views.Controls.TextTypeControls"
-             xmlns:textType="clr-namespace:XClip.Models.TextType"
-             x:Class="XClip.Views.Controls.TypeControls.TextItemControl"
-             x:DataType="models:TextClipboardItem">
+             xmlns:converters="clr-namespace:XClip.Converters"
+             x:Class="XClip.Views.Controls.DetailItemControls.StorageItemsControl"
+             x:DataType="models:StorageClipboardItem">
 
     <UserControl.Resources>
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
     </UserControl.Resources>
-
     <Border CornerRadius="4"
             DoubleTapped="OnDoubleTapped">
         <Grid RowDefinitions="*,Auto">
-            <StackPanel Grid.Row="0" Spacing="8">
-                <!-- <TextBlock FontSize="14" -->
-                <!--            Text="{Binding DisplayText}" -->
-                <!--            ToolTip.Tip="{Binding DisplayText}" -->
-                <!--            TextWrapping="Wrap" MaxLines="20" TextTrimming="CharacterEllipsis" /> -->
-                <ContentControl Content="{Binding TextType}">
-                    <ContentControl.DataTemplates>
-                        <DataTemplate DataType="textType:PlainTextType">
-                            <textTypes:PlainTextTypeControl />
-                        </DataTemplate>
+            <Border Padding="10"
+                    CornerRadius="8"
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+                <Grid ColumnDefinitions="Auto,*"
+                      ColumnSpacing="10">
 
-                        <DataTemplate DataType="textType:WebsiteTextType">
-                            <textTypes:WebsiteTextTypeControl />
-                        </DataTemplate>
+                    <!-- Website Icon -->
+                    <Border Width="42"
+                            Height="42"
+                            CornerRadius="8"
+                            VerticalAlignment="Top"
+                            Background="Transparent">
 
-                        <DataTemplate DataType="textType:CodeTextType">
-                            <textTypes:TextTypeInfoControl />
-                        </DataTemplate>
+                        <Grid>
+                            <avalonia:FluentIcon Icon="{Binding Icon}"
+                                               FontSize="40"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
 
-                        <DataTemplate DataType="textType:XmlTextType">
-                            <textTypes:TextTypeInfoControl />
-                        </DataTemplate>
-
-                        <DataTemplate DataType="textType:JsonTextType">
-                            <textTypes:TextTypeInfoControl />
-                        </DataTemplate>
-
-                        <DataTemplate DataType="textType:MarkdownTextType">
-                            <textTypes:TextTypeInfoControl />
-                        </DataTemplate>
-                        <DataTemplate DataType="textType:PasswordTextType">
-                            <textTypes:PasswordTypeControl />
-                        </DataTemplate>
-                    </ContentControl.DataTemplates>
-                </ContentControl>
-           
-            </StackPanel>
-
+                        </Grid>
+                    </Border>
+                    <!-- Clipboard Content -->
+                    <SelectableTextBlock Grid.Column="1" Text="{Binding Content}"
+                                         FontSize="12"
+                                         Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                         TextWrapping="Wrap"
+                                         VerticalAlignment="Top" />
+                        
+                </Grid>
+            </Border>
             <Border Grid.Row="1"
                     Margin="0,6,0,0"
                     Padding="4"
@@ -68,7 +57,7 @@
                         <TextBlock Text="{Binding DisplayIndex}"
                                    FontSize="11"
                                    FontWeight="Bold"
-                                   Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
+                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center" />
                     </Border>

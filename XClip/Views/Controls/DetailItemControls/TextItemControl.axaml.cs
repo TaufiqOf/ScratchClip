@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-namespace XClip.Views.Controls.TypeControls;
+namespace XClip.Views.Controls.DetailItemControls;
 
 public partial class TextItemControl : UserControl
 {

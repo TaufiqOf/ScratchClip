@@ -6,7 +6,8 @@
              xmlns:controls="clr-namespace:XClip.Views.Controls"
              xmlns:vm="clr-namespace:XClip.ViewModels"
              xmlns:textType="clr-namespace:XClip.Models.TextType"
-             xmlns:typeControls="clr-namespace:XClip.Views.Controls.TypeControls"
+             xmlns:detailItemControls="clr-namespace:XClip.Views.Controls.DetailItemControls"
+             xmlns:lightItemContols="clr-namespace:XClip.Views.Controls.DetailItemControls"
              x:DataType="vm:ListViewModel"
              x:Class="XClip.Views.Controls.ListDetailControl">
     <UserControl.Resources>
@@ -15,19 +16,19 @@
             <!-- TEXT FORMAT TEMPLATE -->
             <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Text}" 
                           x:DataType="models:TextClipboardItem">
-                <typeControls:TextItemControl />
+                <lightItemContols:TextItemControl />
             </DataTemplate>
 
             <!-- IMAGE FORMAT TEMPLATE -->
             <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Image}" 
                           x:DataType="textType:ImageClipboardItem">
-                <typeControls:ImageItemControl />
+                <lightItemContols:ImageItemControl />
             </DataTemplate>
 
             <!-- STORAGE ITEMS (FILES) TEMPLATE -->
             <DataTemplate x:Key="{x:Static models:ClipboardDataFormat.Storage}"
                           x:DataType="models:TextClipboardItem">
-                <typeControls:StorageItemsControl />
+                <lightItemContols:StorageItemsControl />
             </DataTemplate>
 
         </helper:ClipboardItemTemplateSelector>

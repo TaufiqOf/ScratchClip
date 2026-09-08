@@ -1,27 +1,59 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
-             xmlns:models="clr-namespace:XClip.Models"
              xmlns:converters="clr-namespace:XClip.Converters"
+             xmlns:models="clr-namespace:XClip.Models"
+             xmlns:textTypes="clr-namespace:XClip.Views.Controls.TextTypeControls"
              xmlns:textType="clr-namespace:XClip.Models.TextType"
-             x:Class="XClip.Views.Controls.TypeControls.ImageItemControl"
-             x:DataType="textType:ImageClipboardItem">
+             x:Class="XClip.Views.Controls.DetailItemControls.TextItemControl"
+             x:DataType="models:TextClipboardItem">
 
     <UserControl.Resources>
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
     </UserControl.Resources>
 
-    <Border CornerRadius="6"
-            ClipToBounds="True"
+    <Border CornerRadius="4"
             DoubleTapped="OnDoubleTapped">
-        <Grid>
-            <!-- Image Content (Fills entire background area) -->
-            <Image Source="{Binding Image}"
-                   Stretch="UniformToFill"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center" />
+        <Grid RowDefinitions="*,Auto">
+            <StackPanel Grid.Row="0" Spacing="8">
+                <!-- <TextBlock FontSize="14" -->
+                <!--            Text="{Binding DisplayText}" -->
+                <!--            ToolTip.Tip="{Binding DisplayText}" -->
+                <!--            TextWrapping="Wrap" MaxLines="20" TextTrimming="CharacterEllipsis" /> -->
+                <ContentControl Content="{Binding TextType}">
+                    <ContentControl.DataTemplates>
+                        <DataTemplate DataType="textType:PlainTextType">
+                            <textTypes:PlainTextTypeControl />
+                        </DataTemplate>
 
-            <Border VerticalAlignment="Bottom"
+                        <DataTemplate DataType="textType:WebsiteTextType">
+                            <textTypes:WebsiteTextTypeControl />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="textType:CodeTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="textType:XmlTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="textType:JsonTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
+
+                        <DataTemplate DataType="textType:MarkdownTextType">
+                            <textTypes:TextTypeInfoControl />
+                        </DataTemplate>
+                        <DataTemplate DataType="textType:PasswordTextType">
+                            <textTypes:PasswordTypeControl />
+                        </DataTemplate>
+                    </ContentControl.DataTemplates>
+                </ContentControl>
+           
+            </StackPanel>
+
+            <Border Grid.Row="1"
                     Margin="0,6,0,0"
                     Padding="4"
                     CornerRadius="4"

@@ -75,7 +75,7 @@ public partial class PlainTextType : ATextType
         }
         else
         {
-            maxLength += 300;
+            maxLength = _text.Length;
         }
         Text = _text.Substring(0, Math.Min(_text.Length, maxLength));
         UpdateShowMore();

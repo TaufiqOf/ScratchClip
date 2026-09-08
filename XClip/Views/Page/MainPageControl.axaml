@@ -6,7 +6,6 @@
              xmlns:controls="clr-namespace:XClip.Views.Controls"
              xmlns:vm="clr-namespace:XClip.ViewModels"
              xmlns:textType="clr-namespace:XClip.Models.TextType"
-             xmlns:typeControls="clr-namespace:XClip.Views.Controls.TypeControls"
              x:DataType="vm:MainViewModel"
              x:Class="XClip.Views.Page.MainPageControl">
     <UserControl.Resources>

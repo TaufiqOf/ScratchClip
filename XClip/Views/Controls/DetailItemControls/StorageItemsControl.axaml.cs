@@ -1,15 +1,14 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
-namespace XClip.Views.Controls.TypeControls;
+namespace XClip.Views.Controls.DetailItemControls;
 
-public partial class ImageItemControl : UserControl
+public partial class StorageItemsControl : UserControl
 {
-    public ImageItemControl()
+    public StorageItemsControl()
     {
         InitializeComponent();
     }
-
     private async void OnDoubleTapped(object? sender, RoutedEventArgs e)
     {
         if (TopLevel.GetTopLevel(this) is MainWindow window)
