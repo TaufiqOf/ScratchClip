@@ -18,6 +18,7 @@ public static class ClipboardManager
     public static Action<AClipboardItem>? OnClipboardItemAdded;
     public static Action<AClipboardItem>? OnSelectExistingClipboardItem;
     public static Action<AClipboardItem>? OnRemoveExistingClipboardItem;
+    public static Action? OnClearExistingClipboardItem;
 
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
     private static AClipboardItem? _selectedClipboardItem;
@@ -168,6 +169,7 @@ public static class ClipboardManager
     public static void ClearClipboardHistory()
     {
         ClipboardHistory.Clear();
+        OnClearExistingClipboardItem?.Invoke();
     }
 
     public static async Task ClearClipboardData()

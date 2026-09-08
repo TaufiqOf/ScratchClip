@@ -21,7 +21,7 @@ namespace XClip;
 public class App : Application
 {
     private const string PipeName = "XClip_IPC_Pipe";
-    private const int MaxRootItems = 15;
+    private const int MaxRootItems = 9;
     private const int MaxItemsPerTag = 50;
     private GlobalHotkeyService? _hotkeyService;
     private bool _isCleanedUp;
@@ -91,12 +91,13 @@ public class App : Application
 
         ClipboardManager.OnClipboardItemAdded += OnClipboardHistoryChanged;
         ClipboardManager.OnRemoveExistingClipboardItem += OnClipboardHistoryChanged;
-
+        ClipboardManager.OnClearExistingClipboardItem += OnClearExistingClipboardItem;
         UpdateIcons(ActualThemeVariant);
         ActualThemeVariantChanged += OnActualThemeVariantChanged;
 
         base.OnFrameworkInitializationCompleted();
     }
+
 
     private static bool CanConnectToExistingInstance(bool isToggleRequested)
     {
@@ -264,6 +265,11 @@ public class App : Application
         _hotkeyService = null;
     }
 
+    private void OnClearExistingClipboardItem()
+    {
+        Dispatcher.UIThread.Post(RebuildTrayMenu);
+    }
+
     private void OnClipboardHistoryChanged(AClipboardItem _)
     {
         Dispatcher.UIThread.Post(RebuildTrayMenu);
@@ -298,22 +304,22 @@ public class App : Application
 
             var currentItems = MaxRootItems;
             var moreRootMenuItems = rootMenu.Items;
-            do
+            while (currentItems < history.Count)
             {
                 var moreItemsItem = new NativeMenuItem($"_More items({history.Count - currentItems})...");
                 moreRootMenuItems.Add(moreItemsItem);
                 moreItemsItem.Menu = new NativeMenu();
                 moreRootMenuItems = moreItemsItem.Menu?.Items;
-                for (var i = currentItems; i < Math.Min(MaxRootItems+currentItems, history.Count); i++)
+                for (var i = currentItems; i < Math.Min(MaxRootItems + currentItems, history.Count); i++)
                 {
                     var clipboardItem = history[i];
-                    var menuItem = new NativeMenuItem(BuildItemHeader(i + 1, clipboardItem));
+                    var menuItem = new NativeMenuItem(BuildItemHeader(((i-currentItems) + 1), clipboardItem));
                     menuItem.Click += async (_, _) => await PasteItemToFocusedWindowAsync(clipboardItem);
                     moreRootMenuItems.Add(menuItem);
                 }
-                currentItems += MaxRootItems;
 
-            } while (currentItems < history.Count);
+                currentItems += MaxRootItems;
+            }
         }
 
         rootMenu.Items.Add(new NativeMenuItemSeparator());
@@ -398,9 +404,9 @@ public class App : Application
 
     private static string BuildNumberedHeader(int index, string label)
     {
-        if (index is >= 1 and <= 9)
-            return $"_{index}. {label}";
+        //if (index is >= 1 and <= 9)
+        return $"_{index}. {label}";
 
-        return $"{index}. {label}";
+        //return $"{index}. {label}";
     }
 }

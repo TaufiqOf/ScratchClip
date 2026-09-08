@@ -51,7 +51,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.OnClipboardItemAdded += OnClipboardItemAdded;
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
         ClipboardManager.OnRemoveExistingClipboardItem += OnRemoveExistingClipboardItem;
-
+        ClipboardManager.OnClearExistingClipboardItem += OnClearExistingClipboardItem;
         foreach (var item in ClipboardManager.GetClipboardHistorySnapshot())
             _historyItems.Add(item);
 
@@ -166,6 +166,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.OnClipboardItemAdded -= OnClipboardItemAdded;
         ClipboardManager.OnSelectExistingClipboardItem -= OnSelectExistingClipboardItem;
         ClipboardManager.OnRemoveExistingClipboardItem -= OnRemoveExistingClipboardItem;
+        ClipboardManager.OnClearExistingClipboardItem -= OnClearExistingClipboardItem;
         TagFilterOptions.CollectionChanged -= OnTagFilterOptionsCollectionChanged;
 
         foreach (var option in TagFilterOptions)
@@ -173,6 +174,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         StopMonitoringClipboard();
     }
+
+
 
     public async Task SimulatePasteAsync()
     {
@@ -211,6 +214,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _historyItems.Remove(item);
         RefreshTagFilterOptions();
         ApplyFilter();
+    }
+
+    private void OnClearExistingClipboardItem()
+    {
+        _historyItems.Clear();
+        FilteredHistory.Clear();
+        RefreshTagFilterOptions();
     }
 
     private async Task MonitorClipboardAsync(CancellationToken cancellationToken)
@@ -262,9 +272,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void ClearHistory()
     {
         ClipboardManager.ClearClipboardHistory();
-        _historyItems.Clear();
-        FilteredHistory.Clear();
-        RefreshTagFilterOptions();
+
     }
 
     [RelayCommand]
