@@ -15,7 +15,7 @@ internal class TextClipboardService : AClipboardService
         var clipboard = GetClipboard();
         if (clipboard == null) return await Task.FromResult(item);
         var text = await clipboard.TryGetTextAsync();
-        if (text is not string str || string.IsNullOrEmpty(str))
+        if (text is not { } str || string.IsNullOrEmpty(str))
         {
             await clipboard.ClearAsync();
             return await Task.FromResult(item);

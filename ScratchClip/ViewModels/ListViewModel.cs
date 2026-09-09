@@ -20,12 +20,7 @@ public class ListViewModel : ViewModelBase
                 {
                     OnItemSelected?.Invoke(value);
                 }
-            };
+            }
         }
-    }
-
-    public ListViewModel()
-    {
-        
     }
 }

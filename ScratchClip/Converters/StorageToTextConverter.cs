@@ -7,7 +7,7 @@ namespace ScratchClip.Converters;
 
 public class StorageToTextConverter : IValueConverter
 {
-    public object? Convert(
+    public object Convert(
         object? value,
         Type targetType,
         object? parameter,
@@ -29,7 +29,7 @@ public class StorageToTextConverter : IValueConverter
         };
     }
 
-    public object? ConvertBack(
+    public object ConvertBack(
         object? value,
         Type targetType,
         object? parameter,

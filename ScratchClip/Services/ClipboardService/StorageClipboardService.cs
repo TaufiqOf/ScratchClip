@@ -54,7 +54,7 @@ internal class StorageClipboardService : AClipboardService
 
     public override Task CreateSignature(AClipboardItem item)
     {
-        if (item is not StorageClipboardItem storageItem || storageItem.Paths == null || storageItem.Paths.Count == 0)
+        if (item is not StorageClipboardItem storageItem || storageItem.Paths.Count == 0)
             return Task.CompletedTask;
 
         return Task.Run(() =>
@@ -83,7 +83,7 @@ internal class StorageClipboardService : AClipboardService
     public override async Task CopyData(AClipboardItem value)
     {
         var clipboard = GetClipboard();
-        if (clipboard == null || value is not StorageClipboardItem storageItem || storageItem.Paths == null ||
+        if (clipboard == null || value is not StorageClipboardItem storageItem ||
             storageItem.Paths.Count == 0)
             return;
 

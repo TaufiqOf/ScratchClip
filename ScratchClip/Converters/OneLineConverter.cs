@@ -52,7 +52,7 @@ public class OneLineConverter : IValueConverter
         return firstLine;
     }
 
-    public object? ConvertBack(
+    public object ConvertBack(
         object? value,
         Type targetType,
         object? parameter,

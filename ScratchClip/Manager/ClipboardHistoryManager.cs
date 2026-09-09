@@ -152,9 +152,5 @@ public static class ClipboardHistoryManager
         public string? Signature { get; set; }
         public DateTime Timestamp { get; set; }
         public string? ImageBase64 { get; set; }
-        public bool IsWebSite { get; set; }
-        public string? WebsiteTitle { get; set; }
-        public string? WebsiteDescription { get; set; }
-        public string? WebsiteHost { get; set; }
     }
 }
