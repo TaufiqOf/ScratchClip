@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ScratchClip.Views.Controls.MenuItemControls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:models="clr-namespace:ScratchClip.Models"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
+             x:DataType="models:TextClipboardItem"
+             x:Class="ScratchClip.Views.Controls.MenuItemControls.TextMenuItemControl">
+    <UserControl.Resources>
+        <converters:ToUpperConverter x:Key="ToUpperConverter" />
+        <converters:OneLineConverter x:Key="OneLineConverter" />
+    </UserControl.Resources>
+    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="5" Height="40">
+        <Border Grid.Row="0"
+                Width="22"
+                Height="22"
+                CornerRadius="3"
+                Background="{DynamicResource SystemControlHighlightAccentBrush}">
+            <TextBlock Text="{Binding DisplayIndex}"
+                       FontSize="10"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+        </Border>
+        <TextBlock Grid.Column="1" 
+                   VerticalAlignment="Center"
+                   Margin="5,0,0,0" 
+                   TextTrimming="CharacterEllipsis" 
+                   Text="{Binding Text, Converter={StaticResource OneLineConverter}}" />
+        <Button Grid.Column="2" 
+                Margin="0,0,10,0"
+                Command="{Binding DeleteCommand}">
+            <avalonia:FluentIcon Icon="Delete" Width="16" Height="16"  />
+        </Button>
+    </Grid>
+</UserControl>

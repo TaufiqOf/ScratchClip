@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:models="clr-namespace:ScratchClip.Models"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
+             x:DataType="models:StorageClipboardItem"
+             x:Class="ScratchClip.Views.Controls.MenuItemControls.StorageMenuItemControl">
+    <UserControl.Resources>
+        <converters:ToUpperConverter x:Key="ToUpperConverter" />
+        <converters:OneLineConverter x:Key="OneLineConverter" />
+        <converters:StorageToTextConverter x:Key="StorageToTextConverter" />
+    </UserControl.Resources>
+    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="5" Height="40">
+        <Border Grid.Row="0"
+                Width="22"
+                Height="22"
+                CornerRadius="3"
+                Background="{DynamicResource SystemControlHighlightAccentBrush}">
+            <TextBlock Text="{Binding DisplayIndex}"
+                       FontSize="10"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+        </Border>
+        <Grid Grid.Column="1" ColumnDefinitions="Auto,Auto,Auto">
+            <TextBlock 
+                VerticalAlignment="Center"
+                Text="[Storage]   " 
+                Foreground="{DynamicResource ButtonForegroundDisabled}"></TextBlock>
+            <TextBlock Grid.Column="1"
+                VerticalAlignment="Center"
+                Margin="5,0,0,0"
+                TextTrimming="CharacterEllipsis"
+                Text="{Binding Files,
+                   Converter={StaticResource StorageToTextConverter},
+                   ConverterParameter=Files}" />
+
+            <TextBlock
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Margin="5,0,0,0"
+                TextTrimming="CharacterEllipsis"
+                Text="{Binding Folders,
+                   Converter={StaticResource StorageToTextConverter},
+                   ConverterParameter=Folders}" />
+        </Grid>
+        <Button Grid.Column="2"
+                Margin="0,0,10,0"
+                Command="{Binding DeleteCommand}">
+            <avalonia:FluentIcon Icon="Delete" Width="16" Height="16" />
+        </Button>
+    </Grid>
+</UserControl>

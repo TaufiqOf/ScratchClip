@@ -7,10 +7,10 @@
     <UserControl.Resources>
         <!-- Clipboard Item Template Selector -->
         <!-- Clipboard Item Template Selector -->
-       
+
     </UserControl.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*">
+    <Grid RowDefinitions="Auto,Auto,*">
         <!-- Toolbar Bar -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="8,8,8,4">
             <!-- Left Aligned Controls -->
@@ -21,7 +21,7 @@
                 <Button Command="{Binding ClearHistoryCommand}" ToolTip.Tip="Clear Clipboard History">
                     <avalonia:FluentIcon Icon="Delete" FontSize="16" />
                 </Button>
-                
+
 
                 <!-- Monitor Clipboard Toggle -->
                 <ToggleButton IsChecked="{Binding IsMonitoringClipboard}"
@@ -30,14 +30,13 @@
                         <avalonia:FluentIcon Icon="Eye" FontSize="16" />
                     </StackPanel>
                 </ToggleButton>
-                
+
                 <!-- Mode Toggle -->
-                <ToggleButton IsChecked="{Binding IsDetailedMode}"
-                              ToolTip.Tip="Toggle Detailed Mode">
-                    <StackPanel Orientation="Horizontal" Spacing="6">
-                        <avalonia:FluentIcon Icon="AppsListDetail" FontSize="16" />
-                    </StackPanel>
-                </ToggleButton>
+                <ComboBox ItemsSource="{Binding ModeOptions}"
+                          SelectedItem="{Binding SelectedMode}">
+
+                </ComboBox>
+
             </StackPanel>
 
             <!-- Right Aligned Settings Button -->
@@ -48,54 +47,56 @@
                 <avalonia:FluentIcon Icon="Settings" FontSize="16" />
             </Button>
         </Grid>
-        <!-- Tag Filter -->
-        <Grid Grid.Row="2" Margin="8,0,8,4" ColumnDefinitions="*,Auto">
-            <DropDownButton Grid.Column="0"
-                            MinWidth="180"
-                            HorizontalAlignment="Stretch"
-                            Content="{Binding SelectedTagsSummary}">
-                <DropDownButton.Flyout>
-                    <Flyout Placement="BottomEdgeAlignedLeft">
-                        <Border Padding="8" MinWidth="220" MaxHeight="250">
-                            <ScrollViewer MaxHeight="230">
-                                <ItemsControl ItemsSource="{Binding TagFilterOptions}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <CheckBox Content="{Binding Name}"
-                                                      IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </Border>
-                    </Flyout>
-                </DropDownButton.Flyout>
-            </DropDownButton>
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+            <!-- Tag Filter -->
+            <Grid Grid.Column="0" Margin="8,0,8,4" ColumnDefinitions="*,Auto">
+                <DropDownButton Grid.Column="0"
+                                MinWidth="180"
+                                HorizontalAlignment="Stretch"
+                                Content="{Binding SelectedTagsSummary}">
+                    <DropDownButton.Flyout>
+                        <Flyout Placement="BottomEdgeAlignedLeft">
+                            <Border Padding="8" MinWidth="220" MaxHeight="250">
+                                <ScrollViewer MaxHeight="230">
+                                    <ItemsControl ItemsSource="{Binding TagFilterOptions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox Content="{Binding Name}"
+                                                          IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Border>
+                        </Flyout>
+                    </DropDownButton.Flyout>
+                </DropDownButton>
 
-            <Button Grid.Column="1"
-                    Command="{Binding ClearTagFilterCommand}"
-                    ToolTip.Tip="Clear Tag Filter"
-                    Background="Transparent"
-                    BorderThickness="0">
-                <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
-            </Button>
-        </Grid>
+                <Button Grid.Column="1"
+                        Command="{Binding ClearTagFilterCommand}"
+                        ToolTip.Tip="Clear Tag Filter"
+                        Background="Transparent"
+                        BorderThickness="0">
+                    <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
+                </Button>
+            </Grid>
 
-        <!-- Search Input Box -->
-        <Grid Grid.Row="1" Margin="8,4" ColumnDefinitions="*,Auto">
-            <TextBox x:Name="SearchTextBox"
-                     Grid.Column="0"
-                     Text="{Binding SearchText, Mode=TwoWay}"
-                     PlaceholderText="Search history (Ctrl+S)..." />
-            <Button Grid.Column="1"
-                    Command="{Binding ClearSearchCommand}"
-                    ToolTip.Tip="Clear Search"
-                    Background="Transparent"
-                    BorderThickness="0">
-                <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
-            </Button>
+            <!-- Search Input Box -->
+            <Grid Grid.Column="1" Margin="8,4" ColumnDefinitions="*,Auto">
+                <TextBox x:Name="SearchTextBox"
+                         Grid.Column="0"
+                         Text="{Binding SearchText, Mode=TwoWay}"
+                         PlaceholderText="Search history (Ctrl+S)..." />
+                <Button Grid.Column="1"
+                        Command="{Binding ClearSearchCommand}"
+                        ToolTip.Tip="Clear Search"
+                        Background="Transparent"
+                        BorderThickness="0">
+                    <avalonia:FluentIcon Icon="Dismiss" FontSize="16" />
+                </Button>
+            </Grid>
         </Grid>
-        <ContentControl Grid.Row="3" Content="{Binding ListContent}"></ContentControl>
+        <ContentControl Grid.Row="2" Content="{Binding ListContent}"></ContentControl>
 
     </Grid>
 </UserControl>

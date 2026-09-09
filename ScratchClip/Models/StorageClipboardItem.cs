@@ -45,7 +45,9 @@ public partial class StorageClipboardItem : AClipboardItem
             OnPropertyChanged();
         }
     } = new List<string>();
-
+    
+    public List<string> Files => Paths.Where(File.Exists).ToList();
+    public List<string> Folders => Paths.Where(Directory.Exists).ToList();
     private void SetContent(List<string> value)
     {
         var contentBuilder = new System.Text.StringBuilder();

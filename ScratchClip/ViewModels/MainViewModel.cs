@@ -46,7 +46,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         _listViewModel.OnItemSelected += OnItemSelected;
         var appSettings = SettingsManager.Load();
-        IsDetailedMode = appSettings.IsDetailsEnabled;
+        SelectedMode = appSettings.ViewMode;
         _hotkeyService = hotkeyService;
         ClipboardManager.OnClipboardItemAdded += OnClipboardItemAdded;
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
@@ -74,42 +74,22 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         set => SetProperty(ref field, value);
     }
     
-    public bool IsDetailedMode
-    {
-        get => field;
-        set
-        {
-            SetProperty(ref field, value);
-            var appSettings = SettingsManager.Load();
-            appSettings.IsDetailsEnabled = value;
-            SettingsManager.Save(appSettings);
-            SetListContentControl(_listViewModel, value ? ViewMode.Detail : ViewMode.Light);
-        }
-    }
 
-    private void SetListContentControl(ListViewModel listViewModel, ViewMode mode)
-    {
-        if (mode == ViewMode.Detail)
-        {
-            ListContent = new ListDetailControl()
-            {
-                DataContext = listViewModel
-            };
-        }
-        else if (mode == ViewMode.Light)
-        {
-            ListContent = new ListLightControl()
-            {
-                DataContext = listViewModel
-            };
-        }
-    }
 
-    private void OnItemSelected(AClipboardItem obj)
-    {
-        SelectedItem = obj;
-    }
+   public List<ViewMode> ModeOptions => Enum.GetValues(typeof(ViewMode)).Cast<ViewMode>().ToList(); 
 
+   public ViewMode SelectedMode
+   {
+       get => field;
+       set
+       {
+           SetProperty(ref field, value);
+           var appSettings = SettingsManager.Load();
+           appSettings.ViewMode = value;
+           SettingsManager.Save(appSettings);
+           SetListContentControl(_listViewModel, value);
+       }
+   }
 
     public string SelectedTagsSummary
     {
@@ -176,6 +156,35 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         StopMonitoringClipboard();
     }
 
+    private void SetListContentControl(ListViewModel listViewModel, ViewMode mode)
+    {
+        if (mode == ViewMode.Detailed)
+        {
+            ListContent = new ListDetailControl()
+            {
+                DataContext = listViewModel
+            };
+        }
+        else if (mode == ViewMode.Compact)
+        {
+            ListContent = new ListLightControl()
+            {
+                DataContext = listViewModel
+            };
+        }
+        else
+        {
+            ListContent = new MenuViewModeControl()
+            {
+                DataContext = listViewModel
+            };
+        }
+    }
+
+    private void OnItemSelected(AClipboardItem obj)
+    {
+        SelectedItem = obj;
+    }
 
 
     public async Task SimulatePasteAsync()
@@ -458,11 +467,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     }
 }
 
-public enum ViewMode
-{
-    Light,
-    Detail
-}
 
 public class TagFilterOption(string name) : ViewModelBase
 {
