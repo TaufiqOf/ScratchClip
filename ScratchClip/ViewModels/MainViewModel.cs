@@ -30,6 +30,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     public Action? OnHideToTray;
     public Action? OnOpenSettings;
+    public Action<bool>? OnTopMostChanged;
     private bool _isInternalSelectionChange;
     private bool _isUpdatingTagOptions;
     private CancellationTokenSource? _monitorCts;
@@ -43,10 +44,11 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             FilteredHistory = FilteredHistory,
             SelectedItem = SelectedItem
         };
-
+        
         _listViewModel.OnItemSelected += OnItemSelected;
         var appSettings = SettingsManager.Load();
         SelectedMode = appSettings.ViewMode;
+        IsPinned = appSettings.IsPinned;
         _hotkeyService = hotkeyService;
         ClipboardManager.OnClipboardItemAdded += OnClipboardItemAdded;
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
@@ -139,6 +141,20 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             if (_isInternalSelectionChange)
                 return;
             _ = SetClipboardItemAsync(value);
+        }
+    }
+
+    public bool IsPinned
+    {
+        get => field;
+
+        set
+        {
+            SetProperty(ref field, value);
+            var appSettings = SettingsManager.Load();
+            appSettings.IsPinned = value;
+            OnTopMostChanged?.Invoke(value);
+            SettingsManager.Save(appSettings);
         }
     }
 

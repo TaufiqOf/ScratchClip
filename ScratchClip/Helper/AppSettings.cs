@@ -14,5 +14,6 @@ public class AppSettings
     public bool IsSaveHistoryOnExitEnabled { get; set; } = true;
     public ViewMode ViewMode { get; set; }
  
-    public int MaxItemsInHistory { get; set; } = 100;
+    public int MaxItemsInHistory { get; set; } = 99;
+    public bool IsPinned { get; set; } = false;
 }

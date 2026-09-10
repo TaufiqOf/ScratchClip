@@ -35,6 +35,7 @@ public partial class MainWindow : Window
         _viewModel = new MainViewModel(hotkeyService);
         _viewModel.OnHideToTray += HideToTray;
         _viewModel.OnOpenSettings += ShowSettingsPage;
+        _viewModel.OnTopMostChanged += TopMostChanged;
         DataContext = _viewModel;
         _mainPage = new MainPageControl();
         _mainPage.DataContext = _viewModel;
@@ -48,6 +49,12 @@ public partial class MainWindow : Window
         var settings = SettingsManager.Load();
         Width = settings.WindowWidth;
         Height = settings.WindowHeight;
+        TopMostChanged(settings.IsPinned);
+    }
+    
+    private void TopMostChanged(bool isPinned)
+    {
+        Topmost = isPinned;
     }
 
     private TextBox? SearchTextBoxControl =>
@@ -58,7 +65,9 @@ public partial class MainWindow : Window
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
-        if (IsVisible) HideToTray();
+        var settings = SettingsManager.Load();
+        if (!settings.IsPinned && IsVisible)
+            HideToTray();
     }
 
     private void OnWindowKeyDown(object? sender, KeyEventArgs e)
@@ -101,6 +110,7 @@ public partial class MainWindow : Window
     {
         PositionInBottomRight();
     }
+
     private static bool IsWayland()
     {
         if (!OperatingSystem.IsLinux())
@@ -132,7 +142,7 @@ public partial class MainWindow : Window
 
         Position = new PixelPoint(x, y);
     }
- 
+
 
     public void ForceExit()
     {

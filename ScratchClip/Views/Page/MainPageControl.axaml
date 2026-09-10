@@ -30,6 +30,13 @@
                         <avalonia:FluentIcon Icon="Eye" FontSize="16" />
                     </StackPanel>
                 </ToggleButton>
+                <!-- Monitor Clipboard Toggle -->
+                <ToggleButton IsChecked="{Binding IsPinned}"
+                              ToolTip.Tip="Toggle Pinned">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <avalonia:FluentIcon Icon="Pin" FontSize="16" />
+                    </StackPanel>
+                </ToggleButton>
 
                 <!-- Mode Toggle -->
                 <ComboBox ItemsSource="{Binding ModeOptions}"

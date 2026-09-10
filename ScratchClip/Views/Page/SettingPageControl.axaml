@@ -36,6 +36,7 @@
                               VerticalAlignment="Center" />
 
                 </Grid>
+
             </StackPanel>
             <StackPanel Spacing="8">
                 <Grid RowDefinitions="Auto,Auto">
@@ -46,8 +47,9 @@
                         <TextBlock Text="Max items in history:" VerticalAlignment="Center" />
                         <NumericUpDown Grid.Column="1"
                                        x:Name="MaxItemsInHistory"
+                                       Increment="1"
                                        Value="{Binding MaximumItemsInHistory, Mode=TwoWay}"
-                                       Maximum="100"
+                                       Maximum="99"
                                        Minimum="20"></NumericUpDown>
                     </Grid>
                 </Grid>
