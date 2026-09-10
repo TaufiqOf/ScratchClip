@@ -56,6 +56,7 @@ public class App : Application
             if (settings.IsSaveHistoryOnExitEnabled)
             {
                 var persistedItems = ClipboardHistoryManager.Load();
+                ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
                 ClipboardManager.LoadClipboardHistory(persistedItems);
             }
 

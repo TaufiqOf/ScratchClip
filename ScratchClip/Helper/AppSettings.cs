@@ -13,4 +13,6 @@ public class AppSettings
     public double WindowHeight { get; set; } = 600;
     public bool IsSaveHistoryOnExitEnabled { get; set; } = true;
     public ViewMode ViewMode { get; set; }
+ 
+    public int MaxItemsInHistory { get; set; } = 100;
 }

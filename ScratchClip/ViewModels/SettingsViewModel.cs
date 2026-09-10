@@ -11,6 +11,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly GlobalHotkeyService _hotkeyService;
 
     [ObservableProperty] private string _hotkeyDisplay;
+    [ObservableProperty] private int _maximumItemsInHistory;
 
     public SettingsViewModel(GlobalHotkeyService hotkeyService)
     {
@@ -23,6 +24,7 @@ public partial class SettingsViewModel : ObservableObject
         HotkeyDisplay = $"{PendingModifiers} + {PendingKey}".Replace("Left", "").Replace("Right", "");
         IsAutoStartEnabled = AutoStartManager.IsEnabled();
         IsSaveHistoryOnExitEnabled = settings.IsSaveHistoryOnExitEnabled;
+        MaximumItemsInHistory = settings.MaxItemsInHistory;
     }
     public bool IsAutoStartEnabled
     {
@@ -69,7 +71,7 @@ public partial class SettingsViewModel : ObservableObject
         settings.Modifiers = PendingModifiers;
         settings.Key = PendingKey;
         settings.IsAutoStartEnabled = AutoStartManager.IsEnabled();
-
+        settings.MaxItemsInHistory = MaximumItemsInHistory;
         SettingsManager.Save(settings);
     }
 }

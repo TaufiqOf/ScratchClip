@@ -23,6 +23,7 @@ public static class ClipboardManager
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
     private static AClipboardItem? _selectedClipboardItem;
 
+    public static int MaxItemsInHistory { get; set; } = 20;
     static ClipboardManager()
     {
         ClipboardServices = new Dictionary<ClipboardDataFormat, AClipboardService>();
@@ -57,7 +58,7 @@ public static class ClipboardManager
         ClipboardHistory.Clear();
         _selectedClipboardItem = null;
 
-        foreach (var item in items)
+        foreach (var item in items.Take(MaxItemsInHistory))
         {
             item.OnDelete += DeleteClipboardItem;
             ClipboardHistory.Add(item);
@@ -103,6 +104,12 @@ public static class ClipboardManager
             }
             else
             {
+                if(ClipboardHistory.Count >= MaxItemsInHistory)
+                {
+                    var lastItem = ClipboardHistory.Last();
+                    ClipboardHistory.Remove(lastItem);
+                    OnRemoveExistingClipboardItem?.Invoke(lastItem);
+                }
                 ClipboardHistory.Insert(0, item);
                 OnClipboardItemAdded?.Invoke(item);
             }

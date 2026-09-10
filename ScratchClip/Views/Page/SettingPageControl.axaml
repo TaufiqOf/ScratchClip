@@ -34,14 +34,22 @@
                     <CheckBox IsChecked="{Binding IsAutoStartEnabled}"
                               Content="Start application on system startup"
                               VerticalAlignment="Center" />
-     
+
                 </Grid>
             </StackPanel>
             <StackPanel Spacing="8">
-                <Grid ColumnDefinitions="Auto,*">
+                <Grid RowDefinitions="Auto,Auto">
                     <CheckBox IsChecked="{Binding IsSaveHistoryOnExitEnabled}"
                               Content="Save clipboard history on exit"
                               VerticalAlignment="Center" />
+                    <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
+                        <TextBlock Text="Max items in history:" VerticalAlignment="Center" />
+                        <NumericUpDown Grid.Column="1"
+                                       x:Name="MaxItemsInHistory"
+                                       Value="{Binding MaximumItemsInHistory, Mode=TwoWay}"
+                                       Maximum="100"
+                                       Minimum="20"></NumericUpDown>
+                    </Grid>
                 </Grid>
             </StackPanel>
         </StackPanel>
