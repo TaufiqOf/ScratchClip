@@ -186,8 +186,16 @@ public class App : Application
         //     await PasteItemToFocusedWindowAsync(item);
         //     return;
         // }
-
-        ToggleMainWindow();
+        if (SettingsManager.Load().IsPinned)
+        {
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
+                desktop.MainWindow is MainWindow window)
+                window.ShowFromTray();
+        }
+        else
+        {
+            ToggleMainWindow();
+        }
     }
 
     private void ShowApp_OnClick(object? sender, EventArgs e)
