@@ -37,6 +37,7 @@
                 <Border Grid.Row="0"
                         Grid.RowSpan="2"
                         Width="22"
+                        VerticalAlignment="Top"
                         Height="22"
                         CornerRadius="3"
                         Background="{DynamicResource SystemControlHighlightAccentBrush}">

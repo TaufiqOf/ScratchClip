@@ -20,6 +20,7 @@
               RowSpacing="4"
               ColumnSpacing="8">
             <Border Grid.Row="0"
+                    VerticalAlignment="Top"
                     Grid.RowSpan="2"
                     Width="22"
                     Height="22"

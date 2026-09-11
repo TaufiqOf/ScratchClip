@@ -16,6 +16,7 @@
         <Border Grid.Row="0"
                 Width="22"
                 Height="22"
+                Margin="10,0,2,0"
                 CornerRadius="3"
                 Background="{DynamicResource SystemControlHighlightAccentBrush}">
             <TextBlock Text="{Binding DisplayIndex}"
@@ -32,7 +33,8 @@
             </TextBlock>
             <Image Grid.Column="1"
                    Source="{Binding Image}"
-                   Width="32"
+                   HorizontalAlignment="Left"
+                   Width="32"                     
                    Height="32"
                    Stretch="Uniform" />
 

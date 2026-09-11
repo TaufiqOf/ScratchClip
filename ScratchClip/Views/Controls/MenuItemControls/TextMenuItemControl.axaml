@@ -16,7 +16,8 @@
         <Border Grid.Row="0"
                 Width="22"
                 Height="22"
-                CornerRadius="3"
+                CornerRadius="3"                
+                Margin="10,0,2,0"
                 Background="{DynamicResource SystemControlHighlightAccentBrush}">
             <TextBlock Text="{Binding DisplayIndex}"
                        FontSize="10"
@@ -29,7 +30,8 @@
                    VerticalAlignment="Center"
                    Margin="5,0,0,0" 
                    TextTrimming="CharacterEllipsis" 
-                   Text="{Binding Text, Converter={StaticResource OneLineConverter}}" />
+                   FontSize="12"
+                   Text="{Binding DisplayText, Converter={StaticResource OneLineConverter}}" />
         <Button Grid.Column="2" 
                 Margin="0,0,10,0"
                 Command="{Binding DeleteCommand}">

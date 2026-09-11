@@ -55,7 +55,7 @@ public partial class TextClipboardItem : AClipboardItem
         TextType = CreateTextType(text);
         UpdateTags();
         if(TextType is PasswordTextType passwordTextType)
-            DisplayText = new string('*', passwordTextType.Text.Length);
+            DisplayText = new string('•', passwordTextType.Text.Length);
         await TextType.PopulateMetadataAsync(text);
     }
 

@@ -5,7 +5,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Styling;
 using Avalonia.Threading;
+using ScratchClip.Helper;
 using ScratchClip.Manager;
 using ScratchClip.Services;
 using ScratchClip.ViewModels;
@@ -36,10 +38,19 @@ public partial class MainWindow : Window
         _viewModel.OnHideToTray += HideToTray;
         _viewModel.OnOpenSettings += ShowSettingsPage;
         _viewModel.OnTopMostChanged += TopMostChanged;
+        _viewModel.OnShowLockPage += ShowLockPage;
         DataContext = _viewModel;
-        _mainPage = new MainPageControl();
+        _mainPage = new MainPageControl(this.Icon);
         _mainPage.DataContext = _viewModel;
-        PageHost.Content = _mainPage;
+        
+        if (ApplicationKeyStore.HasPassword())
+        {
+            ShowLockPage();
+        }
+        else
+        {
+            ShowMainPage();
+        }
 
         Opened += OnOpened;
         Closed += OnClosed;
@@ -51,7 +62,19 @@ public partial class MainWindow : Window
         Height = settings.WindowHeight;
         TopMostChanged(settings.IsPinned);
     }
-    
+
+
+    private void ShowLockPage()
+    {
+        PasswordPageControl passwordPage = new PasswordPageControl();
+        PageHost.Content = passwordPage;
+        passwordPage.OnLogin += () =>
+        {
+            ShowMainPage();
+            Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
+        };
+    }
+
     private void TopMostChanged(bool isPinned)
     {
         Topmost = isPinned;
@@ -158,7 +181,7 @@ public partial class MainWindow : Window
 
     public void ShowFromTray()
     {
-        ShowMainPage();
+        //ShowMainPage();
         ShowInTaskbar = true;
         Show();
         WindowState = WindowState.Normal;

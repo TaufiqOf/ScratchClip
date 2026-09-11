@@ -11,6 +11,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using ScratchClip.Helper;
 using ScratchClip.Manager;
 using ScratchClip.Models;
 using ScratchClip.Services;
@@ -151,13 +152,13 @@ public class App : Application
     private void OnActualThemeVariantChanged(object? sender, EventArgs e)
     {
         UpdateIcons(ActualThemeVariant);
+        ApplicationTheme.Theme = ActualThemeVariant;
+        ApplicationTheme.OnThemeChanged?.Invoke(ActualThemeVariant);
     }
 
     private void UpdateIcons(ThemeVariant theme)
     {
-        var assetUri = theme == ThemeVariant.Dark
-            ? "avares://ScratchClip/Assets/icon-dark.ico"
-            : "avares://ScratchClip/Assets/icon-light.ico";
+        var assetUri = ApplicationTheme.GetIcon(theme, "ico");
 
         var uri = new Uri(assetUri);
 

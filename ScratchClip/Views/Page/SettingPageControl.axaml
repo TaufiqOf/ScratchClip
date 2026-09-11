@@ -1,64 +1,330 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
-             xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
-             x:Class="ScratchClip.Views.Page.SettingPageControl"
-             x:DataType="viewModels:SettingsViewModel">
-    <Grid Margin="16" RowDefinitions="*,Auto">
-        <StackPanel Grid.Row="0" Spacing="16">
-            <TextBlock Text="Global Shortcut" FontSize="16" FontWeight="SemiBold" />
+<UserControl
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+    xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+    x:Class="ScratchClip.Views.Page.SettingPageControl"
+    x:DataType="viewModels:SettingsViewModel">
 
-            <StackPanel Spacing="8">
-                <TextBlock Text="Press a key combination to show the application window:"
-                           Foreground="#888888" FontSize="12" TextWrapping="Wrap" />
+    <Grid Margin="10" RowDefinitions="Auto,*,Auto">
+        <Border
+            Margin="0,0,0,5"
+            Padding="0,0,0,5"
+            BorderThickness="0,0,0,1"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <TextBlock
+                    Text="SETTINGS"
+                    FontSize="26"
+                    FontWeight="SemiBold" />
 
-                <Grid ColumnDefinitions="*,Auto">
-                    <TextBox x:Name="HotkeyTextBox"
-                             Grid.Column="0"
-                             IsReadOnly="True"
-                             Text="{Binding HotkeyDisplay, Mode=OneWay}"
-                             PlaceholderText="Click here and press shortcut..."
-                             KeyDown="HotkeyTextBox_OnKeyDown" />
+                <TextBlock
+                    Text="Configure how ScratchClip behaves."
+                    Opacity="0.65"
+                    FontSize="13" />
+            </StackPanel>
+        </Border>
 
-                    <Button Grid.Column="1"
-                            Margin="8,0,0,0"
-                            Command="{Binding ClearHotkeyCommand}"
-                            ToolTip.Tip="Reset to default">
-                        <avalonia:FluentIcon Icon="Dismiss" FontSize="14" />
-                    </Button>
-                </Grid>
+        <!-- Settings content -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+
+            <StackPanel
+                MaxWidth="700"
+                HorizontalAlignment="Stretch"
+                Spacing="24">
+
+
+                <!-- General -->
+                <StackPanel Spacing="12">
+
+                    <TextBlock
+                        Text="General"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+
+                    <Border
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                        <StackPanel Spacing="16">
+
+                            <!-- Auto start -->
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="Start on system startup"
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Automatically start ScratchClip when you sign in."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    IsChecked="{Binding IsAutoStartEnabled}"
+                                    VerticalAlignment="Center" />
+
+                            </Grid>
+
+
+                            <!-- Save history -->
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="Save clipboard history on exit"
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Keep your clipboard history when ScratchClip closes."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    IsChecked="{Binding IsSaveHistoryOnExitEnabled}"
+                                    VerticalAlignment="Center" />
+
+                            </Grid>
+
+
+                            <!-- Maximum history -->
+                            <Grid
+                                ColumnDefinitions="*,Auto"
+                                Margin="0,4,0,0">
+
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="Maximum history items"
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Choose how many clipboard items ScratchClip keeps."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <NumericUpDown
+                                    Grid.Column="1"
+                                    Width="150"
+                                    x:Name="MaxItemsInHistory"
+                                    Increment="1"
+                                    Value="{Binding MaximumItemsInHistory, Mode=TwoWay}"
+                                    Maximum="300"
+                                    Minimum="20"
+                                    VerticalAlignment="Center" />
+
+                            </Grid>
+
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+
+                <!-- Shortcuts -->
+                <StackPanel Spacing="12">
+
+                    <TextBlock
+                        Text="Keyboard shortcuts"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+
+                    <Border
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                        <StackPanel Spacing="8">
+
+                            <TextBlock
+                                Text="Global shortcut"
+                                FontWeight="Medium" />
+
+                            <TextBlock
+                                Text="Press a key combination to show the ScratchClip window."
+                                FontSize="12"
+                                Opacity="0.65"
+                                TextWrapping="Wrap" />
+
+                            <Grid
+                                Margin="0,8,0,0"
+                                ColumnDefinitions="*,Auto">
+
+                                <TextBox
+                                    x:Name="HotkeyTextBox"
+                                    Grid.Column="0"
+                                    IsReadOnly="True"
+                                    Text="{Binding HotkeyDisplay, Mode=OneWay}"
+                                    PlaceholderText="Click here and press a shortcut..."
+                                    KeyDown="HotkeyTextBox_OnKeyDown" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    Width="38"
+                                    Margin="8,0,0,0"
+                                    Command="{Binding ClearHotkeyCommand}"
+                                    ToolTip.Tip="Reset shortcut">
+
+                                    <avalonia:FluentIcon
+                                        Icon="Dismiss"
+                                        Width="16"
+                                        Height="16" />
+
+                                </Button>
+
+                            </Grid>
+
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+
+
+                <!-- Security -->
+                <StackPanel Spacing="12">
+
+                    <TextBlock
+                        Text="Security"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+
+                    <Border
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                        <StackPanel Spacing="14">
+
+                            <!-- Header -->
+                            <StackPanel Spacing="3">
+
+                                <TextBlock
+                                    Text="Application password"
+                                    FontWeight="Medium"
+                                    FontSize="14" />
+
+                                <TextBlock
+                                    Text="Protect your clipboard history with a password."
+                                    FontSize="12"
+                                    Opacity="0.65"
+                                    TextWrapping="Wrap" />
+
+                            </StackPanel>
+
+
+                            <!-- Password fields -->
+                            <StackPanel Spacing="8">
+
+                                <TextBox
+                                    x:Name="PasswordTextBox"
+                                    PasswordChar="•"
+                                    PlaceholderText="Password" />
+
+                                <TextBox
+                                    x:Name="ConfirmPasswordTextBox"
+                                    PasswordChar="•"
+                                    PlaceholderText="Confirm password" />
+
+                            </StackPanel>
+
+
+                            <!-- Error / status -->
+                            <TextBlock
+                                x:Name="PasswordStatusText"
+                                FontSize="12"
+                                IsVisible="False"
+                                TextWrapping="Wrap" />
+
+
+                            <!-- Actions -->
+                            <StackPanel
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Spacing="8">
+
+                                <Button
+                                    x:Name="DeletePasswordButton"
+                                    Content="Delete password"
+                                    Click="DeletePasswordButtonOnClick"
+                                    IsVisible="False" />
+
+                                <Button
+                                    x:Name="SetPasswordButton"
+                                    Content="Set password"
+                                    Click="SetPasswordButtonOnClick"
+                                    Classes="accent" />
+
+                            </StackPanel>
+
+
+                            <!-- Information -->
+                            <TextBlock
+                                Text="Your password is stored securely using the system credential store."
+                                FontSize="11"
+                                Opacity="0.5"
+                                TextWrapping="Wrap" />
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
             </StackPanel>
 
-            <StackPanel Spacing="8">
-                <Grid ColumnDefinitions="Auto,*">
-                    <CheckBox IsChecked="{Binding IsAutoStartEnabled}"
-                              Content="Start application on system startup"
-                              VerticalAlignment="Center" />
+        </ScrollViewer>
 
-                </Grid>
+
+        <!-- Bottom actions -->
+        <Border
+            Grid.Row="2"
+            Margin="0,5,0,0"
+            Padding="0,5,0,0"
+            BorderThickness="0,1,0,0"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="8">
+
+                <Button
+                    Content="Cancel"
+                    Click="OnCancelClick"
+                    Width="100"
+                    IsCancel="True" />
+
+                <Button
+                    Content="Save"
+                    Click="OnSaveClick"
+                    IsDefault="True"
+                    Width="100"
+                    Classes="accent" />
 
             </StackPanel>
-            <StackPanel Spacing="8">
-                <Grid RowDefinitions="Auto,Auto">
-                    <CheckBox IsChecked="{Binding IsSaveHistoryOnExitEnabled}"
-                              Content="Save clipboard history on exit"
-                              VerticalAlignment="Center" />
-                    <Grid Grid.Row="1" ColumnDefinitions="Auto,*">
-                        <TextBlock Text="Max items in history:" VerticalAlignment="Center" />
-                        <NumericUpDown Grid.Column="1"
-                                       x:Name="MaxItemsInHistory"
-                                       Increment="1"
-                                       Value="{Binding MaximumItemsInHistory, Mode=TwoWay}"
-                                       Maximum="300"
-                                       Minimum="20"></NumericUpDown>
-                    </Grid>
-                </Grid>
-            </StackPanel>
-        </StackPanel>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
-            <Button Content="Cancel" Click="OnCancelClick" IsCancel="True" />
-            <Button Content="Save" Click="OnSaveClick" IsDefault="True" Classes="accent" />
-        </StackPanel>
+        </Border>
+
     </Grid>
+
 </UserControl>

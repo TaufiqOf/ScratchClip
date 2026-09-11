@@ -7,6 +7,10 @@
         Width="450" Height="600"
         WindowStartupLocation="Manual"
         Icon="avares://ScratchClip/Assets/icon-dark.ico"
+        CanMinimize="False"
+        CanMaximize="False"
+        MinWidth="650" MinHeight="650"
+        WindowDecorations="BorderOnly"
         Title="ScratchClip">
     <ContentControl x:Name="PageHost" />
 </Window>

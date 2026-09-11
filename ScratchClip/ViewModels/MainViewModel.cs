@@ -8,10 +8,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Avalonia.Platform;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using FuzzySharp;
+using ScratchClip.Helper;
 using ScratchClip.Manager;
 using ScratchClip.Models;
 using ScratchClip.Services;
@@ -31,6 +35,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     public Action? OnHideToTray;
     public Action? OnOpenSettings;
+    public Action? OnShowLockPage;
+    
     public Action<bool>? OnTopMostChanged;
     private bool _isInternalSelectionChange;
     private bool _isUpdatingTagOptions;
@@ -66,7 +72,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _searchDebounceTimer = new Timer(800);
         _searchDebounceTimer.Stop();
         _searchDebounceTimer.Elapsed += SearchDebounceTimerOnElapsed;
+   
     }
+
+
 
     public ObservableCollection<AClipboardItem> FilteredHistory { get; } = new();
     public ObservableCollection<TagFilterOption> TagFilterOptions { get; } = new();
@@ -156,6 +165,16 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             appSettings.IsPinned = value;
             OnTopMostChanged?.Invoke(value);
             SettingsManager.Save(appSettings);
+        }
+    }
+
+    public bool IsPasswordSet
+    {
+        get => field;
+        set
+        {
+            SetProperty(ref field, value);
+            OnPropertyChanged();
         }
     }
 
@@ -256,6 +275,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         while (!cancellationToken.IsCancellationRequested && await timer.WaitForNextTickAsync(cancellationToken))
             await Dispatcher.UIThread.InvokeAsync(() => _ = ClipboardManager.CheckClipboard());
+    }
+    
+    [RelayCommand]
+    public void Lock()
+    {
+        OnShowLockPage?.Invoke();
     }
 
     [RelayCommand]
