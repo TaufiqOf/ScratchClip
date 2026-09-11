@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +10,12 @@ namespace ScratchClip.Services.ClipboardService;
 
 internal class TextClipboardService : AClipboardService
 {
-    public override async Task<AClipboardItem?> GetDataAsync()
+    public override async Task<AClipboardItem?> GetItemAsync(ClipboardDataFormat type)
     {
         TextClipboardItem? item = null;
         var clipboard = GetClipboard();
         if (clipboard == null) return await Task.FromResult(item);
+        var clipboardData = await clipboard.TryGetDataAsync();
         var text = await clipboard.TryGetTextAsync();
         if (text is not { } str || string.IsNullOrEmpty(str))
         {
@@ -28,9 +30,10 @@ internal class TextClipboardService : AClipboardService
             Format = ClipboardDataFormat.Text,
             Text = str,
             Timestamp = DateTime.Now,
-            DisplayText = displayText
+            DisplayText = displayText,
+            MataData= clipboardData?.Formats.Select(f => f.Identifier).ToList(),
+            
         };
-
         _ = item.PopulateMetadataAsync();
 
         return await Task.FromResult(item);

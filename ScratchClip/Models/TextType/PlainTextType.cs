@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -11,7 +12,7 @@ public partial class PlainTextType : ATextType
 {
     private readonly string _text;
     private int _maxLength = 600;
-    public PlainTextType(string text, ObservableCollection<string> tags) : base(text, tags)
+    public PlainTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
     {
         ShowMore = false;
         _text = text;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ScratchClip.ViewModels;
 
@@ -73,4 +74,6 @@ public abstract class AClipboardItem : ViewModelBase
             OnPropertyChanged();
         }
     } = DateTime.Now;
+
+    public List<string?> MataData { get; set; } = new List<string?>();
 }

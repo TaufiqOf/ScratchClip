@@ -10,10 +10,12 @@ namespace ScratchClip.Models.TextType;
 
 public class PasswordTextType : ATextType
 {
+    private readonly List<string?> _mataData;
     private const double MinimumConfidence = 0.60;
 
-    public PasswordTextType(string text, ObservableCollection<string> tags) : base(text, tags)
+    public PasswordTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
     {
+        _mataData = mataData;
         Icon = Icon.Key;
         Text = text;
     }
@@ -26,22 +28,21 @@ public class PasswordTextType : ATextType
     {
         if (string.IsNullOrWhiteSpace(text))
             return false;
-
         var trimmed = text.Trim();
-
+        
         // Passwords almost never contain internal whitespace
         if (trimmed.Any(char.IsWhiteSpace))
             return false;
-
+        
         // Reject standard code syntax immediately
         if (LooksLikeCodeSnippet(trimmed))
             return false;
-
+        
         var confidence = CalculatePasswordProbability(trimmed);
-
+        
         if (confidence < MinimumConfidence)
             return false;
-
+        
         DetectionConfidence = confidence;
         return true;
     }

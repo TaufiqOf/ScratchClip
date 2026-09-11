@@ -21,7 +21,7 @@ internal class StorageClipboardService : AClipboardService
         _storageProvider = storageProvider;
     }
 
-    public override async Task<AClipboardItem?> GetDataAsync()
+    public override async Task<AClipboardItem?> GetItemAsync(ClipboardDataFormat type)
     {
         var clipboard = GetClipboard();
         if (clipboard == null)
@@ -42,13 +42,14 @@ internal class StorageClipboardService : AClipboardService
         var displayText = paths.Count == 1
             ? Path.GetFileName(paths[0])
             : $"{paths.Count} items";
-
+        var clipboardData = await clipboard.TryGetDataAsync();
         return new StorageClipboardItem
         {
             Format = ClipboardDataFormat.Storage,
             Timestamp = DateTime.Now,
             DisplayText = displayText,
-            Paths = paths
+            Paths = paths,
+            MataData= clipboardData?.Formats.Select(f => f.Identifier).ToList(),
         };
     }
 

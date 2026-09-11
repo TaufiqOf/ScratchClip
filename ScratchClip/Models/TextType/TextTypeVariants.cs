@@ -196,7 +196,7 @@ public class CodeTextType : ATextType
             ])
     ];
 
-    public CodeTextType(string text, ObservableCollection<string> tags) : base(text, tags)
+    public CodeTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
     {
         Icon = Icon.CodeBlock;
         Text = text;

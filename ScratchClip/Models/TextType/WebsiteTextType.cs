@@ -16,7 +16,7 @@ namespace ScratchClip.Models.TextType;
 public partial class WebsiteTextType : ATextType
 {
 
-    public WebsiteTextType(string text, ObservableCollection<string> tags) : base(text, tags)
+    public WebsiteTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
     {
         Icon = Icon.Globe;
     }

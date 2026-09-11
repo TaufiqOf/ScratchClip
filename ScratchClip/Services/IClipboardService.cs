@@ -16,7 +16,7 @@ internal abstract class AClipboardService
         return null;
     }
 
-    public abstract Task<AClipboardItem?> GetDataAsync();
+    public abstract Task<AClipboardItem?> GetItemAsync(ClipboardDataFormat type);
     public abstract Task CreateSignature(AClipboardItem item);
     public abstract Task CopyData(AClipboardItem value);
     public abstract Task<object?> GetClipboardData();

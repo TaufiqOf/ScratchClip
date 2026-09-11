@@ -107,11 +107,20 @@
                     <SelectableTextBlock.IsVisible>
                         <MultiBinding Converter="{x:Static BoolConverters.Or}">
                             <Binding Path="!IsPassword" />
+                        </MultiBinding>
+                    </SelectableTextBlock.IsVisible>
+                </SelectableTextBlock>
+                <SelectableTextBlock Text="{Binding Text}"
+                                     FontSize="12"
+                                     Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                     TextWrapping="Wrap">
+                    <SelectableTextBlock.IsVisible>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="IsPassword" />
                             <Binding Path="#ListRevealToggle.IsChecked" />
                         </MultiBinding>
                     </SelectableTextBlock.IsVisible>
                 </SelectableTextBlock>
-                
                 <!-- Masked Content: Visible ONLY if it IS a password AND Toggle is UNCHECKED -->
                 <TextBlock Text="••••••••••••"
                            FontSize="12"

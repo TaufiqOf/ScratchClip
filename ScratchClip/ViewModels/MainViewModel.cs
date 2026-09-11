@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,7 +63,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ApplyFilter();
 
         StartMonitoringClipboard();
-        _searchDebounceTimer = new Timer(300);
+        _searchDebounceTimer = new Timer(800);
         _searchDebounceTimer.Stop();
         _searchDebounceTimer.Elapsed += SearchDebounceTimerOnElapsed;
     }
@@ -449,14 +450,16 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     {
         int? number = keyEventArgs.Key switch
         {
-            >= Key.D1 and <= Key.D9 => (int)keyEventArgs.Key - (int)Key.D1 + 1,
-            >= Key.NumPad1 and <= Key.NumPad9 => (int)keyEventArgs.Key - (int)Key.NumPad1 + 1,
+            >= Key.D0 and <= Key.D9 => (int)keyEventArgs.Key - (int)Key.D0,
+            >= Key.NumPad0 and <= Key.NumPad9 => (int)keyEventArgs.Key - (int)Key.NumPad0,
             _ => null
         };
 
         if (number.HasValue)
         {
             _registerNumber += number.Value;
+            Debug.WriteLine($"Number pressed: {number.Value}");
+            Debug.WriteLine($"_registerNumber_registerNumber: {_registerNumber}");
             _searchDebounceTimer.Stop();
             _searchDebounceTimer.Start();
         }

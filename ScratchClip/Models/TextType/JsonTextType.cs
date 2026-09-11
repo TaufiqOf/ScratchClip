@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace ScratchClip.Models.TextType;
 
 public class JsonTextType : ATextType
 {
-    public JsonTextType(string text, ObservableCollection<string> tags) : base(text, tags)
+    public JsonTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
     {
         Icon = Icon.Markdown;
     }

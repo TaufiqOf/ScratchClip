@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.Input;
 using ScratchClip.Manager;
 using ScratchClip.Models.TextType;
@@ -52,7 +54,8 @@ public partial class TextClipboardItem : AClipboardItem
 
         TextType = CreateTextType(text);
         UpdateTags();
-
+        if(TextType is PasswordTextType passwordTextType)
+            DisplayText = new string('*', passwordTextType.Text.Length);
         await TextType.PopulateMetadataAsync(text);
     }
 
@@ -62,13 +65,13 @@ public partial class TextClipboardItem : AClipboardItem
     {
         var candidates = new ATextType[]
         {
-            new WebsiteTextType(text,Tags),
-            new JsonTextType(text,Tags),
-            new XmlTextType(text,Tags),
-            new CodeTextType(text,Tags),
-            new MarkdownTextType(text,Tags),
-            new PasswordTextType(text,Tags),
-            new PlainTextType(text,Tags),//must be last, as it will match anything
+            new WebsiteTextType(text,Tags,MataData),
+            new JsonTextType(text,Tags,MataData),
+            new XmlTextType(text,Tags,MataData),
+            new CodeTextType(text,Tags,MataData),
+            new MarkdownTextType(text,Tags,MataData),
+            new PasswordTextType(text,Tags,MataData),
+            new PlainTextType(text,Tags,MataData),//must be last, as it will match anything
         };
 
         return candidates.First(type => type.IsMatch(text));

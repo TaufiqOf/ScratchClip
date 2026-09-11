@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
@@ -11,7 +12,7 @@ namespace ScratchClip.Services.ClipboardService;
 
 internal class ImageClipboardService : AClipboardService
 {
-    public override async Task<AClipboardItem?> GetDataAsync()
+    public override async Task<AClipboardItem?> GetItemAsync(ClipboardDataFormat type)
     {
         var clipboard = GetClipboard();
         if (clipboard == null)
@@ -20,12 +21,13 @@ internal class ImageClipboardService : AClipboardService
         var bitmap = await clipboard.TryGetBitmapAsync();
         if (bitmap == null)
             return null;
-
+        var clipboardData = await clipboard.TryGetDataAsync();
         return new ImageClipboardItem
         {
             Format = ClipboardDataFormat.Image,
             Timestamp = DateTime.Now,
             DisplayText = "Image",
+            MataData= clipboardData?.Formats.Select(f => f.Identifier).ToList(),
             Image = bitmap
         };
     }

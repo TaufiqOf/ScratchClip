@@ -72,6 +72,7 @@ public partial class SettingsViewModel : ObservableObject
         settings.Key = PendingKey;
         settings.IsAutoStartEnabled = AutoStartManager.IsEnabled();
         settings.MaxItemsInHistory = MaximumItemsInHistory;
+        ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
         SettingsManager.Save(settings);
     }
 }

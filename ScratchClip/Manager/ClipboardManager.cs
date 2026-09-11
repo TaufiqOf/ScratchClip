@@ -58,7 +58,7 @@ public static class ClipboardManager
         ClipboardHistory.Clear();
         _selectedClipboardItem = null;
 
-        foreach (var item in items.Take(MaxItemsInHistory))
+        foreach (var item in items.OrderBy(q => q.Timestamp).Take(MaxItemsInHistory))
         {
             item.OnDelete += DeleteClipboardItem;
             ClipboardHistory.Add(item);
@@ -135,7 +135,7 @@ public static class ClipboardManager
         AClipboardItem? item = null;
         if (ClipboardServices.TryGetValue(type, out var service))
         {
-            item = await service.GetDataAsync();
+            item = await service.GetItemAsync(type);
             if (item == null) return item;
             await service.CreateSignature(item);
             item.OnDelete += DeleteClipboardItem;

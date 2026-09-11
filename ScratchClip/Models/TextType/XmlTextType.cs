@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -7,7 +8,7 @@ namespace ScratchClip.Models.TextType;
 
 public class XmlTextType : ATextType
 {
-    public XmlTextType(string text, ObservableCollection<string> tags) : base(text, tags)
+    public XmlTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
     {
         Icon = Icon.Markdown;
     }
