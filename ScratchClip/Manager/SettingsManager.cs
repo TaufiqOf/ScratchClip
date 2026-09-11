@@ -8,6 +8,7 @@ namespace ScratchClip.Manager;
 
 public static class SettingsManager
 {
+    public static Action<AppSettings> OnSettingsUpdated { get; set; } 
     private static readonly string FolderPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "ScratchClip");
@@ -44,6 +45,7 @@ public static class SettingsManager
             Directory.CreateDirectory(FolderPath);
             var json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(FilePath, json);
+            OnSettingsUpdated?.Invoke(settings);
         }
         catch (Exception ex)
         {

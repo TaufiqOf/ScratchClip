@@ -36,7 +36,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public Action? OnHideToTray;
     public Action? OnOpenSettings;
     public Action? OnShowLockPage;
-    
+
     public Action<bool>? OnTopMostChanged;
     private bool _isInternalSelectionChange;
     private bool _isUpdatingTagOptions;
@@ -51,9 +51,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             FilteredHistory = FilteredHistory,
             SelectedItem = SelectedItem
         };
-        
+
         _listViewModel.OnItemSelected += OnItemSelected;
         var appSettings = SettingsManager.Load();
+        SettingsManager.OnSettingsUpdated += OnSettingsUpdated;
         SelectedMode = appSettings.ViewMode;
         IsPinned = appSettings.IsPinned;
         _hotkeyService = hotkeyService;
@@ -72,36 +73,38 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _searchDebounceTimer = new Timer(800);
         _searchDebounceTimer.Stop();
         _searchDebounceTimer.Elapsed += SearchDebounceTimerOnElapsed;
-   
     }
 
+    private void OnSettingsUpdated(AppSettings obj)
+    {
+        UpdateDisplayIndexes();
+    }
 
 
     public ObservableCollection<AClipboardItem> FilteredHistory { get; } = new();
     public ObservableCollection<TagFilterOption> TagFilterOptions { get; } = new();
 
-    public UserControl? ListContent  
+    public UserControl? ListContent
     {
         get;
         set => SetProperty(ref field, value);
     }
-    
 
 
-   public List<ViewMode> ModeOptions => Enum.GetValues(typeof(ViewMode)).Cast<ViewMode>().ToList(); 
+    public List<ViewMode> ModeOptions => Enum.GetValues(typeof(ViewMode)).Cast<ViewMode>().ToList();
 
-   public ViewMode SelectedMode
-   {
-       get => field;
-       set
-       {
-           SetProperty(ref field, value);
-           var appSettings = SettingsManager.Load();
-           appSettings.ViewMode = value;
-           SettingsManager.Save(appSettings);
-           SetListContentControl(_listViewModel, value);
-       }
-   }
+    public ViewMode SelectedMode
+    {
+        get => field;
+        set
+        {
+            SetProperty(ref field, value);
+            var appSettings = SettingsManager.Load();
+            appSettings.ViewMode = value;
+            SettingsManager.Save(appSettings);
+            SetListContentControl(_listViewModel, value);
+        }
+    }
 
     public string SelectedTagsSummary
     {
@@ -276,7 +279,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         while (!cancellationToken.IsCancellationRequested && await timer.WaitForNextTickAsync(cancellationToken))
             await Dispatcher.UIThread.InvokeAsync(() => _ = ClipboardManager.CheckClipboard());
     }
-    
+
     [RelayCommand]
     public void Lock()
     {
@@ -324,7 +327,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void ClearHistory()
     {
         ClipboardManager.ClearClipboardHistory();
-
     }
 
     [RelayCommand]
@@ -467,6 +469,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private void UpdateDisplayIndexes()
     {
+        if (SettingsManager.Load().IsReverseOrder)
+        {
+            for (var i = 0; i < FilteredHistory.Count; i++)
+                FilteredHistory[i].DisplayIndex = i + 1;
+            return;
+        }
+
         for (var i = FilteredHistory.Count - 1; i >= 0; i--)
             FilteredHistory[i].DisplayIndex = FilteredHistory.Count - i;
     }
@@ -502,7 +511,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         {
             var item = FilteredHistory.FirstOrDefault(q => q.DisplayIndex == int.Parse(_registerNumber));
             if (item != null) ClipboardManager.SelectedClipboardItem = item;
-
             OnHideToTray?.Invoke();
             await _hotkeyService.SimulatePasteAsync();
 
@@ -510,7 +518,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 }
-
 
 public class TagFilterOption(string name) : ViewModelBase
 {

@@ -76,6 +76,30 @@
 
                             </Grid>
 
+                            <!-- Reverse order -->
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="Reverse order"
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Number the most recent clipboard items is 1, and the oldest is the maximum number of items."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    IsChecked="{Binding IsReverseOrder}"
+                                    VerticalAlignment="Center" />
+
+                            </Grid>
 
                             <!-- Save history -->
                             <Grid ColumnDefinitions="*,Auto">

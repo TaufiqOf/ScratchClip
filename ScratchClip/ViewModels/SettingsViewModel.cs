@@ -25,7 +25,20 @@ public partial class SettingsViewModel : ObservableObject
         IsAutoStartEnabled = AutoStartManager.IsEnabled();
         IsSaveHistoryOnExitEnabled = settings.IsSaveHistoryOnExitEnabled;
         MaximumItemsInHistory = settings.MaxItemsInHistory;
+        IsReverseOrder = settings.IsReverseOrder;
     }
+
+    public bool IsReverseOrder
+    {
+        get;
+        set
+        {
+            if (value == field) return;
+            field = value;
+            OnPropertyChanged();
+        }
+    }
+
     public bool IsAutoStartEnabled
     {
         get;
@@ -72,6 +85,7 @@ public partial class SettingsViewModel : ObservableObject
         settings.Key = PendingKey;
         settings.IsAutoStartEnabled = AutoStartManager.IsEnabled();
         settings.MaxItemsInHistory = MaximumItemsInHistory;
+        settings.IsReverseOrder = IsReverseOrder;
         ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
         SettingsManager.Save(settings);
     }
