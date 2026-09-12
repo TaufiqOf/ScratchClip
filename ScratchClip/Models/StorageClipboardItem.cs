@@ -79,16 +79,16 @@ public partial class StorageClipboardItem : AClipboardItem
         Tags.Clear();
         if (value.All(q => GetStorageType(q) == StorageType.Folder))
         {
-            Tags.Add("Folder");
+            Tags.Add("FOLDER");
         }
         else if (value.All(q => GetStorageType(q) == StorageType.File))
         {
-            Tags.Add("File");
+            Tags.Add("FILE");
         }
         else
         {
-            Tags.Add("File");
-            Tags.Add("Folder");
+            Tags.Add("FILE");
+            Tags.Add("FOLDER");
         }
     }
 

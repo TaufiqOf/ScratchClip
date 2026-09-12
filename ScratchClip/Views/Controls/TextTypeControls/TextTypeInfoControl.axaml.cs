@@ -39,9 +39,9 @@ public partial class TextTypeInfoControl : UserControl
 
         var definitionName = DataContext switch
         {
-            JsonTextType => "JavaScript",
+            JsonTextType => "JAVASCRIPT",
             XmlTextType => "XML",
-            MarkdownTextType => "Markdown",
+            MarkdownTextType => "MARKDOWN",
             CodeTextType => "C#",
             _ => string.Empty
         };

@@ -14,7 +14,7 @@ public partial class TextClipboardItem : AClipboardItem
 
     public TextClipboardItem()
     {
-        Tags.Add("Text");
+        Tags.Add("TEXT");
     }
 
     public ATextType? TextType
@@ -81,7 +81,7 @@ public partial class TextClipboardItem : AClipboardItem
     private void UpdateTags()
     {
         // var tags = new List<string> { "Text" };
-        Tags.Add(Type.ToString());
+        Tags.Add(Type.ToString().ToUpperInvariant());
         // foreach (var tag in tags.Distinct())
         //     Tags.Add(tag);
     }

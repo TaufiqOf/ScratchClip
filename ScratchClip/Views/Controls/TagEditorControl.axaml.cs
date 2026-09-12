@@ -86,7 +86,7 @@ public partial class TagEditorControl : UserControl
             }
         }
 
-        Tags.Add(tag);
+        Tags.Add(tag.ToUpper(System.Globalization.CultureInfo.InvariantCulture));
 
         TagText = string.Empty;
         SelectedTag = null;

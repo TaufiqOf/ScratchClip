@@ -7,7 +7,7 @@ public partial class ImageClipboardItem : AClipboardItem
 {
     public ImageClipboardItem()
     {
-        Tags.Add("Image");
+        Tags.Add("IMAGE");
     }
     
     public Bitmap? Image

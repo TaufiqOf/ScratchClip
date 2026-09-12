@@ -44,7 +44,7 @@ public partial class MainWindow : Window
         DataContext = _viewModel;
         _mainPage = new MainPageControl(this.Icon);
         _mainPage.DataContext = _viewModel;
-        
+
         if (ApplicationKeyStore.HasPassword())
         {
             ShowLockPage();
@@ -57,13 +57,11 @@ public partial class MainWindow : Window
         Opened += OnOpened;
         Closed += OnClosed;
         Deactivated += OnWindowDeactivated;
+        Activated += OnActivated;
         // Use Tunnel routing strategy to catch key presses before ListBox consumes them
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
-        var settings = SettingsManager.Load();
-        Width = settings.WindowWidth;
-        Height = settings.WindowHeight;
-        TopMostChanged(settings.IsPinned);
     }
+
 
     private void OnShowEditPage(AClipboardItem obj)
     {
@@ -104,6 +102,26 @@ public partial class MainWindow : Window
         var settings = SettingsManager.Load();
         if (!settings.IsPinned && IsVisible)
             HideToTray();
+        Dispatcher.UIThread.Post(() =>
+        {
+            var settings = SettingsManager.Load();
+            settings.WindowWidth = Width;
+            settings.WindowHeight = Height;
+            settings.IsPinned = Topmost;
+            SettingsManager.Save(settings);
+        }, DispatcherPriority.Background);
+    }
+    
+    
+    private void OnActivated(object? sender, EventArgs e)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            var settings = SettingsManager.Load();
+            Width = settings.WindowWidth;
+            Height = settings.WindowHeight;
+            TopMostChanged(settings.IsPinned);
+        }, DispatcherPriority.Background);
     }
 
     private void OnWindowKeyDown(object? sender, KeyEventArgs e)
@@ -197,7 +215,10 @@ public partial class MainWindow : Window
         //ShowMainPage();
         ShowInTaskbar = true;
         Show();
+        var settings = SettingsManager.Load();
         WindowState = WindowState.Normal;
+        Width = settings.WindowWidth;
+        Height = settings.WindowHeight;
         PositionInBottomRight();
         Activate();
         Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
