@@ -90,8 +90,7 @@ public partial class TextClipboardItem : AClipboardItem
         await ClipboardManager.SetClipboardItemAsync(this);
     }
 
-    [RelayCommand]
-    private void Delete()
+    public override void Delete()
     {
         OnDelete?.Invoke(this);
     }

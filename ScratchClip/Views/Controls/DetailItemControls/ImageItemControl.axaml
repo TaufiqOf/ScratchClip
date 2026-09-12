@@ -1,96 +1,18 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:models="clr-namespace:ScratchClip.Models"
-             xmlns:textType="clr-namespace:ScratchClip.Models.TextType"
-             xmlns:models1="clr-namespace:ScratchClip.Models"
-             xmlns:converters="clr-namespace:ScratchClip.Converters"
              x:Class="ScratchClip.Views.Controls.DetailItemControls.ImageItemControl"
-             x:DataType="models1:ImageClipboardItem">
-
-    <UserControl.Resources>
-        <converters:ToUpperConverter x:Key="ToUpperConverter" />
-    </UserControl.Resources>
+             x:DataType="models:ImageClipboardItem">
 
     <Border CornerRadius="6"
             ClipToBounds="True"
             DoubleTapped="OnDoubleTapped">
-        <Grid>
-            <!-- Image Content (Fills entire background area) -->
-            <Image Source="{Binding Image}"
-                   Stretch="UniformToFill"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center" />
 
-            <Border VerticalAlignment="Bottom"
-                    Margin="0,6,0,0"
-                    Padding="4"
-                    CornerRadius="4"
-                    Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
-                <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center">
-                    <!-- Index Badge -->
-                    <Border Grid.Column="0"
-                            Background="{DynamicResource SystemControlHighlightAccentBrush}"
-                            CornerRadius="3"
-                            Width="24" Height="24"
-                            VerticalAlignment="Center">
-                        <TextBlock Text="{Binding DisplayIndex}"
-                                   FontSize="11"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                    </Border>
+        <Image Source="{Binding Image}"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center" />
 
-                    <!-- Format Tag & Timestamp -->
-                    <StackPanel Grid.Column="1"
-                                Orientation="Horizontal"
-                                Spacing="8"
-                                Margin="8,0"
-                                VerticalAlignment="Center">
-                        <TextBlock Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
-                                   FontSize="11"
-                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                                   VerticalAlignment="Center" />
-                        <ItemsControl ItemsSource="{Binding Tags}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="4" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
-                                            CornerRadius="3"
-                                            Padding="6,2"
-                                            VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Converter={StaticResource ToUpperConverter}}"
-                                                   FontSize="10"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
-                                                   VerticalAlignment="Center" />
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-
-                    <!-- Delete Button -->
-                    <Button Grid.Column="2"
-                            Command="{Binding DeleteCommand}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            CornerRadius="3"
-                            Padding="5"
-                            Width="26" Height="26"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Center"
-                            ToolTip.Tip="Delete Item">
-                        <avalonia:FluentIcon Icon="Delete" FontSize="14" />
-                    </Button>
-                </Grid>
-            </Border>
-        </Grid>
     </Border>
+
 </UserControl>

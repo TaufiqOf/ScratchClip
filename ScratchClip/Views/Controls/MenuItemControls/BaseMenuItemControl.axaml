@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:models="clr-namespace:ScratchClip.Models"
+             x:Name="BaseControl"
+             x:DataType="models:AClipboardItem"
+             x:Class="ScratchClip.Views.Controls.MenuItemControls.BaseMenuItemControl">
+
+    <Grid ColumnDefinitions="Auto,*,Auto"
+          ColumnSpacing="5"
+          Height="40">
+
+        <!-- Index -->
+        <Border Width="22"
+                Height="22"
+                CornerRadius="3"
+                Margin="10,0,2,0"
+                Background="{DynamicResource SystemControlHighlightAccentBrush}">
+
+            <TextBlock Text="{Binding DisplayIndex}"
+                       FontSize="10"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+
+        </Border>
+
+        <!-- Child -->
+
+        <ContentPresenter Grid.Column="1"
+                          Content="{Binding ItemContent, ElementName=BaseControl}" />
+
+        <!-- Delete -->
+        <Button Grid.Column="2"
+                Margin="0,0,10,0"
+                ToolTip.Tip="Delete"
+                Command="{Binding DeleteCommand}">
+
+            <avalonia:FluentIcon Icon="Delete"
+                                 Width="16"
+                                 Height="16" />
+
+        </Button>
+
+    </Grid>
+
+</UserControl>

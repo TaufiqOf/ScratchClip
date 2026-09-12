@@ -132,8 +132,7 @@ public partial class StorageClipboardItem : AClipboardItem
         throw new FileNotFoundException($"The storage item '{storageItem}' does not exist.");
     }
 
-    [RelayCommand]
-    private void Delete()
+    public override void Delete()
     {
         OnDelete?.Invoke(this);
     }

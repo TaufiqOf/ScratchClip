@@ -22,9 +22,10 @@ public partial class ImageClipboardItem : AClipboardItem
     }
 
 
-    [RelayCommand]
-    private void Delete()
+    public override void Delete()
     {
         OnDelete?.Invoke(this);
     }
+
+ 
 }

@@ -1,14 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:converters="clr-namespace:ScratchClip.Converters"
              xmlns:models="clr-namespace:ScratchClip.Models"
-             xmlns:lightItemControls="clr-namespace:ScratchClip.Views.Controls.LightItemControls"
-             xmlns:global="clr-namespace:ScratchClip.Converters"
-             xmlns:global1="clr-namespace:"
-             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:menuItemControls="clr-namespace:ScratchClip.Views.Controls.MenuItemControls"
              x:DataType="viewModels:ListViewModel"
              x:Class="ScratchClip.Views.Controls.MenuViewModeControl">
@@ -33,23 +26,36 @@
 
     <!-- Clipboard List -->
     <Grid Margin="6,2,6,6">
-        <ListBox
-            x:Name="ListBox"
-            ItemsSource="{Binding FilteredHistory}"
-            SelectionMode="Single"
-            SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+        <ListBox x:Name="ListBox"
+                 ItemsSource="{Binding FilteredHistory}"
+                 SelectionMode="Single"
+                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
             <ListBox.DataTemplates>
+                <!-- Text -->
                 <DataTemplate x:DataType="models:TextClipboardItem">
-                  <menuItemControls:TextMenuItemControl DataContext="{Binding}" />
+                    <menuItemControls:BaseMenuItemControl>
+                        <menuItemControls:BaseMenuItemControl.ItemContent>
+                            <menuItemControls:TextMenuItemControl />
+                        </menuItemControls:BaseMenuItemControl.ItemContent>
+                    </menuItemControls:BaseMenuItemControl>
                 </DataTemplate>
+                <!-- Image -->
                 <DataTemplate x:DataType="models:ImageClipboardItem">
-                  <menuItemControls:ImageMenuItemControl DataContext="{Binding}" />
+                    <menuItemControls:BaseMenuItemControl>
+                        <menuItemControls:BaseMenuItemControl.ItemContent>
+                            <menuItemControls:ImageMenuItemControl />
+                        </menuItemControls:BaseMenuItemControl.ItemContent>
+                    </menuItemControls:BaseMenuItemControl>
                 </DataTemplate>
+                <!-- Storage -->
                 <DataTemplate x:DataType="models:StorageClipboardItem">
-                  <menuItemControls:StorageMenuItemControl DataContext="{Binding}" />
+                    <menuItemControls:BaseMenuItemControl>
+                        <menuItemControls:BaseMenuItemControl.ItemContent>
+                            <menuItemControls:StorageMenuItemControl />
+                        </menuItemControls:BaseMenuItemControl.ItemContent>
+                    </menuItemControls:BaseMenuItemControl>
                 </DataTemplate>
             </ListBox.DataTemplates>
-
             <ListBox.Styles>
                 <Style Selector="ListBoxItem">
                     <Setter Property="Padding" Value="2" />

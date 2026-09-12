@@ -69,12 +69,15 @@
           <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Controls\MenuItemControls\ImageMenuItemControl.axaml.cs">
-          <DependentUpon>ImageMenuItemControl.axaml</DependentUpon>
           <SubType>Code</SubType>
+          <DependentUpon>ImageMenuItemControl.axaml</DependentUpon>
         </Compile>
         <Compile Update="Views\Controls\MenuItemControls\StorageMenuItemControl.axaml.cs">
           <DependentUpon>StorageMenuItemControl.axaml</DependentUpon>
           <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Page\EditClipboardItemPageControl.axaml.cs">
+          <DependentUpon>Edit1ClipboardItemPageControl.axaml</DependentUpon>
         </Compile>
     </ItemGroup>
 </Project>

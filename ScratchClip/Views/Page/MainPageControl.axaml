@@ -277,7 +277,7 @@
                         Grid.Column="0"
                         Height="36"
                         Text="{Binding SearchText, Mode=TwoWay}"
-                        Watermark="Search clipboard history..."
+                        PlaceholderText="Search clipboard history..."
                         VerticalContentAlignment="Center"/>
 
                     <Button

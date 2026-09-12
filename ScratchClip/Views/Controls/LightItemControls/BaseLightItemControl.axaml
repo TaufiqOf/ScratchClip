@@ -1,0 +1,132 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:models="clr-namespace:ScratchClip.Models"
+             x:Name="BaseControl"
+             x:DataType="models:AClipboardItem"
+             x:Class="ScratchClip.Views.Controls.LightItemControls.BaseLightItemControl">
+
+    <Grid>
+
+        <Border Padding="8"
+                CornerRadius="6"
+                Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
+
+            <Grid RowDefinitions="Auto,Auto,Auto"
+                  ColumnDefinitions="Auto,*,Auto"
+                  RowSpacing="4"
+                  ColumnSpacing="8">
+
+                <!-- ================================= -->
+                <!-- Index -->
+                <!-- ================================= -->
+
+                <Border Grid.Row="0"
+                        Grid.RowSpan="2"
+                        Width="22"
+                        Height="22"
+                        VerticalAlignment="Top"
+                        CornerRadius="3"
+                        Background="{DynamicResource SystemControlHighlightAccentBrush}">
+
+                    <TextBlock Text="{Binding DisplayIndex}"
+                               FontSize="10"
+                               FontWeight="Bold"
+                               Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+
+                </Border>
+
+
+                <!-- ================================= -->
+                <!-- Timestamp -->
+                <!-- ================================= -->
+
+                <TextBlock Grid.Row="0"
+                           Grid.Column="1"
+                           VerticalAlignment="Center"
+                           Text="{Binding Timestamp,
+                                          StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
+                           FontSize="10"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+
+
+                <!-- ================================= -->
+                <!-- Actions -->
+                <!-- ================================= -->
+
+                <StackPanel Grid.Row="0"
+                            Grid.Column="2"
+                            Grid.RowSpan="2"
+                            Orientation="Horizontal"
+                            Spacing="2"
+                            VerticalAlignment="Top">
+
+                    <!-- Optional actions -->
+                    <ContentPresenter Content="{Binding ExtraActions,
+                                                        ElementName=BaseControl}" />
+
+                    <!-- Common delete -->
+                    <Button Command="{Binding DeleteCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="3"
+                            Padding="4"
+                            Width="24"
+                            Height="24"
+                            ToolTip.Tip="Delete Item">
+
+                        <avalonia:FluentIcon Icon="Delete"
+                                             FontSize="13" />
+
+                    </Button>
+
+                </StackPanel>
+
+
+                <!-- ================================= -->
+                <!-- Item-specific content -->
+                <!-- ================================= -->
+
+                <ContentPresenter Grid.Row="1"
+                                  Grid.Column="1"
+                                  Content="{Binding ItemContent,
+                                                    ElementName=BaseControl}" />
+
+
+                <!-- ================================= -->
+                <!-- Tags -->
+                <!-- ================================= -->
+
+                <ItemsControl Grid.Row="2"
+                              Grid.Column="1"
+                              ItemsSource="{Binding Tags}">
+
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="4" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                    CornerRadius="3"
+                                    Padding="5,1">
+
+                                <TextBlock Text="{Binding}"
+                                           FontSize="9"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

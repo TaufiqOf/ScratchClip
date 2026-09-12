@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using AvaloniaEdit.Utils;
 using ScratchClip.Models;
@@ -21,7 +23,7 @@ public static class ClipboardHistoryManager
 
     private static readonly string FilePath = Path.Combine(FolderPath, "history.json");
 
-    public static IReadOnlyList<AClipboardItem> Load()
+    public static async Task<IReadOnlyList<AClipboardItem>> Load()
     {
         try
         {
@@ -32,11 +34,14 @@ public static class ClipboardHistoryManager
             var records = JsonSerializer.Deserialize<List<ClipboardHistoryRecord>>(json) ??
                           new List<ClipboardHistoryRecord>();
 
-            return records
-                .Select(ToClipboardItem)
+            var tasks = await Task.WhenAll(records
+                .Select(ToClipboardItem)); 
+            var items = tasks
                 .Where(item => item != null)
                 .Cast<AClipboardItem>()
                 .ToList();
+             
+             return items;
         }
         catch (Exception ex)
         {
@@ -76,7 +81,8 @@ public static class ClipboardHistoryManager
                 DisplayText = textItem.DisplayText,
                 Signature = textItem.Signature,
                 Timestamp = textItem.Timestamp,
-                MataData = textItem.MataData
+                MataData = textItem.MataData!,
+                Tags = textItem.Tags.ToList()
             };
         }
 
@@ -94,7 +100,8 @@ public static class ClipboardHistoryManager
                 Signature = imageItem.Signature,
                 Timestamp = imageItem.Timestamp,
                 ImageBase64 = Convert.ToBase64String(stream.ToArray()),
-                MataData = imageItem.MataData
+                MataData = imageItem.MataData!,
+                Tags = imageItem.Tags.ToList()
             };
         }
 
@@ -108,14 +115,15 @@ public static class ClipboardHistoryManager
                 Timestamp = storageItem.Timestamp,
                 Files = storageItem.Files,
                 Folders = storageItem.Folders,
-                MataData = storageItem.MataData
+                MataData = storageItem.MataData!,
+                Tags = storageItem.Tags.ToList()
             };
         }
 
         return null;
     }
 
-    private static AClipboardItem? ToClipboardItem(ClipboardHistoryRecord record)
+    private static async Task<AClipboardItem?> ToClipboardItem(ClipboardHistoryRecord record)
     {
         switch (record.Format)
         {
@@ -129,9 +137,11 @@ public static class ClipboardHistoryManager
                     DisplayText = string.IsNullOrWhiteSpace(record.DisplayText) ? text : record.DisplayText,
                     Signature = string.IsNullOrWhiteSpace(record.Signature) ? HashText(text) : record.Signature,
                     Timestamp = record.Timestamp == default ? DateTime.Now : record.Timestamp,
-                    MataData = record.MataData
+                    MataData = record.MataData!,
                 };
-                _ = item.PopulateMetadataAsync();
+                await item.PopulateMetadataAsync();
+                item.Tags.Clear();
+                item.Tags.AddRange(record.Tags ?? new List<string>());
                 return item;
             }
             case ClipboardDataFormat.Image:
@@ -150,9 +160,10 @@ public static class ClipboardHistoryManager
                     Signature = record.Signature ?? string.Empty,
                     Timestamp = record.Timestamp == default ? DateTime.Now : record.Timestamp,
                     Image = new Bitmap(stream),
-                    MataData = record.MataData
-
+                    MataData = record.MataData!
                 };
+                imageClipboardItem.Tags.Clear();
+                imageClipboardItem.Tags.AddRange(record.Tags ?? new List<string>());
                 return imageClipboardItem;
             }
             case ClipboardDataFormat.Storage:
@@ -170,10 +181,12 @@ public static class ClipboardHistoryManager
                     DisplayText = string.IsNullOrWhiteSpace(record.DisplayText) ? "Storage" : record.DisplayText,
                     Signature = record.Signature ?? string.Empty,
                     Timestamp = record.Timestamp == default ? DateTime.Now : record.Timestamp,
-                    MataData = record.MataData
+                    MataData = record.MataData!
                 };
                 storageClipboardItem.Files.AddRange(record.Files ?? new List<string>());
                 storageClipboardItem.Folders.AddRange(record.Folders ?? new List<string>());
+                storageClipboardItem.Tags.Clear();
+                storageClipboardItem.Tags.AddRange(record.Tags ?? new List<string>());
 
                 return storageClipboardItem;
             }
@@ -199,5 +212,6 @@ public static class ClipboardHistoryManager
         public List<string>? Files { get; set; }
         public List<string>? Folders { get; set; }
         public List<string>? MataData { get; set; }
+        public List<string>? Tags { get; set; }
     }
 }

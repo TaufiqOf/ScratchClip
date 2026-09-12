@@ -31,35 +31,55 @@
 
     <!-- Clipboard List -->
     <Grid Margin="6,2,6,6">
-        <ListBox
-            x:Name="ListBox"
-            ItemsSource="{Binding FilteredHistory}"
-            SelectionMode="Single"
-            SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+         <ListBox x:Name="ListBox"
+                 ItemsSource="{Binding FilteredHistory}"
+                 SelectionMode="Single"
+                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
+
             <ListBox.DataTemplates>
-                
-                <!-- Text Clipboard Item Template -->
-                <DataTemplate DataType="models1:TextClipboardItem">
-                    <lightItemControls1:TextItemControl />
+
+                <!-- TEXT -->
+                <DataTemplate x:DataType="models1:TextClipboardItem">
+                    <lightItemControls1:BaseLightItemControl>
+                        <lightItemControls1:BaseLightItemControl.ItemContent>
+                            <lightItemControls1:TextItemControl />
+                        </lightItemControls1:BaseLightItemControl.ItemContent>
+                    </lightItemControls1:BaseLightItemControl>
                 </DataTemplate>
 
-                <!-- Image Clipboard Item Template -->
-                <DataTemplate DataType="models1:ImageClipboardItem">
-                    <lightItemControls1:ImageItemControl />
+
+                <!-- IMAGE -->
+                <DataTemplate x:DataType="models1:ImageClipboardItem">
+                    <lightItemControls1:BaseLightItemControl>
+                        <lightItemControls1:BaseLightItemControl.ItemContent>
+                            <lightItemControls1:ImageItemControl />
+                        </lightItemControls1:BaseLightItemControl.ItemContent>
+                    </lightItemControls1:BaseLightItemControl>
                 </DataTemplate>
 
-                <!-- Storage Clipboard Item Template -->
-                <DataTemplate DataType="models1:StorageClipboardItem">
-                    <lightItemControls1:StorageItemsControl />
+                <!-- STORAGE -->
+                <DataTemplate x:DataType="models1:StorageClipboardItem">
+                    <lightItemControls1:BaseLightItemControl>
+                        <lightItemControls1:BaseLightItemControl.ItemContent>
+                            <lightItemControls1:StorageItemsControl />
+                        </lightItemControls1:BaseLightItemControl.ItemContent>
+                    </lightItemControls1:BaseLightItemControl>
                 </DataTemplate>
             </ListBox.DataTemplates>
 
+
             <ListBox.Styles>
+
                 <Style Selector="ListBoxItem">
-                    <Setter Property="Padding" Value="2" />
-                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Padding"
+                            Value="2" />
+
+                    <Setter Property="Margin"
+                            Value="2" />
                 </Style>
+
             </ListBox.Styles>
+
         </ListBox>
     </Grid>
 </UserControl>

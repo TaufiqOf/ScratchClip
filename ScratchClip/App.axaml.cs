@@ -36,7 +36,7 @@ public class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    public override async void OnFrameworkInitializationCompleted()
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -56,7 +56,7 @@ public class App : Application
 
             if (settings.IsSaveHistoryOnExitEnabled)
             {
-                var persistedItems = ClipboardHistoryManager.Load();
+                var persistedItems = await ClipboardHistoryManager.Load();
                 ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
                 ClipboardManager.LoadClipboardHistory(persistedItems);
             }

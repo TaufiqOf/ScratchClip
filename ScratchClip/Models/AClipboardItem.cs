@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using ScratchClip.ViewModels;
 
 namespace ScratchClip.Models;
 
-public abstract class AClipboardItem : ViewModelBase
+public abstract partial class AClipboardItem : ViewModelBase
 {
     public Action<AClipboardItem>? OnDelete { get; set; }
 
@@ -76,4 +78,7 @@ public abstract class AClipboardItem : ViewModelBase
     } = DateTime.Now;
 
     public List<string?> MataData { get; set; } = new List<string?>();
+    
+    [RelayCommand]
+    public abstract void Delete();
 }
