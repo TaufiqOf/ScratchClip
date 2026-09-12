@@ -88,4 +88,6 @@ public abstract partial class AClipboardItem : ViewModelBase
     {
         OnEdit?.Invoke(this);
     }
+
+    
 }

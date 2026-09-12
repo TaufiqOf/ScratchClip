@@ -1,0 +1,125 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
+             x:Name="TagEditor"
+             x:Class="ScratchClip.Views.Controls.TagEditorControl">
+    <UserControl.Resources>
+        <converters:IndexGreaterThanZeroConverter x:Key="IndexGreaterThanZeroConverter" />
+    </UserControl.Resources>
+    <Border Padding="8"
+            CornerRadius="6"
+            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="6">
+
+            <!-- ================================================= -->
+            <!-- Tags + ComboBox -->
+            <!-- ================================================= -->
+
+            <ScrollViewer Grid.Column="0"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled">
+
+                <StackPanel Orientation="Horizontal"
+                            Spacing="5"
+                            VerticalAlignment="Center">
+
+                    <!-- Existing tags -->
+
+                    <ItemsControl ItemsSource="{Binding Tags,
+                                                        ElementName=TagEditor}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="5" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+
+                                <Border Background="{DynamicResource SystemControlForegroundBaseLowBrush}"
+                                        CornerRadius="4"
+                                        Padding="6,3">
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="4">
+
+                                        <TextBlock Text="{Binding}"
+                                                   FontSize="11"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                                   VerticalAlignment="Center" />
+
+                                        <!-- Delete button -->
+                                        <Button Command="{Binding RemoveTagCommand,ElementName=TagEditor}"
+                                                CommandParameter="{Binding}"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Padding="0"
+                                                Width="16"
+                                                Height="16"
+                                                VerticalAlignment="Center">
+
+                                            <TextBlock Text="×"
+                                                       FontSize="13"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+
+
+                    <!-- Editable tag selector -->
+
+                    <ComboBox x:Name="TagComboBox"
+                              Width="180"
+                              IsEditable="True"
+                              ItemsSource="{Binding AvailableTags,
+                                                    ElementName=TagEditor}"
+                              SelectedItem="{Binding SelectedTag,
+                                                     ElementName=TagEditor,
+                                                     Mode=TwoWay}"
+                              Text="{Binding TagText,
+                                             ElementName=TagEditor,
+                                             Mode=TwoWay}"
+                              PlaceholderText="Select or type tag..."
+                              VerticalAlignment="Center" />
+
+                </StackPanel>
+            </ScrollViewer>
+
+
+            <!-- Add -->
+
+            <Button Grid.Column="1"
+                    Command="{Binding AddTagCommand,
+                                      ElementName=TagEditor}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="5"
+                    Width="30"
+                    Height="30"
+                    VerticalAlignment="Center"
+                    ToolTip.Tip="Add tag">
+
+                <TextBlock Text="+"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+
+            </Button>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

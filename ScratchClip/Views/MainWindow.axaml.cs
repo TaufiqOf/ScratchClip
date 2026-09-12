@@ -69,7 +69,7 @@ public partial class MainWindow : Window
     {
         EditClipboardItemPageControl editPage = new EditClipboardItemPageControl(obj);
         PageHost.Content = editPage;
-        editPage.OnClose += () =>
+        editPage.OnClose += (AClipboardItem? item) =>
         {
             ShowMainPage();
             Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
