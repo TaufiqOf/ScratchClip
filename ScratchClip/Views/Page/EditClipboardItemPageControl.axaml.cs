@@ -94,6 +94,7 @@ public partial class EditClipboardItemPageControl : UserControl
                 textItem.Tags.Add(tag);
             var list = textItem.Tags.ToList();
             textItem.UpdateByTags();
+            textItem.UpdateDisplayText();
         }
 
         if (_item is ImageClipboardItem imageItem)

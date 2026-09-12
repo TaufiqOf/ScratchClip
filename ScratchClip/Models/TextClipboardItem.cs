@@ -105,5 +105,16 @@ public partial class TextClipboardItem : AClipboardItem
             Tags.Contains("MARKDOWN") ? new MarkdownTextType(Text, Tags, MataData) :
             Tags.Contains("PASSWORD") ? new PasswordTextType(Text, Tags, MataData) :
             new PlainTextType(Text, Tags, MataData);
+        if(TextType is PasswordTextType passwordTextType)
+            DisplayText = new string('•', passwordTextType.Text.Length);
+        else
+        {
+            DisplayText = TextType.Text.Length > 600 ? TextType.Text.Substring(0, 600) : TextType.Text;
+        }
+    }
+
+    public void UpdateDisplayText()
+    {
+        
     }
 }
