@@ -7,9 +7,7 @@
              x:DataType="viewModels:ListViewModel"
              x:Class="ScratchClip.Views.Controls.ListLightControl">
 
-    <UserControl.Resources>
-        <converters:ToUpperConverter x:Key="ToUpperConverter" />
-    </UserControl.Resources>
+
 
     <UserControl.Styles>
         <!-- Flat Reveal Button Styling -->

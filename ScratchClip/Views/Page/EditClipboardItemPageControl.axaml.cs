@@ -68,7 +68,7 @@ public partial class EditClipboardItemPageControl : UserControl
         };
         DataContext = _unsavedItem;
         InitializeComponent();
-        TagEditor.AvailableTags = new ObservableCollection<string>("PlainText,Markdown,Code,HTML,JSON,XML".Split(','));
+        TagEditor.AvailableTags = new ObservableCollection<string>("PLAINTEXT,MARKDOWN,CODE,PASSWORD,WEBSITE,JSON,XML".Split(','));
     }
 
     public Action<AClipboardItem?>? OnClose { get; set; }

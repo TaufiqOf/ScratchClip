@@ -20,7 +20,7 @@ public class PasswordTextType : ATextType
         Text = text;
     }
 
-    public override string DisplayName => "Password";
+    public override string DisplayName => "PASSWORD";
 
     public double DetectionConfidence { get; private set; }
 

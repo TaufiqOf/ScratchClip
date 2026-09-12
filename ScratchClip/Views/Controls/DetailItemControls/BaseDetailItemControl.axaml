@@ -2,10 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:models="clr-namespace:ScratchClip.Models"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
              x:Name="BaseControl"
              x:DataType="models:AClipboardItem"
              x:Class="ScratchClip.Views.Controls.DetailItemControls.BaseDetailItemControl">
-
+    <UserControl.Resources>
+        <converters:ToUpperConverter x:Key="ToUpperConverter" />
+    </UserControl.Resources>
     <Grid RowDefinitions="*,Auto">
 
         <!-- ========================================= -->
@@ -82,7 +85,7 @@
                                         CornerRadius="3"
                                         Padding="6,2"
                                         VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding}"
+                                    <TextBlock Text="{Binding Converter={StaticResource ToUpperConverter}}"
                                                FontSize="10"
                                                FontWeight="SemiBold"
                                                Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"

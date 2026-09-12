@@ -13,8 +13,7 @@
             x:Name="ListBox"
             ItemsSource="{Binding FilteredHistory}"
             SelectionMode="Single"
-            SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-            ItemTemplate="{StaticResource ClipboardItemSelector}">
+            SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
             <ListBox.DataTemplates>
                 <DataTemplate x:DataType="models1:TextClipboardItem">
                     <detailItemControls1:BaseDetailItemControl>

@@ -202,7 +202,7 @@ public class CodeTextType : ATextType
         Text = text;
     }
 
-    public override string DisplayName => "Code";
+    public override string DisplayName => "CODE";
 
     public string? DetectedLanguage { get; private set; }
 

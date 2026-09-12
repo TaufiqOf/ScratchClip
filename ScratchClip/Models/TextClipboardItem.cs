@@ -98,12 +98,12 @@ public partial class TextClipboardItem : AClipboardItem
 
     public void UpdateByTags()
     {
-        TextType = Tags.Contains("Website") ? new WebsiteTextType(Text, Tags, MataData) :
-            Tags.Contains("Json") ? new JsonTextType(Text, Tags, MataData) :
-            Tags.Contains("Xml") ? new XmlTextType(Text, Tags, MataData) :
-            Tags.Contains("Code") ? new CodeTextType(Text, Tags, MataData) :
-            Tags.Contains("Markdown") ? new MarkdownTextType(Text, Tags, MataData) :
-            Tags.Contains("Password") ? new PasswordTextType(Text, Tags, MataData) :
+        TextType = Tags.Contains("WEBSITE") ? new WebsiteTextType(Text, Tags, MataData) :
+            Tags.Contains("JSON") ? new JsonTextType(Text, Tags, MataData) :
+            Tags.Contains("XML") ? new XmlTextType(Text, Tags, MataData) :
+            Tags.Contains("CODE") ? new CodeTextType(Text, Tags, MataData) :
+            Tags.Contains("MARKDOWN") ? new MarkdownTextType(Text, Tags, MataData) :
+            Tags.Contains("PASSWORD") ? new PasswordTextType(Text, Tags, MataData) :
             new PlainTextType(Text, Tags, MataData);
     }
 }

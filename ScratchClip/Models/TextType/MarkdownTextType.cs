@@ -13,7 +13,7 @@ public class MarkdownTextType : ATextType
         Icon = Icon.Markdown;
     }
 
-    public override string DisplayName => "Markdown";
+    public override string DisplayName => "MARKDOWN";
 
     public override bool IsMatch(string text)
     {

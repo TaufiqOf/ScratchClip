@@ -21,7 +21,7 @@ public partial class WebsiteTextType : ATextType
         Icon = Icon.Globe;
     }
 
-    public override string DisplayName => "Website";
+    public override string DisplayName => "WEBSITE";
 
 
     static WebsiteTextType()
