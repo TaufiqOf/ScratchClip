@@ -76,6 +76,7 @@ public partial class TextClipboardItem : AClipboardItem
 
         return candidates.First(type => type.IsMatch(text));
     }
+    
 
     private void UpdateTags()
     {
@@ -93,5 +94,16 @@ public partial class TextClipboardItem : AClipboardItem
     public override void Delete()
     {
         OnDelete?.Invoke(this);
+    }
+
+    public void UpdateByTags()
+    {
+        TextType = Tags.Contains("Website") ? new WebsiteTextType(Text, Tags, MataData) :
+            Tags.Contains("Json") ? new JsonTextType(Text, Tags, MataData) :
+            Tags.Contains("Xml") ? new XmlTextType(Text, Tags, MataData) :
+            Tags.Contains("Code") ? new CodeTextType(Text, Tags, MataData) :
+            Tags.Contains("Markdown") ? new MarkdownTextType(Text, Tags, MataData) :
+            Tags.Contains("Password") ? new PasswordTextType(Text, Tags, MataData) :
+            new PlainTextType(Text, Tags, MataData);
     }
 }
