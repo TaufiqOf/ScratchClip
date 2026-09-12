@@ -1,11 +1,194 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:ScratchClip.Views.Page"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
-             d:DesignWidth="800"
-             d:DesignHeight="450"
-             x:Class="ScratchClip.Views.Page.EditClipboardItemPageControl">
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:models="clr-namespace:ScratchClip.Models"
+             x:Class="ScratchClip.Views.Page.EditClipboardItemPageControl"
+             x:DataType="models:TextClipboardItem">
+
+    <Grid Margin="10"
+          RowDefinitions="Auto,*,Auto">
+
+        <!-- ========================================= -->
+        <!-- Header -->
+        <!-- ========================================= -->
+
+        <Border Grid.Row="0"
+                Margin="0,0,0,10"
+                Padding="0,0,0,8"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+
+            <StackPanel Spacing="4">
+
+                <TextBlock Text="EDIT CLIPBOARD ITEM"
+                           FontSize="26"
+                           FontWeight="SemiBold" />
+
+                <TextBlock Text="Edit the contents and tags of this clipboard item."
+                           Opacity="0.65"
+                           FontSize="13" />
+
+            </StackPanel>
+
+        </Border>
+
+
+        <!-- ========================================= -->
+        <!-- Content -->
+        <!-- ========================================= -->
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+
+            <StackPanel MaxWidth="700"
+                        HorizontalAlignment="Stretch"
+                        Spacing="24">
+
+
+                <!-- ================================= -->
+                <!-- Content -->
+                <!-- ================================= -->
+
+                <StackPanel Spacing="12">
+
+                    <TextBlock Text="Content"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
+
+                    <Border Padding="16"
+                            CornerRadius="8"
+                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                        <StackPanel Spacing="10">
+
+                            <TextBlock Text="Clipboard text"
+                                       FontWeight="Medium" />
+
+                            <TextBox x:Name="ContentTextBox"
+                                     Text="{Binding Text, Mode=TwoWay}"
+                                     AcceptsReturn="True"
+                                     TextWrapping="Wrap"
+                                     MinHeight="180"
+                                     PlaceholderText="Enter clipboard text..." />
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
+
+                <!-- ================================= -->
+                <!-- Tags -->
+                <!-- ================================= -->
+
+                <StackPanel Spacing="12">
+
+                    <TextBlock Text="Tags"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
+
+                    <Border Padding="16"
+                            CornerRadius="8"
+                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                        <StackPanel Spacing="10">
+
+                            <TextBlock Text="Tags"
+                                       FontWeight="Medium" />
+
+                            <TextBox x:Name="TagsTextBox"
+                                     PlaceholderText="tag1, tag2, tag3" />
+
+                            <TextBlock Text="Separate multiple tags with commas."
+                                       FontSize="11"
+                                       Opacity="0.5" />
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
+
+                <!-- ================================= -->
+                <!-- Information -->
+                <!-- ================================= -->
+
+                <StackPanel Spacing="12">
+
+                    <TextBlock Text="Information"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
+
+                    <Border Padding="16"
+                            CornerRadius="8"
+                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                        <StackPanel Spacing="8">
+
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <TextBlock Text="Created"
+                                           FontWeight="Medium" />
+
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd, yyyy}'}"
+                                           Opacity="0.65" />
+
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <TextBlock Text="Display index"
+                                           FontWeight="Medium" />
+
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding DisplayIndex}"
+                                           Opacity="0.65" />
+
+                            </Grid>
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
+            </StackPanel>
+
+        </ScrollViewer>
+
+
+        <!-- ========================================= -->
+        <!-- Bottom Actions -->
+        <!-- ========================================= -->
+
+        <Border Grid.Row="2"
+                Margin="0,10,0,0"
+                Padding="0,10,0,0"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="8">
+
+                <Button Content="Cancel"
+                        Click="OnCancelClick"
+                        Width="100"
+                        IsCancel="True" />
+
+                <Button Content="Save"
+                        Click="OnSaveClick"
+                        IsDefault="True"
+                        Width="100"
+                        Classes="accent" />
+
+            </StackPanel>
+
+        </Border>
+
+    </Grid>
 
 </UserControl>

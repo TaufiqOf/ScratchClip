@@ -18,6 +18,7 @@ public static class ClipboardManager
     public static Action<AClipboardItem>? OnClipboardItemAdded;
     public static Action<AClipboardItem>? OnSelectExistingClipboardItem;
     public static Action<AClipboardItem>? OnRemoveExistingClipboardItem;
+    public static Action<AClipboardItem>? OnEditExistingClipboardItem;
     public static Action? OnClearExistingClipboardItem;
 
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
@@ -61,10 +62,13 @@ public static class ClipboardManager
         foreach (var item in items.OrderBy(q => q.Timestamp).Take(MaxItemsInHistory))
         {
             item.OnDelete += DeleteClipboardItem;
+            item.OnEdit += EditClipboardItem;
             ClipboardHistory.Add(item);
             OnClipboardItemAdded?.Invoke(item);
         }
     }
+
+
 
     private static IClipboard? GetClipboard()
     {
@@ -139,6 +143,7 @@ public static class ClipboardManager
             if (item == null) return item;
             await service.CreateSignature(item);
             item.OnDelete += DeleteClipboardItem;
+            item.OnEdit += EditClipboardItem;
         }
 
         return item;
@@ -198,5 +203,10 @@ public static class ClipboardManager
 
         ClipboardHistory.Remove(item);
         OnRemoveExistingClipboardItem?.Invoke(item);
+    }
+    
+    private static void EditClipboardItem(AClipboardItem obj)
+    {
+        OnEditExistingClipboardItem?.Invoke(obj);
     }
 }

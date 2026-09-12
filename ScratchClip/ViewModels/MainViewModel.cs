@@ -36,7 +36,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public Action? OnHideToTray;
     public Action? OnOpenSettings;
     public Action? OnShowLockPage;
-
+    public Action<AClipboardItem>? OnShowEditPage;
+    
     public Action<bool>? OnTopMostChanged;
     private bool _isInternalSelectionChange;
     private bool _isUpdatingTagOptions;
@@ -62,6 +63,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.OnSelectExistingClipboardItem += OnSelectExistingClipboardItem;
         ClipboardManager.OnRemoveExistingClipboardItem += OnRemoveExistingClipboardItem;
         ClipboardManager.OnClearExistingClipboardItem += OnClearExistingClipboardItem;
+        ClipboardManager.OnEditExistingClipboardItem += OnEditExistingClipboardItem;
         foreach (var item in ClipboardManager.GetClipboardHistorySnapshot())
             _historyItems.Add(item);
 
@@ -74,6 +76,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _searchDebounceTimer.Stop();
         _searchDebounceTimer.Elapsed += SearchDebounceTimerOnElapsed;
     }
+
+
 
     private void OnSettingsUpdated(AppSettings obj)
     {
@@ -187,6 +191,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.OnSelectExistingClipboardItem -= OnSelectExistingClipboardItem;
         ClipboardManager.OnRemoveExistingClipboardItem -= OnRemoveExistingClipboardItem;
         ClipboardManager.OnClearExistingClipboardItem -= OnClearExistingClipboardItem;
+        ClipboardManager.OnEditExistingClipboardItem -= OnEditExistingClipboardItem;
         TagFilterOptions.CollectionChanged -= OnTagFilterOptionsCollectionChanged;
 
         foreach (var option in TagFilterOptions)
@@ -264,7 +269,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         RefreshTagFilterOptions();
         ApplyFilter();
     }
-
+    
+    private void OnEditExistingClipboardItem(AClipboardItem obj)
+    {
+        OnShowEditPage?.Invoke(obj);
+    }
+    
     private void OnClearExistingClipboardItem()
     {
         _historyItems.Clear();

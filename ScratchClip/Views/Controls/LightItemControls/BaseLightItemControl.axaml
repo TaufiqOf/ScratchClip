@@ -66,7 +66,20 @@
                     <!-- Optional actions -->
                     <ContentPresenter Content="{Binding ExtraActions,
                                                         ElementName=BaseControl}" />
+                    <!-- Common Edit -->
+                    <Button Command="{Binding EditCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="3"
+                            Padding="4"
+                            Width="24"
+                            Height="24"
+                            ToolTip.Tip="Edit Item">
 
+                        <avalonia:FluentIcon Icon="Edit"
+                                             FontSize="13" />
+
+                    </Button>
                     <!-- Common delete -->
                     <Button Command="{Binding DeleteCommand}"
                             Background="Transparent"
@@ -81,7 +94,7 @@
                                              FontSize="13" />
 
                     </Button>
-
+    
                 </StackPanel>
 
 

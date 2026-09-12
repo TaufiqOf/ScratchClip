@@ -6,7 +6,7 @@
              x:DataType="models:AClipboardItem"
              x:Class="ScratchClip.Views.Controls.MenuItemControls.BaseMenuItemControl">
 
-    <Grid ColumnDefinitions="Auto,*,Auto"
+    <Grid ColumnDefinitions="Auto,*,Auto,Auto"
           ColumnSpacing="5"
           Height="40">
 
@@ -33,6 +33,16 @@
 
         <!-- Delete -->
         <Button Grid.Column="2"
+                Margin="0,0,10,0"
+                ToolTip.Tip="Edit"
+                Command="{Binding EditCommand}">
+
+            <avalonia:FluentIcon Icon="Edit"
+                                 Width="16"
+                                 Height="16" />
+
+        </Button>
+        <Button Grid.Column="3"
                 Margin="0,0,10,0"
                 ToolTip.Tip="Delete"
                 Command="{Binding DeleteCommand}">

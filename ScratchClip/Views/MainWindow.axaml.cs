@@ -9,6 +9,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using ScratchClip.Helper;
 using ScratchClip.Manager;
+using ScratchClip.Models;
 using ScratchClip.Services;
 using ScratchClip.ViewModels;
 using ScratchClip.Views.Page;
@@ -39,6 +40,7 @@ public partial class MainWindow : Window
         _viewModel.OnOpenSettings += ShowSettingsPage;
         _viewModel.OnTopMostChanged += TopMostChanged;
         _viewModel.OnShowLockPage += ShowLockPage;
+        _viewModel.OnShowEditPage += OnShowEditPage;
         DataContext = _viewModel;
         _mainPage = new MainPageControl(this.Icon);
         _mainPage.DataContext = _viewModel;
@@ -61,6 +63,17 @@ public partial class MainWindow : Window
         Width = settings.WindowWidth;
         Height = settings.WindowHeight;
         TopMostChanged(settings.IsPinned);
+    }
+
+    private void OnShowEditPage(AClipboardItem obj)
+    {
+        EditClipboardItemPageControl editPage = new EditClipboardItemPageControl(obj);
+        PageHost.Content = editPage;
+        editPage.OnClose += () =>
+        {
+            ShowMainPage();
+            Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
+        };
     }
 
 

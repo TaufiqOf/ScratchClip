@@ -9,6 +9,7 @@ namespace ScratchClip.Models;
 
 public abstract partial class AClipboardItem : ViewModelBase
 {
+    public Action<AClipboardItem>? OnEdit { get; set; }
     public Action<AClipboardItem>? OnDelete { get; set; }
 
     public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
@@ -81,4 +82,10 @@ public abstract partial class AClipboardItem : ViewModelBase
     
     [RelayCommand]
     public abstract void Delete();
+
+    [RelayCommand]
+    public void Edit()
+    {
+        OnEdit?.Invoke(this);
+    }
 }
