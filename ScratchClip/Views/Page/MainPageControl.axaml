@@ -208,42 +208,29 @@
 
                             <Flyout
                                 Placement="BottomEdgeAlignedLeft">
-
                                 <Border
                                     Padding="10"
                                     MinWidth="240"
                                     MaxHeight="280"
                                     Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
-
                                     <ScrollViewer
                                         MaxHeight="260">
-
                                         <ItemsControl
                                             ItemsSource="{Binding TagFilterOptions}">
-
                                             <ItemsControl.ItemTemplate>
-
                                                 <DataTemplate>
-
                                                     <CheckBox
                                                         Content="{Binding Name}"
                                                         IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                         Margin="2,4"/>
 
                                                 </DataTemplate>
-
                                             </ItemsControl.ItemTemplate>
-
                                         </ItemsControl>
-
                                     </ScrollViewer>
-
                                 </Border>
-
                             </Flyout>
-
                         </DropDownButton.Flyout>
-
                     </DropDownButton>
 
 
@@ -277,6 +264,8 @@
                         Grid.Column="0"
                         Height="36"
                         Text="{Binding SearchText, Mode=TwoWay}"
+                        GotFocus="SearchTextBoxOnGotFocus"
+                        LostFocus="SearchTextBoxOnLostFocus"
                         PlaceholderText="Search clipboard history..."
                         VerticalContentAlignment="Center"/>
 

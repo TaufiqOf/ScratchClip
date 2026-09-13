@@ -37,7 +37,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public Action? OnOpenSettings;
     public Action? OnShowLockPage;
     public Action<AClipboardItem>? OnShowEditPage;
-    
+
     public Action<bool>? OnTopMostChanged;
     private bool _isInternalSelectionChange;
     private bool _isUpdatingTagOptions;
@@ -68,15 +68,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             _historyItems.Add(item);
 
         TagFilterOptions.CollectionChanged += OnTagFilterOptionsCollectionChanged;
-        RefreshTagFilterOptions();
-        ApplyFilter();
+        RefreshList();
 
         StartMonitoringClipboard();
         _searchDebounceTimer = new Timer(800);
         _searchDebounceTimer.Stop();
         _searchDebounceTimer.Elapsed += SearchDebounceTimerOnElapsed;
     }
-
 
 
     private void OnSettingsUpdated(AppSettings obj)
@@ -185,6 +183,16 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 
+    public bool IsSearchFocused
+    {
+        get => field;
+        set
+        {
+            SetProperty(ref field, value);
+            OnPropertyChanged();
+        }
+    }
+
     public void Dispose()
     {
         ClipboardManager.OnClipboardItemAdded -= OnClipboardItemAdded;
@@ -253,8 +261,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void OnClipboardItemAdded(AClipboardItem clipboardItem)
     {
         _historyItems.Insert(0, clipboardItem);
-        RefreshTagFilterOptions();
-        ApplyFilter();
+        RefreshList();
         SelectedItem = clipboardItem;
     }
 
@@ -266,15 +273,20 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void OnRemoveExistingClipboardItem(AClipboardItem item)
     {
         _historyItems.Remove(item);
+        RefreshList();
+    }
+
+    public void RefreshList()
+    {
         RefreshTagFilterOptions();
         ApplyFilter();
     }
-    
+
     private void OnEditExistingClipboardItem(AClipboardItem obj)
     {
         OnShowEditPage?.Invoke(obj);
     }
-    
+
     private void OnClearExistingClipboardItem()
     {
         _historyItems.Clear();
@@ -492,6 +504,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     public void OnWindowKeyDown(KeyEventArgs keyEventArgs)
     {
+        if (IsSearchFocused)
+        {
+            _searchDebounceTimer.Stop();
+            return;
+        }
+
         int? number = keyEventArgs.Key switch
         {
             >= Key.D0 and <= Key.D9 => (int)keyEventArgs.Key - (int)Key.D0,
@@ -520,7 +538,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         if (!string.IsNullOrEmpty(_registerNumber))
         {
             var item = FilteredHistory.FirstOrDefault(q => q.DisplayIndex == int.Parse(_registerNumber));
-            if (item != null) ClipboardManager.SelectedClipboardItem = item;
+            if (item == null)
+            {
+                return;
+            }
+
+            ClipboardManager.SelectedClipboardItem = item;
             OnHideToTray?.Invoke();
             await _hotkeyService.SimulatePasteAsync();
 

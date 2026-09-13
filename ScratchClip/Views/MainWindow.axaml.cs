@@ -258,6 +258,10 @@ public partial class MainWindow : Window
 
     private void ShowMainPage()
     {
+        if(_mainPage.DataContext is MainViewModel vm)
+        {
+            vm.RefreshList();
+        }
         PageHost.Content = _mainPage;
     }
 
