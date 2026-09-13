@@ -30,7 +30,7 @@
                 CornerRadius="4"
                 Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
 
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"
                   VerticalAlignment="Center">
 
                 <!-- ================================= -->
@@ -96,9 +96,28 @@
                     </ItemsControl>
                 </StackPanel>
                 <!-- ================================= -->
-                <!-- Edit -->
+                <!-- Save -->
                 <!-- ================================= -->
                 <Button Grid.Column="2"
+                        Command="{Binding SaveAsCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="3"
+                        Padding="5"
+                        Width="26"
+                        Height="26"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        ToolTip.Tip="Save To File">
+
+                    <avalonia:FluentIcon Icon="Save"
+                                         FontSize="14" />
+
+                </Button>
+                <!-- ================================= -->
+                <!-- Edit -->
+                <!-- ================================= -->
+                <Button Grid.Column="3"
                         Command="{Binding EditCommand}"
                         Background="Transparent"
                         BorderThickness="0"
@@ -118,7 +137,7 @@
                 <!-- Delete -->
                 <!-- ================================= -->
 
-                <Button Grid.Column="3"
+                <Button Grid.Column="4"
                         Command="{Binding DeleteCommand}"
                         Background="Transparent"
                         BorderThickness="0"

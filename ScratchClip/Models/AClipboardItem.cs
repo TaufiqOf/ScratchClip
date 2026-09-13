@@ -1,7 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using ScratchClip.ViewModels;
 
@@ -13,6 +20,11 @@ public abstract partial class AClipboardItem : ViewModelBase
     public Action<AClipboardItem>? OnDelete { get; set; }
 
     public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
+
+    public abstract Task<object?> GetData();
+
+    public abstract string SuggestedFile { get; }
+
 
     public string Text
     {
@@ -79,7 +91,7 @@ public abstract partial class AClipboardItem : ViewModelBase
     } = DateTime.Now;
 
     public List<string?> MataData { get; set; } = new List<string?>();
-    
+
     [RelayCommand]
     public abstract void Delete();
 
@@ -89,5 +101,91 @@ public abstract partial class AClipboardItem : ViewModelBase
         OnEdit?.Invoke(this);
     }
 
-    
+    [RelayCommand]
+    public async Task SaveAs()
+    {
+        try
+        {
+            if (Application.Current?.ApplicationLifetime
+                is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+
+            var window = desktop.MainWindow;
+
+            if (window == null)
+                return;
+
+            var file = await window.StorageProvider.SaveFilePickerAsync(
+                new FilePickerSaveOptions
+                {
+                    Title = "Save Clipboard Item",
+                    SuggestedFileName = SuggestedFile
+                });
+
+            if (file == null)
+                return;
+            var data = await GetData();
+            switch (data)
+            {
+                case string text:
+                {
+                    await using var destination = await file.OpenWriteAsync();
+                    await using var writer = new StreamWriter(destination);
+
+                    await writer.WriteAsync(text);
+                    break;
+                }
+
+                case FileStream source:
+                {
+                    await using (source)
+                    {
+                        await using var destination = await file.OpenWriteAsync();
+
+                        source.Position = 0;
+                        await source.CopyToAsync(destination);
+                    }
+
+                    break;
+                }
+
+                case MemoryStream source:
+                {
+                    await using (source)
+                    {
+                        await using var destination = await file.OpenWriteAsync();
+
+                        source.Position = 0;
+                        await source.CopyToAsync(destination);
+                    }
+
+                    break;
+                }
+
+                case byte[] bytes:
+                {
+                    await using var destination = await file.OpenWriteAsync();
+
+                    await destination.WriteAsync(bytes);
+                    break;
+                }
+
+                case Bitmap bitmap:
+                {
+                    await using var destination = await file.OpenWriteAsync();
+
+                    bitmap.Save(destination);
+                    break;
+                }
+
+                default:
+                    throw new NotSupportedException(
+                        $"Cannot save data of type {data?.GetType().Name ?? "null"}.");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
 }

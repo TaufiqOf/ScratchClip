@@ -59,8 +59,6 @@ public partial class TextClipboardItem : AClipboardItem
         await TextType.PopulateMetadataAsync(text);
     }
 
-
-
     private ATextType CreateTextType(string text)
     {
         var candidates = new ATextType[]
@@ -76,7 +74,6 @@ public partial class TextClipboardItem : AClipboardItem
 
         return candidates.First(type => type.IsMatch(text));
     }
-    
 
     private void UpdateTags()
     {
@@ -90,6 +87,13 @@ public partial class TextClipboardItem : AClipboardItem
     {
         await ClipboardManager.SetClipboardItemAsync(this);
     }
+
+    public override Task<object?> GetData()
+    {
+        return Task.FromResult<object?>(Text);
+    }
+
+    public override string SuggestedFile { get; } = "text.txt";
 
     public override void Delete()
     {

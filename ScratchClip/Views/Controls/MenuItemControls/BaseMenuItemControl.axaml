@@ -6,7 +6,7 @@
              x:DataType="models:AClipboardItem"
              x:Class="ScratchClip.Views.Controls.MenuItemControls.BaseMenuItemControl">
 
-    <Grid ColumnDefinitions="Auto,*,Auto,Auto"
+    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"
           ColumnSpacing="5"
           Height="40">
 
@@ -30,9 +30,20 @@
 
         <ContentPresenter Grid.Column="1"
                           Content="{Binding ItemContent, ElementName=BaseControl}" />
-
-        <!-- Delete -->
+        <!-- Save -->
         <Button Grid.Column="2"
+                Margin="0,0,10,0"
+                ToolTip.Tip="Save To File"
+                Command="{Binding SaveAsCommand}">
+
+            <avalonia:FluentIcon Icon="Save"
+                                 Width="16"
+                                 Height="16" />
+
+        </Button>
+
+        <!-- Edit -->
+        <Button Grid.Column="3"
                 Margin="0,0,10,0"
                 ToolTip.Tip="Edit"
                 Command="{Binding EditCommand}">
@@ -42,7 +53,8 @@
                                  Height="16" />
 
         </Button>
-        <Button Grid.Column="3"
+        <!-- Delete -->
+        <Button Grid.Column="4"
                 Margin="0,0,10,0"
                 ToolTip.Tip="Delete"
                 Command="{Binding DeleteCommand}">

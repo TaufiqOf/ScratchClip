@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 
@@ -22,10 +23,15 @@ public partial class ImageClipboardItem : AClipboardItem
     }
 
 
+    public override Task<object?> GetData()
+    {
+        return Task.FromResult<object?>(Image);
+    }
+
+    public override string SuggestedFile { get; } = "image.png";
+
     public override void Delete()
     {
         OnDelete?.Invoke(this);
     }
-
- 
 }

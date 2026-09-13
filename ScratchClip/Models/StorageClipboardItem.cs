@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using FluentIcons.Common;
 
@@ -8,7 +11,6 @@ namespace ScratchClip.Models;
 
 public partial class StorageClipboardItem : AClipboardItem
 {
-
     private Icon _icon;
     private string _content = string.Empty;
 
@@ -22,6 +24,7 @@ public partial class StorageClipboardItem : AClipboardItem
             OnPropertyChanged();
         }
     }
+
     public Icon Icon
     {
         get => _icon;
@@ -45,9 +48,10 @@ public partial class StorageClipboardItem : AClipboardItem
             OnPropertyChanged();
         }
     } = new List<string>();
-    
+
     public List<string> Files => Paths.Where(File.Exists).ToList();
     public List<string> Folders => Paths.Where(Directory.Exists).ToList();
+
     private void SetContent(List<string> value)
     {
         var contentBuilder = new System.Text.StringBuilder();
@@ -67,7 +71,8 @@ public partial class StorageClipboardItem : AClipboardItem
             else if (Directory.Exists(item))
             {
                 // Path.GetFileName returns the directory's own name (e.g., "MyFolder")
-                contentBuilder.AppendLine(Path.GetFileName(item.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)));
+                contentBuilder.AppendLine(Path.GetFileName(item.TrimEnd(Path.DirectorySeparatorChar,
+                    Path.AltDirectorySeparatorChar)));
             }
         }
 
@@ -130,6 +135,137 @@ public partial class StorageClipboardItem : AClipboardItem
         }
 
         throw new FileNotFoundException($"The storage item '{storageItem}' does not exist.");
+    }
+
+    public override async Task<object?> GetData()
+    {
+        // Single file: return an async FileStream
+        if (Paths.Count == 1 &&
+            GetStorageType(Paths[0]) == StorageType.File)
+        {
+            return new FileStream(
+                Paths[0],
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                bufferSize: 1024 * 64,
+                options: FileOptions.Asynchronous | FileOptions.SequentialScan);
+        }
+
+        // Multiple files/folders -> temporary ZIP on disk
+        var tempZip = Path.Combine(
+            Path.GetTempPath(),
+            $"{Guid.NewGuid():N}.zip");
+
+        await using (var zipStream = new FileStream(
+                         tempZip,
+                         FileMode.Create,
+                         FileAccess.Write,
+                         FileShare.None,
+                         bufferSize: 1024 * 64,
+                         options: FileOptions.Asynchronous))
+        {
+            using var archive = new ZipArchive(
+                zipStream,
+                ZipArchiveMode.Create,
+                leaveOpen: false);
+
+            foreach (var path in Paths)
+            {
+                if (File.Exists(path))
+                {
+                    await AddFileToZip(
+                        archive,
+                        path,
+                        Path.GetFileName(path));
+                }
+                else if (Directory.Exists(path))
+                {
+                    await AddDirectoryToZip(
+                        archive,
+                        path,
+                        Path.GetFileName(path));
+                }
+            }
+        }
+
+        // Return the completed ZIP as an async FileStream
+        return new FileStream(
+            tempZip,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize: 1024 * 64,
+            options: FileOptions.Asynchronous | FileOptions.SequentialScan);
+    }
+
+    private static async Task AddFileToZip(
+        ZipArchive archive,
+        string filePath,
+        string entryName)
+    {
+        var entry = archive.CreateEntry(
+            entryName,
+            CompressionLevel.Fastest);
+
+        await using var source = new FileStream(
+            filePath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize: 1024 * 64,
+            options: FileOptions.Asynchronous | FileOptions.SequentialScan);
+
+        await using var target = entry.Open();
+
+        await source.CopyToAsync(target);
+    }
+    private static async Task AddDirectoryToZip(
+        ZipArchive archive,
+        string directory,
+        string entryRoot)
+    {
+        foreach (var file in Directory.GetFiles(directory))
+        {
+            var relativePath = Path.GetRelativePath(
+                directory,
+                file);
+
+            await AddFileToZip(
+                archive,
+                file,
+                Path.Combine(entryRoot, relativePath));
+        }
+
+        foreach (var subDirectory in Directory.GetDirectories(directory))
+        {
+            await AddDirectoryToZip(
+                archive,
+                subDirectory,
+                Path.Combine(
+                    entryRoot,
+                    Path.GetFileName(subDirectory)));
+        }
+    }
+
+    public override string SuggestedFile
+    {
+        get
+        {
+            if (Paths.Count == 1 &&
+                GetStorageType(Paths[0]) == StorageType.File)
+            {
+                return Path.GetFileName(Paths[0]);
+            }
+            else
+            {
+                var locations = string.Join(", ", Paths
+                    .Where(File.Exists)
+                    .Select(Path.GetDirectoryName)
+                    .Distinct());
+                return $"{locations}.zip";
+            }
+        }
     }
 
     public override void Delete()

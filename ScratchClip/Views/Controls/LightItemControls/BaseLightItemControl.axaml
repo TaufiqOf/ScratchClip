@@ -68,6 +68,20 @@
                     <!-- Optional actions -->
                     <ContentPresenter Content="{Binding ExtraActions,
                                                         ElementName=BaseControl}" />
+                    <!-- Common Save As -->
+                    <Button Command="{Binding SaveAsCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="3"
+                            Padding="4"
+                            Width="24"
+                            Height="24"
+                            ToolTip.Tip="Save To File">
+
+                        <avalonia:FluentIcon Icon="Save"
+                                             FontSize="13" />
+
+                    </Button>
                     <!-- Common Edit -->
                     <Button Command="{Binding EditCommand}"
                             Background="Transparent"
