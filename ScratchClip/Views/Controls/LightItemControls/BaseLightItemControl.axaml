@@ -61,7 +61,7 @@
                 <StackPanel Grid.Row="0"
                             Grid.Column="2"
                             Grid.RowSpan="2"
-                            Orientation="Horizontal"
+                            Orientation="Vertical"
                             Spacing="2"
                             VerticalAlignment="Top">
 

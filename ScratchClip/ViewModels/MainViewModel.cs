@@ -305,6 +305,11 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     public void Lock()
     {
+        var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot();
+        ClipboardHistoryManager.Save(clipboardHistory, ApplicationKeyStore.GetSessionPassword());
+        ApplicationKeyStore.ClearSessionPassword();
+        ClipboardManager.ClearClipboardHistory();
+        ClipboardManager.IsLoaded = false;
         OnShowLockPage?.Invoke();
     }
 

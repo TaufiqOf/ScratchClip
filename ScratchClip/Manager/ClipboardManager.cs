@@ -24,6 +24,7 @@ public static class ClipboardManager
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
     private static AClipboardItem? _selectedClipboardItem;
 
+    public static bool IsLoaded { get; set; } = false;
     public static int MaxItemsInHistory { get; set; } = 20;
     static ClipboardManager()
     {

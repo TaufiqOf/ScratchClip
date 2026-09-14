@@ -102,10 +102,14 @@ dotnet run
 
 ScratchClip is provided "as is" and without warranty of any kind, express or implied.
 
+This application was not **vibe coded**, AI generated, or created by any AI tools. It was developed entirely by human author. 
+
 The authors and contributors make no guarantees regarding the reliability, availability, security, accuracy, or fitness of ScratchClip for any particular purpose. Use ScratchClip at your own risk.
 
 While ScratchClip includes encryption and other security features, no software can guarantee complete security. Users are responsible for protecting their operating system, user account, passwords, and keyring.
 
 The authors and contributors are not responsible for any loss, corruption, disclosure, or unauthorized access to clipboard data, or for any other direct or indirect damages resulting from the use of ScratchClip.
 
-By using ScratchClip, you acknowledge and accept these limitations.
+By using ScratchClip, you acknowledge and accept these limitations. 
+
+All rights reserved to the authors and contributors.

@@ -263,11 +263,12 @@ public partial class MainWindow : Window
         {
             vm.RefreshList();
         }
+
         PageHost.Content = _mainPage;
 
-        if (_loaded)
+        if (ClipboardManager.IsLoaded)
             return;
-        _loaded = true;
+        ClipboardManager.IsLoaded = true;
         var settings = SettingsManager.Load();
         var persistedItems = await ClipboardHistoryManager.Load(ApplicationKeyStore.GetSessionPassword());
         ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
@@ -311,10 +312,14 @@ public partial class MainWindow : Window
             HideToTray();
         }
 
-        var settings = SettingsManager.Load();
-        settings.WindowWidth = Width;
-        settings.WindowHeight = Height;
-        SettingsManager.Save(settings);
+        if (_loaded)
+        {
+            var settings = SettingsManager.Load();
+            settings.WindowWidth = Width;
+            settings.WindowHeight = Height;
+            SettingsManager.Save(settings);
+        }
+
         base.OnClosing(e);
     }
 }

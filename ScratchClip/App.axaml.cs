@@ -174,12 +174,6 @@ public class App : Application
 
     private async void TrayIcon_OnClicked(object? sender, EventArgs e)
     {
-        // var item = ClipboardManager.SelectedClipboardItem ?? ClipboardManager.GetClipboardHistorySnapshot().FirstOrDefault();
-        // if (item != null)
-        // {
-        //     await PasteItemToFocusedWindowAsync(item);
-        //     return;
-        // }
         if (SettingsManager.Load().IsPinned)
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
@@ -256,7 +250,7 @@ public class App : Application
         _isCleanedUp = true;
 
         var settings = SettingsManager.Load();
-        if (settings.IsSaveHistoryOnExitEnabled)
+        if (settings.IsSaveHistoryOnExitEnabled && ClipboardManager.IsLoaded)
         {
             var history = ClipboardManager.GetClipboardHistorySnapshot();
             ClipboardHistoryManager.Save(history,ApplicationKeyStore.GetSessionPassword());
