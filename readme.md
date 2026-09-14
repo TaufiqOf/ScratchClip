@@ -44,9 +44,9 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 
 ## 📸 Screenshots
 
-|               Main Interface                |            Light Theme             |
-|:-------------------------------------------:|:----------------------------------:|
-| ![ScratchClip main window](Docs/dark-1.png) | ![ScratchClip light theme](Docs/light-1.png) |
+|                Main Interface                 |                  Light Theme                   |
+|:---------------------------------------------:|:----------------------------------------------:|
+| ![ScratchClip main window](Docs/dark-1.1.png) | ![ScratchClip light theme](Docs/light-1.1.png) |
 
 |                 Compact View                 |                  Menu View                  |
 |:--------------------------------------------:|:--------------------------------------------:|
