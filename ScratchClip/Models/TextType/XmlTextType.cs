@@ -35,4 +35,9 @@ public class XmlTextType : ATextType
     {
         return Task.CompletedTask;
     }
+
+    public override Task UpdateTagsAsync(string text)
+    {
+        return Task.CompletedTask;
+    }
 }

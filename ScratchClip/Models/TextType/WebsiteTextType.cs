@@ -44,6 +44,11 @@ public partial class WebsiteTextType : ATextType
         await PopulateWebsiteMetadataAsync();
     }
 
+    public override Task UpdateTagsAsync(string text)
+    {
+        return Task.CompletedTask;
+    }
+
     public Bitmap? WebsiteIcon
     {
         get;

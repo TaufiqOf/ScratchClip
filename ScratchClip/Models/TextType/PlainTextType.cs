@@ -67,7 +67,12 @@ public partial class PlainTextType : ATextType
     {
         return Task.CompletedTask;
     }
-    
+
+    public override Task UpdateTagsAsync(string text)
+    {
+        return Task.CompletedTask;
+    }
+
     [RelayCommand]
     private void More()
     {

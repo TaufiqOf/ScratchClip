@@ -3,6 +3,8 @@
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:models="clr-namespace:ScratchClip.Models"
              xmlns:controls="clr-namespace:ScratchClip.Views.Controls"
+             xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
              x:Class="ScratchClip.Views.Page.EditClipboardItemPageControl"
              x:DataType="models:TextClipboardItem">
 
@@ -41,49 +43,15 @@
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto">
 
-            <StackPanel MaxWidth="700"
-                        HorizontalAlignment="Stretch"
-                        Spacing="24">
-
-
-                <!-- ================================= -->
-                <!-- Content -->
-                <!-- ================================= -->
-
-                <StackPanel Spacing="12">
-
-                    <TextBlock Text="Content"
-                               FontSize="16"
-                               FontWeight="SemiBold" />
-
-                    <Border Padding="16"
-                            CornerRadius="8"
-                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-
-                        <StackPanel Spacing="10">
-
-                            <TextBlock Text="Clipboard text"
-                                       FontWeight="Medium" />
-
-                            <TextBox x:Name="ContentTextBox"
-                                     Text="{Binding Text, Mode=TwoWay}"
-                                     AcceptsReturn="True"
-                                     TextWrapping="Wrap"
-                                     MinHeight="180"
-                                     PlaceholderText="Enter clipboard text..." />
-
-                        </StackPanel>
-
-                    </Border>
-
-                </StackPanel>
-
+            <Grid
+                RowDefinitions="*,Auto,Auto"
+                HorizontalAlignment="Stretch">
 
                 <!-- ================================= -->
                 <!-- Tags -->
                 <!-- ================================= -->
 
-                <StackPanel Spacing="12">
+                <StackPanel Grid.Row="0" Spacing="12">
 
                     <TextBlock Text="Tags"
                                FontSize="16"
@@ -98,7 +66,7 @@
                             <TextBlock Text="Tags"
                                        FontWeight="Medium" />
 
-                            <controls:TagEditorControl x:Name="TagEditor" 
+                            <controls:TagEditorControl x:Name="TagEditor"
                                                        Tags="{Binding Tags, Mode=TwoWay}" />
 
                             <TextBlock Text="Separate multiple tags with commas."
@@ -111,12 +79,55 @@
 
                 </StackPanel>
 
+                <!-- ================================= -->
+                <!-- Content -->
+                <!-- ================================= -->
+
+                <StackPanel Grid.Row="1" Spacing="12">
+
+                    <TextBlock Text="Content"
+                               FontSize="16"
+                               FontWeight="SemiBold" />
+
+                    <Border Padding="16"
+                            CornerRadius="8"
+                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                        <StackPanel Spacing="10">
+
+                            <TextBlock Text="Clipboard text"
+                                       FontWeight="Medium" />
+                            <avaloniaEdit:TextEditor
+                                x:Name="ContentTextBox"
+                                x:CompileBindings="False"
+                                ShowLineNumbers="True"
+                                FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+                                FontSize="12"
+                                Padding="8"
+                                MinHeight="40"
+                                VerticalAlignment="Stretch"
+                                HorizontalScrollBarVisibility="Auto"
+                                VerticalScrollBarVisibility="Auto">
+                                <Interaction.Behaviors>
+                                    <converters:TextEditorBindingBehavior
+                                        Text="{Binding Text, Mode=TwoWay}" />
+                                </Interaction.Behaviors>
+                            </avaloniaEdit:TextEditor>
+
+                        </StackPanel>
+
+                    </Border>
+
+                </StackPanel>
+
+
+
 
                 <!-- ================================= -->
                 <!-- Information -->
                 <!-- ================================= -->
 
-                <StackPanel Spacing="12">
+                <StackPanel Grid.Row="2" Spacing="12">
 
                     <TextBlock Text="Information"
                                FontSize="16"
@@ -156,7 +167,7 @@
 
                 </StackPanel>
 
-            </StackPanel>
+            </Grid>
 
         </ScrollViewer>
 

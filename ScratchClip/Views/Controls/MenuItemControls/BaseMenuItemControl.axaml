@@ -32,7 +32,7 @@
                           Content="{Binding ItemContent, ElementName=BaseControl}" />
         <!-- Save -->
         <Button Grid.Column="2"
-                Margin="0,0,10,0"
+                Margin="0,0,2,0"
                 ToolTip.Tip="Save To File"
                 Command="{Binding SaveAsCommand}">
 
@@ -44,7 +44,7 @@
 
         <!-- Edit -->
         <Button Grid.Column="3"
-                Margin="0,0,10,0"
+                Margin="0,0,2,0"
                 ToolTip.Tip="Edit"
                 Command="{Binding EditCommand}">
 
@@ -55,7 +55,7 @@
         </Button>
         <!-- Delete -->
         <Button Grid.Column="4"
-                Margin="0,0,10,0"
+                Margin="0,0,2,0"
                 ToolTip.Tip="Delete"
                 Command="{Binding DeleteCommand}">
 

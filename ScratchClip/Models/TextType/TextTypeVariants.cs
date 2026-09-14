@@ -337,6 +337,11 @@ public class CodeTextType : ATextType
 
     public override Task PopulateMetadataAsync(string text)
     {
+        return Task.CompletedTask;
+    }
+
+    public override Task UpdateTagsAsync(string text)
+    {
         if (!string.IsNullOrEmpty(DetectedLanguage))
         {
             Tags.Add(DetectedLanguage);

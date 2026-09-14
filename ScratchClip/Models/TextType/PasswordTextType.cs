@@ -52,6 +52,11 @@ public class PasswordTextType : ATextType
         return Task.CompletedTask;
     }
 
+    public override Task UpdateTagsAsync(string text)
+    {
+        return Task.CompletedTask;
+    }
+
     private static bool LooksLikeCodeSnippet(string input)
     {
         // 1. Method/Function call patterns: Foo(), Bar(arg), etc.

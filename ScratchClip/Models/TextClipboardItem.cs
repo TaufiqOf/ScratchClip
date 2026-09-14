@@ -57,6 +57,7 @@ public partial class TextClipboardItem : AClipboardItem
         if(TextType is PasswordTextType passwordTextType)
             DisplayText = new string('•', passwordTextType.Text.Length);
         await TextType.PopulateMetadataAsync(text);
+        await TextType.UpdateTagsAsync(text);
     }
 
     private ATextType CreateTextType(string text)
@@ -100,7 +101,7 @@ public partial class TextClipboardItem : AClipboardItem
         OnDelete?.Invoke(this);
     }
 
-    public void UpdateByTags()
+    public async Task UpdateByTags()
     {
         TextType = Tags.Contains("WEBSITE") ? new WebsiteTextType(Text, Tags, MataData) :
             Tags.Contains("JSON") ? new JsonTextType(Text, Tags, MataData) :
@@ -115,6 +116,7 @@ public partial class TextClipboardItem : AClipboardItem
         {
             DisplayText = TextType.Text.Length > 600 ? TextType.Text.Substring(0, 600) : TextType.Text;
         }
+        await TextType.PopulateMetadataAsync(Text);
     }
 
     public void UpdateDisplayText()
