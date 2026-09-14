@@ -53,13 +53,7 @@ public class App : Application
 
             // --- PRIMARY INSTANCE SETUP ---
             var settings = SettingsManager.Load();
-
-            if (settings.IsSaveHistoryOnExitEnabled)
-            {
-                var persistedItems = await ClipboardHistoryManager.Load();
-                ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
-                ClipboardManager.LoadClipboardHistory(persistedItems);
-            }
+            
 
             _hotkeyService = new GlobalHotkeyService(ToggleMainWindow)
             {
@@ -265,7 +259,7 @@ public class App : Application
         if (settings.IsSaveHistoryOnExitEnabled)
         {
             var history = ClipboardManager.GetClipboardHistorySnapshot();
-            ClipboardHistoryManager.Save(history);
+            ClipboardHistoryManager.Save(history,ApplicationKeyStore.GetSessionPassword());
         }
 
         ActualThemeVariantChanged -= OnActualThemeVariantChanged;

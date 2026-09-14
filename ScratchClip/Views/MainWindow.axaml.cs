@@ -25,6 +25,7 @@ public partial class MainWindow : Window
     private readonly MainViewModel _viewModel;
     private bool _isClosingForReal;
     private SettingPageControl? _settingsPage;
+    private bool _loaded;
 
 
     public MainWindow() : this(new GlobalHotkeyService(() => { }))
@@ -79,7 +80,7 @@ public partial class MainWindow : Window
     {
         PasswordPageControl passwordPage = new PasswordPageControl();
         PageHost.Content = passwordPage;
-        passwordPage.OnLogin += () =>
+        passwordPage.OnLogin += async () =>
         {
             ShowMainPage();
             Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
@@ -111,8 +112,8 @@ public partial class MainWindow : Window
             SettingsManager.Save(settings);
         }, DispatcherPriority.Background);
     }
-    
-    
+
+
     private void OnActivated(object? sender, EventArgs e)
     {
         Dispatcher.UIThread.Post(() =>
@@ -256,13 +257,21 @@ public partial class MainWindow : Window
         }, DispatcherPriority.Render);
     }
 
-    private void ShowMainPage()
+    private async void ShowMainPage()
     {
-        if(_mainPage.DataContext is MainViewModel vm)
+        if (_mainPage.DataContext is MainViewModel vm)
         {
             vm.RefreshList();
         }
         PageHost.Content = _mainPage;
+
+        if (_loaded)
+            return;
+        _loaded = true;
+        var settings = SettingsManager.Load();
+        var persistedItems = await ClipboardHistoryManager.Load(ApplicationKeyStore.GetSessionPassword());
+        ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
+        ClipboardManager.LoadClipboardHistory(persistedItems);
     }
 
     private void ShowSettingsPage()

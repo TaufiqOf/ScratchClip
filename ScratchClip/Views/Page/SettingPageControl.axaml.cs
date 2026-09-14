@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ScratchClip.Helper;
+using ScratchClip.Manager;
 using ScratchClip.ViewModels;
 using SharpHook.Data;
 
@@ -211,6 +212,9 @@ public partial class SettingPageControl : UserControl
 
             ShowPasswordStatus(
                 "Password updated successfully.");
+            ApplicationKeyStore.SetSessionPassword(password);
+            var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot();
+            ClipboardHistoryManager.Save(clipboardHistory, ApplicationKeyStore.GetSessionPassword());
         }
         catch (Exception)
         {
@@ -228,8 +232,9 @@ public partial class SettingPageControl : UserControl
         ConfirmPasswordTextBox.Clear();
 
         UpdatePasswordControls();
-
-        ShowPasswordStatus(
-            "Password removed.");
+        
+        var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot();
+        ClipboardHistoryManager.Save(clipboardHistory, ApplicationKeyStore.GetSessionPassword());
+        ShowPasswordStatus("Password removed.");
     }
 }

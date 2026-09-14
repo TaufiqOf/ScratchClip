@@ -10,6 +10,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using AvaloniaEdit.Utils;
+using ScratchClip.Helper;
 using ScratchClip.Models;
 using ImageClipboardItem = ScratchClip.Models.ImageClipboardItem;
 
@@ -23,50 +24,89 @@ public static class ClipboardHistoryManager
 
     private static readonly string FilePath = Path.Combine(FolderPath, "history.json");
 
-    public static async Task<IReadOnlyList<AClipboardItem>> Load()
+    public static async Task<IReadOnlyList<AClipboardItem>> Load(
+        string? password)
     {
         try
         {
-            if (!File.Exists(FilePath))
+            var path = Path.Combine(
+                FolderPath,
+                "history.enc");
+
+            if (!File.Exists(path))
                 return Array.Empty<AClipboardItem>();
 
-            var json = File.ReadAllText(FilePath);
-            var records = JsonSerializer.Deserialize<List<ClipboardHistoryRecord>>(json) ??
-                          new List<ClipboardHistoryRecord>();
+            var encrypted = await File.ReadAllBytesAsync(path);
 
-            var tasks = await Task.WhenAll(records
-                .Select(ToClipboardItem)); 
-            var items = tasks
-                .Where(item => item != null)
+            var plaintext = FileEncryption.Decrypt(
+                encrypted,
+                password);
+
+            var json = Encoding.UTF8.GetString(plaintext);
+
+            var records =
+                JsonSerializer.Deserialize<List<ClipboardHistoryRecord>>(
+                    json)
+                ?? new List<ClipboardHistoryRecord>();
+
+            var tasks = await Task.WhenAll(
+                records.Select(ToClipboardItem));
+
+            return tasks
+                .Where(x => x != null)
                 .Cast<AClipboardItem>()
                 .ToList();
-             
-             return items;
+        }
+        catch (CryptographicException)
+        {
+            // Wrong password or modified/corrupt file.
+            return Array.Empty<AClipboardItem>();
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to load clipboard history: {ex.Message}");
+            Debug.WriteLine(
+                $"Failed to load clipboard history: {ex.Message}");
+
             return Array.Empty<AClipboardItem>();
         }
     }
 
-    public static void Save(IReadOnlyList<AClipboardItem> items)
+    public static void Save(
+        IReadOnlyList<AClipboardItem> items,
+        string? password)
     {
         try
         {
             Directory.CreateDirectory(FolderPath);
+
             var records = items
                 .Select(ToRecord)
                 .Where(record => record != null)
                 .Cast<ClipboardHistoryRecord>()
                 .ToList();
 
-            var json = JsonSerializer.Serialize(records, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(FilePath, json);
+            var json = JsonSerializer.Serialize(
+                records,
+                new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+
+            var plaintext = Encoding.UTF8.GetBytes(json);
+            var encrypted = FileEncryption.Encrypt(
+                plaintext,
+                password);
+
+            var path = Path.Combine(
+                FolderPath,
+                "history.enc");
+
+            File.WriteAllBytes(path, encrypted);
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to save clipboard history: {ex.Message}");
+            Debug.WriteLine(
+                $"Failed to save clipboard history: {ex.Message}");
         }
     }
 

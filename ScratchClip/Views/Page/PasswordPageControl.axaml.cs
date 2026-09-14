@@ -51,6 +51,7 @@ public partial class PasswordPageControl : UserControl
 
         if (CheckPassword(password))
         {
+            ApplicationKeyStore.SetSessionPassword(password);
             OnLogin?.Invoke();
         }
         else
