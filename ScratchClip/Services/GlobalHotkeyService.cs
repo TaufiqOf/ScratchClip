@@ -64,12 +64,15 @@ public class GlobalHotkeyService : IDisposable
 
         var isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
         var modifierKey = isMac ? KeyCode.VcLeftMeta : KeyCode.VcLeftControl;
+        var shiftKey = KeyCode.VcLeftShift;
 
         // X11 / Windows / macOS Simulation
         _simulator.SimulateKeyPress(modifierKey);
+        _simulator.SimulateKeyPress(shiftKey);
         _simulator.SimulateKeyPress(KeyCode.VcV);
 
         _simulator.SimulateKeyRelease(KeyCode.VcV);
+        _simulator.SimulateKeyRelease(shiftKey);
         _simulator.SimulateKeyRelease(modifierKey);
     }
 
