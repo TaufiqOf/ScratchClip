@@ -17,8 +17,8 @@ public static class ApplicationKeyStore
     private const int KeySize = 32;
     private const int Pbkdf2Iterations = 600_000;
 
-    // Only kept in memory after authentication.
-    private static string? _sessionPassword;
+    // Stored as a zeroable UTF-8 byte array in memory after authentication.
+    private static byte[]? _sessionPasswordBytes;
 
     public static Action? OnPasswordChanged;
 
@@ -33,7 +33,10 @@ public static class ApplicationKeyStore
     /// </summary>
     public static string? GetSessionPassword()
     {
-        return _sessionPassword;
+        if (_sessionPasswordBytes == null || _sessionPasswordBytes.Length == 0)
+            return null;
+
+        return Encoding.UTF8.GetString(_sessionPasswordBytes);
     }
 
     /// <summary>
@@ -88,12 +91,17 @@ public static class ApplicationKeyStore
                 nameof(password));
         }
 
-        _sessionPassword = password;
+        ClearSessionPassword();
+        _sessionPasswordBytes = Encoding.UTF8.GetBytes(password);
     }
 
     public static void ClearSessionPassword()
     {
-        _sessionPassword = null;
+        if (_sessionPasswordBytes != null)
+        {
+            CryptographicOperations.ZeroMemory(_sessionPasswordBytes);
+            _sessionPasswordBytes = null;
+        }
     }
 
     public static void SetPassword(string password)
@@ -124,7 +132,7 @@ public static class ApplicationKeyStore
                 storedValue);
 
             // Authenticated for this session.
-            _sessionPassword = password;
+            SetSessionPassword(password);
         }
         finally
         {
