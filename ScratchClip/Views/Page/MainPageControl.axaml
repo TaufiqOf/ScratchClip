@@ -306,6 +306,7 @@
         <!-- ========================================================= -->
 
         <ContentControl
+            x:Name="ContentControl"
             Grid.Row="3"
             Content="{Binding ListContent}"
             Margin="4,0"/>

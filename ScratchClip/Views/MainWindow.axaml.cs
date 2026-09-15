@@ -7,6 +7,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using ScratchClip.Helper;
 using ScratchClip.Manager;
 using ScratchClip.Models;
@@ -96,7 +97,10 @@ public partial class MainWindow : Window
         _mainPage.FindControl<TextBox>("SearchTextBox");
 
     private ListBox? HistoryListBox =>
-        _mainPage.FindControl<ListBox>("ListBox");
+        _mainPage
+            .GetVisualDescendants()
+            .OfType<ListBox>()
+            .FirstOrDefault(x => x.Name == "ListBox");
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
@@ -136,6 +140,33 @@ public partial class MainWindow : Window
             var searchBox = SearchTextBoxControl;
             searchBox?.Focus();
             searchBox?.SelectAll();
+        }
+        if(e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            var listBox = HistoryListBox;
+
+            if (listBox != null)
+            {
+                e.Handled = true;
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    listBox.Focus();
+                    if(listBox.SelectedItem == null && listBox.SelectedIndex < 0 && listBox.ItemCount > 0)
+                    {
+                        listBox.SelectedIndex = 0;
+                    }
+
+                    if (listBox.SelectedItem != null)
+                    {
+                        var container = listBox.ContainerFromItem(listBox.SelectedItem);
+
+                        container?.Focus(
+                            NavigationMethod.Tab,
+                            KeyModifiers.None);
+                    }
+                });
+            }
         }
 
         if (e.Key == Key.Escape)
