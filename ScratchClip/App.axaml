@@ -25,8 +25,17 @@
         </TrayIcons>
     </TrayIcon.Icons>
     <Application.Styles>
-        <FluentTheme />
+        <FluentTheme>
+            <FluentTheme.Palettes>
+                <ColorPaletteResources
+                    x:Key="Light"
+                    Accent="{DynamicResource SystemAccentColor}" />
 
+                <ColorPaletteResources
+                    x:Key="Dark"
+                    Accent="{DynamicResource SystemAccentColor}" />
+            </FluentTheme.Palettes>
+        </FluentTheme>
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
     </Application.Styles>
 </Application>

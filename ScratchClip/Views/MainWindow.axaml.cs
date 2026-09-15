@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -129,44 +130,22 @@ public partial class MainWindow : Window
         }, DispatcherPriority.Background);
     }
 
-    private void OnWindowKeyDown(object? sender, KeyEventArgs e)
+    private async Task OnWindowKeyDown(object? sender, KeyEventArgs e)
     {
         if (!ReferenceEquals(PageHost.Content, _mainPage))
             return;
 
-        if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
             e.Handled = true;
             var searchBox = SearchTextBoxControl;
             searchBox?.Focus();
             searchBox?.SelectAll();
         }
-        if(e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+
+        if (e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
-            var listBox = HistoryListBox;
-
-            if (listBox != null)
-            {
-                e.Handled = true;
-
-                Dispatcher.UIThread.Post(() =>
-                {
-                    listBox.Focus();
-                    if(listBox.SelectedItem == null && listBox.SelectedIndex < 0 && listBox.ItemCount > 0)
-                    {
-                        listBox.SelectedIndex = 0;
-                    }
-
-                    if (listBox.SelectedItem != null)
-                    {
-                        var container = listBox.ContainerFromItem(listBox.SelectedItem);
-
-                        container?.Focus(
-                            NavigationMethod.Tab,
-                            KeyModifiers.None);
-                    }
-                });
-            }
+            SetListFocus(e);
         }
 
         if (e.Key == Key.Escape)
@@ -175,13 +154,67 @@ public partial class MainWindow : Window
             HideToTray();
         }
 
+        if (e.Key == Key.Delete)
+        {
+            if (HistoryListBox?.SelectedItem != null)
+            {
+                var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
+                if (container?.IsFocused == true)
+                {
+                    if (_viewModel.SelectedItem != null)
+                    {
+                        var index = _viewModel.FilteredHistory.IndexOf(_viewModel.SelectedItem);
+                        _viewModel.SelectedItem.Delete();
+                        await Task.Delay(100);
+                        _viewModel.SelectedItem = _viewModel.FilteredHistory.ElementAtOrDefault(index) ??
+                                                  _viewModel.FilteredHistory.LastOrDefault();
+                        SetListFocus(e);
+                    }
+                }
+            }
+        }
+
         if (e.Key == Key.Enter)
         {
+            if (SearchTextBoxControl?.IsFocused == true)
+            {
+                SetListFocus(e);
+                return;
+            }
+
             e.Handled = true;
             _ = ActivateSelectedItemAsync();
         }
 
         _viewModel.OnWindowKeyDown(e);
+    }
+
+    private void SetListFocus(KeyEventArgs e)
+    {
+        var listBox = HistoryListBox;
+
+        if (listBox != null)
+        {
+            e.Handled = true;
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                listBox.Focus();
+                if (listBox.SelectedItem == null && listBox.SelectedIndex < 0 && listBox.ItemCount > 0)
+                {
+                    listBox.SelectedIndex = 0;
+                }
+
+                if (listBox.SelectedItem != null)
+                {
+                    var container = listBox.ContainerFromItem(listBox.SelectedItem);
+
+                    container?.Focus(
+                        NavigationMethod.Tab,
+                        KeyModifiers.None);
+                }
+            });
+        }
     }
 
     public async Task ActivateSelectedItemAsync()
