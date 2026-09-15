@@ -20,10 +20,9 @@ public static class ClipboardManager
     public static Action<AClipboardItem>? OnRemoveExistingClipboardItem;
     public static Action<AClipboardItem>? OnEditExistingClipboardItem;
     public static Action? OnClearExistingClipboardItem;
-
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
+    
     private static AClipboardItem? _selectedClipboardItem;
-
     public static bool IsLoaded { get; set; } = false;
     public static int MaxItemsInHistory { get; set; } = 20;
     static ClipboardManager()
@@ -34,7 +33,7 @@ public static class ClipboardManager
         ClipboardServices[ClipboardDataFormat.Storage] = new StorageClipboardService();
     }
 
-    private static List<AClipboardItem> ClipboardHistory { get; } = new();
+    public static List<AClipboardItem> ClipboardHistory { get; } = new();
 
     public static AClipboardItem? SelectedClipboardItem
     {
@@ -181,7 +180,7 @@ public static class ClipboardManager
 
     public static void ClearClipboardHistory()
     {
-        ClipboardHistory.Clear();
+        ClipboardHistory.RemoveAll(q=>!q.IsPinned);
         OnClearExistingClipboardItem?.Invoke();
     }
 

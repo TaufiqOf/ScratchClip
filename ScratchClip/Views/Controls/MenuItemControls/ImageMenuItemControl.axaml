@@ -16,7 +16,16 @@
                HorizontalAlignment="Left"
                Width="32"
                Height="32"
-               Stretch="Uniform" />
+               Stretch="Uniform" >
+            <ToolTip.Tip>
+                <Border Padding="5">
+                    <Image Source="{Binding Image}"
+                           MaxWidth="300"
+                           MaxHeight="500"
+                           Stretch="Uniform" />
+                </Border>
+            </ToolTip.Tip>
+        </Image>
 
     </Grid>
 

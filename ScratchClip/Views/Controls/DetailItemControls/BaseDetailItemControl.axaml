@@ -8,7 +8,9 @@
              x:Class="ScratchClip.Views.Controls.DetailItemControls.BaseDetailItemControl">
     <UserControl.Resources>
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
+        <converters:PinIconConverter x:Key="PinIconConverter" />
     </UserControl.Resources>
+
     <Grid RowDefinitions="*,Auto">
 
         <!-- ========================================= -->
@@ -30,7 +32,7 @@
                 CornerRadius="4"
                 Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
 
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto"
                   VerticalAlignment="Center">
 
                 <!-- ================================= -->
@@ -96,9 +98,30 @@
                     </ItemsControl>
                 </StackPanel>
                 <!-- ================================= -->
-                <!-- Save -->
+                <!-- Pin -->
                 <!-- ================================= -->
                 <Button Grid.Column="2"
+                        Command="{Binding PinCommand}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="3"
+                        Padding="5"
+                        Width="26"
+                        Height="26"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        ToolTip.Tip="Toggle Pinned">
+
+                    <avalonia:FluentIcon
+                        Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
+                        FontSize="14" />
+
+
+                </Button>
+                <!-- ================================= -->
+                <!-- Save -->
+                <!-- ================================= -->
+                <Button Grid.Column="3"
                         Command="{Binding SaveAsCommand}"
                         Background="Transparent"
                         BorderThickness="0"
@@ -117,7 +140,7 @@
                 <!-- ================================= -->
                 <!-- Edit -->
                 <!-- ================================= -->
-                <Button Grid.Column="3"
+                <Button Grid.Column="4"
                         Command="{Binding EditCommand}"
                         Background="Transparent"
                         BorderThickness="0"
@@ -137,7 +160,7 @@
                 <!-- Delete -->
                 <!-- ================================= -->
 
-                <Button Grid.Column="4"
+                <Button Grid.Column="5"
                         Command="{Binding DeleteCommand}"
                         Background="Transparent"
                         BorderThickness="0"

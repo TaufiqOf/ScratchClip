@@ -46,7 +46,8 @@
 
             <!-- Normal / non-password text -->
             <SelectableTextBlock Text="{Binding DisplayText}"
-                                 FontSize="12"
+                                 FontSize="12"              
+                                 ToolTip.Tip="{Binding DisplayText}"
                                  Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
                                  TextWrapping="Wrap">
 

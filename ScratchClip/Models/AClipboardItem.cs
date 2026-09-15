@@ -20,6 +20,16 @@ public abstract partial class AClipboardItem : ViewModelBase
     public Action<AClipboardItem>? OnDelete { get; set; }
 
     public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
+    
+    public bool IsPinned
+    {
+        get;
+        set
+        {
+            field = value;
+            OnPropertyChanged();
+        }
+    } = false;
 
     public abstract Task<object?> GetData();
 
@@ -91,6 +101,12 @@ public abstract partial class AClipboardItem : ViewModelBase
     } = DateTime.Now;
 
     public List<string?> MataData { get; set; } = new List<string?>();
+    
+    [RelayCommand]
+    public void Pin()
+    {
+        IsPinned = !IsPinned;
+    }
 
     [RelayCommand]
     public abstract void Delete();

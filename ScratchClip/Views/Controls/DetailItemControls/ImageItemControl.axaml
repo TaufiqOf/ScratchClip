@@ -9,7 +9,7 @@
             DoubleTapped="OnDoubleTapped">
 
         <Image Source="{Binding Image}"
-               Stretch="UniformToFill"
+               Stretch="Uniform"
                HorizontalAlignment="Center"
                VerticalAlignment="Center" />
 

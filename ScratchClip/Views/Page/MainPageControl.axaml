@@ -3,9 +3,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
     xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+    xmlns:converters="clr-namespace:ScratchClip.Converters"
     x:Class="ScratchClip.Views.Page.MainPageControl"
     x:DataType="viewModels:MainViewModel">
-
+    <UserControl.Resources>
+        <converters:ToUpperConverter x:Key="ToUpperConverter" />
+        <converters:PinIconConverter x:Key="PinIconConverter" />
+    </UserControl.Resources>
     <Grid
         RowDefinitions="Auto,Auto,Auto,*"
         Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
@@ -134,7 +138,7 @@
                         ToolTip.Tip="Toggle Pinned">
 
                         <avalonia:FluentIcon
-                            Icon="Pin"
+                            Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
                             FontSize="16"/>
 
                     </ToggleButton>

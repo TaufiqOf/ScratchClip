@@ -11,7 +11,16 @@
         <Image Source="{Binding Image}"
                Height="64"
                Stretch="Uniform"
-               HorizontalAlignment="Left" />
+               HorizontalAlignment="Left" >
+            <ToolTip.Tip>
+                <Border Padding="5">
+                    <Image Source="{Binding Image}"
+                           MaxWidth="300"
+                           MaxHeight="500"
+                           Stretch="Uniform" />
+                </Border>
+            </ToolTip.Tip>
+        </Image>
 
     </Border>
 

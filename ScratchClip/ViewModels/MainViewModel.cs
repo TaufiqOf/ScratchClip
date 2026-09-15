@@ -13,6 +13,7 @@ using Avalonia.Input;
 using Avalonia.Platform;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using AvaloniaEdit.Utils;
 using CommunityToolkit.Mvvm.Input;
 using FuzzySharp;
 using ScratchClip.Helper;
@@ -290,7 +291,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void OnClearExistingClipboardItem()
     {
         _historyItems.Clear();
+        _historyItems.AddRange(ClipboardManager.ClipboardHistory);
         FilteredHistory.Clear();
+        FilteredHistory.AddRange(ClipboardManager.ClipboardHistory);
+        UpdateDisplayIndexes();
         RefreshTagFilterOptions();
     }
 

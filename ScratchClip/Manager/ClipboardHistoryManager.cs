@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -122,7 +121,9 @@ public static class ClipboardHistoryManager
                 Signature = textItem.Signature,
                 Timestamp = textItem.Timestamp,
                 MataData = textItem.MataData!,
-                Tags = textItem.Tags.ToList()
+                Tags = textItem.Tags.ToList(),
+                IsPinned = textItem.IsPinned
+
             };
         }
 
@@ -141,7 +142,9 @@ public static class ClipboardHistoryManager
                 Timestamp = imageItem.Timestamp,
                 ImageBase64 = Convert.ToBase64String(stream.ToArray()),
                 MataData = imageItem.MataData!,
-                Tags = imageItem.Tags.ToList()
+                Tags = imageItem.Tags.ToList(),
+                IsPinned = imageItem.IsPinned
+
             };
         }
 
@@ -156,7 +159,8 @@ public static class ClipboardHistoryManager
                 Files = storageItem.Files,
                 Folders = storageItem.Folders,
                 MataData = storageItem.MataData!,
-                Tags = storageItem.Tags.ToList()
+                Tags = storageItem.Tags.ToList(),
+                IsPinned = storageItem.IsPinned
             };
         }
 
@@ -178,6 +182,8 @@ public static class ClipboardHistoryManager
                     Signature = string.IsNullOrWhiteSpace(record.Signature) ? HashText(text) : record.Signature,
                     Timestamp = record.Timestamp == default ? DateTime.Now : record.Timestamp,
                     MataData = record.MataData!,
+                    IsPinned = record.IsPinned
+
                 };
                 item.Tags.Clear();
                 item.Tags.AddRange(record.Tags ?? new List<string>());
@@ -200,7 +206,7 @@ public static class ClipboardHistoryManager
                     Signature = record.Signature ?? string.Empty,
                     Timestamp = record.Timestamp == default ? DateTime.Now : record.Timestamp,
                     Image = new Bitmap(stream),
-                    MataData = record.MataData!
+                    MataData = record.MataData!,
                 };
                 imageClipboardItem.Tags.Clear();
                 imageClipboardItem.Tags.AddRange(record.Tags ?? new List<string>());
@@ -221,7 +227,8 @@ public static class ClipboardHistoryManager
                     DisplayText = string.IsNullOrWhiteSpace(record.DisplayText) ? "Storage" : record.DisplayText,
                     Signature = record.Signature ?? string.Empty,
                     Timestamp = record.Timestamp == default ? DateTime.Now : record.Timestamp,
-                    MataData = record.MataData!
+                    MataData = record.MataData!,
+                    IsPinned = record.IsPinned
                 };
                 storageClipboardItem.Files.AddRange(record.Files ?? new List<string>());
                 storageClipboardItem.Folders.AddRange(record.Folders ?? new List<string>());
@@ -253,5 +260,6 @@ public static class ClipboardHistoryManager
         public List<string>? Folders { get; set; }
         public List<string>? MataData { get; set; }
         public List<string>? Tags { get; set; }
+        public bool IsPinned { get; set; }
     }
 }
