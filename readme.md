@@ -16,12 +16,11 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 - **Persistent History:** Saves clipboard history to an encrypted file for secure access across sessions.
 - **Session Password Protection:** Optionally assign a password to protect clipboard history using password-based encryption.
 - **Right-Click Context Menu:** Quickly copy and paste items from the system tray.
-- **Customizable View:** Choose between a full-featured view or a compact mode with a simple one-line menu view.
+- **Multiple View:** Choose between a full-featured view or a compact mode with a simple one-line menu view.
 - **Global Hotkey Support:** Show or hide the manager window from anywhere (Default: `Alt + Shift + K`).
 - **Quick Selection:** Press numbers `1–99` to pick visible clipboard entries instantly.
 - **Auto-Paste Integration:** Selecting, pressing `Enter`, or double-clicking copies the chosen item and automatically pastes it into your previously active application.
 - **Tray Management:** Minimizes to the system tray with a right-click menu, dynamic tray icon adaptation for light/dark themes, and startup toggles.
-- **Compact View Mode:** Switch to a minimalistic view that shows only the most recent clipboard entries for quick access.
 - **Password Field Detection:** Automatically detects password fields and hides the text.
 - **Edit & Delete:** Edit or delete clipboard entries directly from the manager.
 - **File & Folder Support:** Supports copying and pasting files and folders, with previews for images and documents.
@@ -60,13 +59,14 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut | Action |
-| :--- | :--- |
+| Shortcut              | Action                                                                  |
+|:----------------------|:------------------------------------------------------------------------|
 | `Alt` + `Shift` + `K` | Show or hide the ScratchClip window globally (configurable in Settings) |
-| `Ctrl` + `S` | Focus the search input field |
-| `Enter` | Copy selected item and paste into the previously focused application |
-| `1` – `99` | Instantly choose the corresponding item in the visible list |
-| `Escape` | Hide the window to the system tray |
+| `Ctrl` + `S`          | Focus the search input field                                            |
+| `Ctrl` + `L`          | Focus the search input List                                             |
+| `Enter`               | Copy selected item and paste into the previously focused application    |
+| `1` – `99`            | Instantly choose the corresponding item in the visible list             |
+| `Escape`              | Hide the window to the system tray                                      |
 
 ---
 
