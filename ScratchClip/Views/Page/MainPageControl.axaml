@@ -11,7 +11,7 @@
         <converters:PinIconConverter x:Key="PinIconConverter" />
     </UserControl.Resources>
     <Grid
-        RowDefinitions="Auto,Auto,Auto,*"
+        RowDefinitions="Auto,Auto,Auto,Auto,*"
         Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
 
         <!-- ========================================================= -->
@@ -62,12 +62,15 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+
                     Spacing="3"
                     Margin="16,0">
 
                     <!-- Clear clipboard -->
                     <Button
                         Command="{Binding ClearClipboardCommand}"
+                        Width="32"
+                        Height="32"
                         ToolTip.Tip="Clear Clipboard">
 
                         <avalonia:FluentIcon
@@ -80,6 +83,8 @@
                     <!-- Clear history -->
                     <Button
                         Command="{Binding ClearHistoryCommand}"
+                        Width="32"
+                        Height="32"
                         ToolTip.Tip="Clear Clipboard History">
 
                         <avalonia:FluentIcon
@@ -93,6 +98,8 @@
                     <Button
                         x:Name="LockButton"
                         Command="{Binding LockCommand}"
+                        Width="32"
+                        Height="32"
                         ToolTip.Tip="Lock Clipboard">
 
                         <avalonia:FluentIcon
@@ -113,16 +120,14 @@
                     <!-- Clipboard monitoring -->
                     <ToggleButton
                         IsChecked="{Binding IsMonitoringClipboard}"
-                        ToolTip.Tip="Toggle Clipboard Monitoring">
+                        ToolTip.Tip="Toggle Clipboard Monitoring"
+                        Height="32">
 
                         <StackPanel
-                            Orientation="Horizontal"
-                            Spacing="6">
-
+                            Orientation="Horizontal">
                             <avalonia:FluentIcon
                                 Icon="Eye"
                                 FontSize="16"/>
-
                             <TextBlock
                                 Text="Monitor"
                                 VerticalAlignment="Center"/>
@@ -135,6 +140,8 @@
                     <!-- Pin -->
                     <ToggleButton
                         IsChecked="{Binding IsPinned}"
+                        Width="32"
+                        Height="32"
                         ToolTip.Tip="Toggle Pinned">
 
                         <avalonia:FluentIcon
@@ -158,16 +165,16 @@
                 <!-- Settings -->
                 <Button
                     Grid.Column="2"
-                    Width="36"
-                    Height="36"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
+                    Width="32"
+                    Height="32"
                     Command="{Binding OpenSettingsCommand}"
                     ToolTip.Tip="Settings">
 
                     <avalonia:FluentIcon
                         Icon="Settings"
-                        FontSize="17"/>
+                        FontSize="16"/>
 
                 </Button>
 
@@ -205,6 +212,7 @@
                     <DropDownButton
                         Grid.Column="0"
                         MinWidth="180"
+                        Height="32"
                         HorizontalAlignment="Stretch"
                         Content="{Binding SelectedTagsSummary}">
 
@@ -213,10 +221,8 @@
                             <Flyout
                                 Placement="BottomEdgeAlignedLeft">
                                 <Border
-                                    Padding="10"
                                     MinWidth="240"
-                                    MaxHeight="280"
-                                    Background="{DynamicResource SystemControlBackgroundAltHighBrush}">
+                                    MaxHeight="280">
                                     <ScrollViewer
                                         MaxHeight="260">
                                         <ItemsControl
@@ -226,7 +232,7 @@
                                                     <CheckBox
                                                         Content="{Binding Name}"
                                                         IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                        Margin="2,4"/>
+                                                        Margin="0,0"/>
 
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -240,8 +246,8 @@
 
                     <Button
                         Grid.Column="1"
-                        Width="34"
-                        Height="34"
+                        Width="32"
+                        Height="32"
                         Margin="4,0,0,0"
                         Command="{Binding ClearTagFilterCommand}"
                         ToolTip.Tip="Clear Tag Filter">
@@ -260,13 +266,14 @@
                     Grid.Column="1"
                     MinWidth="180"
                     MaxWidth="600"
+                    Height="32"
                     HorizontalAlignment="Stretch"
                     ColumnDefinitions="*,Auto">
 
                     <TextBox
                         x:Name="SearchTextBox"
                         Grid.Column="0"
-                        Height="36"
+                        Height="32"
                         Text="{Binding SearchText, Mode=TwoWay}"
                         GotFocus="SearchTextBoxOnGotFocus"
                         LostFocus="SearchTextBoxOnLostFocus"
@@ -275,8 +282,8 @@
 
                     <Button
                         Grid.Column="1"
-                        Width="34"
-                        Height="34"
+                        Width="32"
+                        Height="32"
                         Margin="-38,0,2,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
@@ -288,11 +295,8 @@
                             FontSize="14"/>
 
                     </Button>
-
                 </Grid>
-
             </Grid>
-
         </Border>
 
 
@@ -302,18 +306,30 @@
 
         <Border
             Grid.Row="3"
-            Background="{DynamicResource SystemControlBackgroundAltLowBrush}"/>
+            Height="1"
+            Background="{DynamicResource SystemControlForegroundBaseLowBrush}"/>
+
 
 
         <!-- ========================================================= -->
         <!-- Clipboard content                                          -->
         <!-- ========================================================= -->
 
-        <ContentControl
-            x:Name="ContentControl"
-            Grid.Row="3"
-            Content="{Binding ListContent}"
-            Margin="4,0"/>
+        <Border
+            Grid.Row="4"
+            Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+            BoxShadow="
+        inset 0 8 14 0 #A0000000,
+        inset 0 -8 14 0 #A0000000,
+        inset 0 1 3 0 #35FFFFFF,
+        inset 0 -1 3 0 #20000000">
+
+            <ContentControl
+                x:Name="ContentControl"
+                Content="{Binding ListContent}"
+                Margin="0" />
+
+        </Border>
 
     </Grid>
 
