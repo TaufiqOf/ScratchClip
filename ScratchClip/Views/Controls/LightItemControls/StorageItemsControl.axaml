@@ -3,10 +3,12 @@
              xmlns:models="clr-namespace:ScratchClip.Models"
              x:Class="ScratchClip.Views.Controls.LightItemControls.StorageItemsControl"
              x:DataType="models:StorageClipboardItem">
-
-    <SelectableTextBlock Text="{Binding Content}"
-                         FontSize="12"
-                         Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
-                         TextWrapping="Wrap" />
-
+    <Border Padding="4"
+            CornerRadius="4"
+            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+        <SelectableTextBlock Text="{Binding Content}"
+                             FontSize="12"
+                             Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                             TextWrapping="Wrap" />
+    </Border>
 </UserControl>

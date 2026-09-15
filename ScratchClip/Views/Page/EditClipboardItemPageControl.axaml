@@ -11,10 +11,7 @@
     <Grid Margin="10"
           RowDefinitions="Auto,*,Auto">
 
-        <!-- ========================================= -->
         <!-- Header -->
-        <!-- ========================================= -->
-
         <Border Grid.Row="0"
                 Margin="0,0,0,10"
                 Padding="0,0,0,8"
@@ -32,150 +29,126 @@
                            FontSize="13" />
 
             </StackPanel>
-
         </Border>
 
 
-        <!-- ========================================= -->
-        <!-- Content -->
-        <!-- ========================================= -->
+        <!-- Main content -->
+        <Grid Grid.Row="1"
+              RowDefinitions="Auto,*,Auto">
 
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto">
-
-            <Grid
-                RowDefinitions="*,Auto,Auto"
-                HorizontalAlignment="Stretch">
-
-                <!-- ================================= -->
-                <!-- Tags -->
-                <!-- ================================= -->
-
-                <StackPanel Grid.Row="0" Spacing="12">
-
-                    <TextBlock Text="Tags"
-                               FontSize="16"
-                               FontWeight="SemiBold" />
-
-                    <Border Padding="16"
-                            CornerRadius="8"
-                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-
-                        <StackPanel Spacing="10">
-
-                            <TextBlock Text="Tags"
-                                       FontWeight="Medium" />
-
-                            <controls:TagEditorControl x:Name="TagEditor"
-                                                       Tags="{Binding Tags, Mode=TwoWay}" />
-
-                            <TextBlock Text="Separate multiple tags with commas."
-                                       FontSize="11"
-                                       Opacity="0.5" />
-
-                        </StackPanel>
-
-                    </Border>
-
-                </StackPanel>
-
-                <!-- ================================= -->
-                <!-- Content -->
-                <!-- ================================= -->
-
-                <StackPanel Grid.Row="1" Spacing="12">
-
-                    <TextBlock Text="Content"
-                               FontSize="16"
-                               FontWeight="SemiBold" />
-
-                    <Border Padding="16"
-                            CornerRadius="8"
-                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-
-                        <StackPanel Spacing="10">
-
-                            <TextBlock Text="Clipboard text"
-                                       FontWeight="Medium" />
-                            <avaloniaEdit:TextEditor
-                                x:Name="ContentTextBox"
-                                x:CompileBindings="False"
-                                ShowLineNumbers="True"
-                                FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-                                FontSize="12"
-                                Padding="8"
-                                MinHeight="40"
-                                VerticalAlignment="Stretch"
-                                HorizontalScrollBarVisibility="Auto"
-                                VerticalScrollBarVisibility="Auto">
-                                <Interaction.Behaviors>
-                                    <converters:TextEditorBindingBehavior
-                                        Text="{Binding Text, Mode=TwoWay}" />
-                                </Interaction.Behaviors>
-                            </avaloniaEdit:TextEditor>
-
-                        </StackPanel>
-
-                    </Border>
-
-                </StackPanel>
+            <!-- Tags -->
+            <StackPanel Grid.Row="0"
+                        Spacing="12">
+                <TextBlock Text="Tags"
+                           FontSize="16"
+                           FontWeight="SemiBold" />
+                <Border Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                    <StackPanel Spacing="10">
+                        <controls:TagEditorControl
+                            x:Name="TagEditor"
+                            Tags="{Binding Tags, Mode=TwoWay}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
 
 
+            <!-- Content - takes remaining height -->
+            <Grid Grid.Row="1"
+                  RowDefinitions="Auto,*"
+                  Margin="0,12">
 
+                <TextBlock Grid.Row="0"
+                           Text="Content"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Margin="0,0,0,12" />
 
-                <!-- ================================= -->
-                <!-- Information -->
-                <!-- ================================= -->
+                <Border Grid.Row="1"
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
-                <StackPanel Grid.Row="2" Spacing="12">
+                    <!-- IMPORTANT: Grid, not StackPanel -->
+                    <Grid RowDefinitions="Auto,*">
 
-                    <TextBlock Text="Information"
-                               FontSize="16"
-                               FontWeight="SemiBold" />
+                        <avaloniaEdit:TextEditor
+                            Grid.Row="1"
+                            x:Name="ContentTextBox"
+                            x:CompileBindings="False"
+                            ShowLineNumbers="True"
+                            FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+                            FontSize="12"
+                            Padding="8"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Auto">
 
-                    <Border Padding="16"
-                            CornerRadius="8"
-                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                            <Interaction.Behaviors>
 
-                        <StackPanel Spacing="8">
+                                <converters:TextEditorBindingBehavior
+                                    Text="{Binding Text, Mode=TwoWay}" />
 
-                            <Grid ColumnDefinitions="*,Auto">
+                            </Interaction.Behaviors>
 
-                                <TextBlock Text="Created"
-                                           FontWeight="Medium" />
+                        </avaloniaEdit:TextEditor>
 
-                                <TextBlock Grid.Column="1"
-                                           Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss - MMM dd, yyyy}'}"
-                                           Opacity="0.65" />
+                    </Grid>
 
-                            </Grid>
-
-                            <Grid ColumnDefinitions="*,Auto">
-
-                                <TextBlock Text="Display index"
-                                           FontWeight="Medium" />
-
-                                <TextBlock Grid.Column="1"
-                                           Text="{Binding DisplayIndex}"
-                                           Opacity="0.65" />
-
-                            </Grid>
-
-                        </StackPanel>
-
-                    </Border>
-
-                </StackPanel>
+                </Border>
 
             </Grid>
 
-        </ScrollViewer>
+
+            <!-- Information -->
+            <StackPanel Grid.Row="2"
+                        Spacing="12">
+
+                <TextBlock Text="Information"
+                           FontSize="16"
+                           FontWeight="SemiBold" />
+
+                <Border Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                    <StackPanel Spacing="8">
+
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <TextBlock Text="Created"
+                                       FontWeight="Medium" />
+
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Timestamp,
+                                          StringFormat='{}{0:HH:mm:ss - MMM dd, yyyy}'}"
+                                       Opacity="0.65" />
+
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <TextBlock Text="Display index"
+                                       FontWeight="Medium" />
+
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding DisplayIndex}"
+                                       Opacity="0.65" />
+
+                        </Grid>
+
+                    </StackPanel>
+
+                </Border>
+
+            </StackPanel>
+
+        </Grid>
 
 
-        <!-- ========================================= -->
         <!-- Bottom Actions -->
-        <!-- ========================================= -->
-
         <Border Grid.Row="2"
                 Margin="0,10,0,0"
                 Padding="0,10,0,0"

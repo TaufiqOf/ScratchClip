@@ -29,95 +29,96 @@
         </Style>
 
     </UserControl.Styles>
+    <Border Padding="4"
+            CornerRadius="4"
+            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+
+        <!-- ======================================= -->
+        <!-- Text-specific UI -->
+        <!-- ======================================= -->
+
+        <Grid ColumnDefinitions="*,Auto"
+              ColumnSpacing="4">
+
+            <!-- ================================= -->
+            <!-- Content -->
+            <!-- ================================= -->
+
+            <Grid Grid.Column="0">
+
+                <!-- Normal / non-password text -->
+                <SelectableTextBlock Text="{Binding DisplayText}"
+                                     FontSize="12"
+                                     ToolTip.Tip="{Binding DisplayText}"
+                                     Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                     TextWrapping="Wrap">
+
+                    <SelectableTextBlock.IsVisible>
+                        <Binding Path="!IsPassword" />
+                    </SelectableTextBlock.IsVisible>
+
+                </SelectableTextBlock>
 
 
-    <!-- ======================================= -->
-    <!-- Text-specific UI -->
-    <!-- ======================================= -->
+                <!-- Revealed password -->
+                <SelectableTextBlock Text="{Binding Text}"
+                                     FontSize="12"
+                                     Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                                     TextWrapping="Wrap">
 
-    <Grid ColumnDefinitions="*,Auto"
-          ColumnSpacing="4">
+                    <SelectableTextBlock.IsVisible>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="IsPassword" />
+                            <Binding Path="#ListRevealToggle.IsChecked" />
+                        </MultiBinding>
+                    </SelectableTextBlock.IsVisible>
 
-        <!-- ================================= -->
-        <!-- Content -->
-        <!-- ================================= -->
-
-        <Grid Grid.Column="0">
-
-            <!-- Normal / non-password text -->
-            <SelectableTextBlock Text="{Binding DisplayText}"
-                                 FontSize="12"              
-                                 ToolTip.Tip="{Binding DisplayText}"
-                                 Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
-                                 TextWrapping="Wrap">
-
-                <SelectableTextBlock.IsVisible>
-                    <Binding Path="!IsPassword" />
-                </SelectableTextBlock.IsVisible>
-
-            </SelectableTextBlock>
+                </SelectableTextBlock>
 
 
-            <!-- Revealed password -->
-            <SelectableTextBlock Text="{Binding Text}"
-                                 FontSize="12"
-                                 Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
-                                 TextWrapping="Wrap">
+                <!-- Masked password -->
+                <TextBlock Text="••••••••••••"
+                           FontSize="12"
+                           Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}">
 
-                <SelectableTextBlock.IsVisible>
-                    <MultiBinding Converter="{x:Static BoolConverters.And}">
-                        <Binding Path="IsPassword" />
-                        <Binding Path="#ListRevealToggle.IsChecked" />
-                    </MultiBinding>
-                </SelectableTextBlock.IsVisible>
+                    <TextBlock.IsVisible>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="IsPassword" />
+                            <Binding Path="!#ListRevealToggle.IsChecked" />
+                        </MultiBinding>
+                    </TextBlock.IsVisible>
 
-            </SelectableTextBlock>
+                </TextBlock>
+
+            </Grid>
 
 
-            <!-- Masked password -->
-            <TextBlock Text="••••••••••••"
-                       FontSize="12"
-                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}">
+            <!-- ================================= -->
+            <!-- Password Reveal Button -->
+            <!-- ================================= -->
 
-                <TextBlock.IsVisible>
-                    <MultiBinding Converter="{x:Static BoolConverters.And}">
-                        <Binding Path="IsPassword" />
-                        <Binding Path="!#ListRevealToggle.IsChecked" />
-                    </MultiBinding>
-                </TextBlock.IsVisible>
+            <ToggleButton Grid.Column="1"
+                          x:Name="ListRevealToggle"
+                          Classes="listRevealBtn"
+                          IsVisible="{Binding IsPassword}"
+                          ToolTip.Tip="Toggle Password Visibility"
+                          VerticalAlignment="Top">
 
-            </TextBlock>
+                <Panel>
 
+                    <!-- Eye when hidden -->
+                    <avalonia:FluentIcon Icon="Eye"
+                                         FontSize="13"
+                                         IsVisible="{Binding !$parent[ToggleButton].IsChecked}" />
+
+                    <!-- EyeOff when visible -->
+                    <avalonia:FluentIcon Icon="EyeOff"
+                                         FontSize="13"
+                                         IsVisible="{Binding $parent[ToggleButton].IsChecked}" />
+
+                </Panel>
+
+            </ToggleButton>
         </Grid>
-
-
-        <!-- ================================= -->
-        <!-- Password Reveal Button -->
-        <!-- ================================= -->
-
-        <ToggleButton Grid.Column="1"
-                      x:Name="ListRevealToggle"
-                      Classes="listRevealBtn"
-                      IsVisible="{Binding IsPassword}"
-                      ToolTip.Tip="Toggle Password Visibility"
-                      VerticalAlignment="Top">
-
-            <Panel>
-
-                <!-- Eye when hidden -->
-                <avalonia:FluentIcon Icon="Eye"
-                                     FontSize="13"
-                                     IsVisible="{Binding !$parent[ToggleButton].IsChecked}" />
-
-                <!-- EyeOff when visible -->
-                <avalonia:FluentIcon Icon="EyeOff"
-                                     FontSize="13"
-                                     IsVisible="{Binding $parent[ToggleButton].IsChecked}" />
-
-            </Panel>
-
-        </ToggleButton>
-
-    </Grid>
-
+    </Border>
 </UserControl>

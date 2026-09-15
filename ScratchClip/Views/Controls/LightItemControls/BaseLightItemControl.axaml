@@ -15,138 +15,134 @@
                 CornerRadius="6"
                 Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
 
-            <Grid RowDefinitions="Auto,Auto,Auto"
-                  ColumnDefinitions="Auto,*,Auto"
+            <Grid RowDefinitions="Auto,*,Auto"
                   RowSpacing="4"
                   ColumnSpacing="8">
 
-                <!-- ================================= -->
-                <!-- Index -->
-                <!-- ================================= -->
 
-                <Border Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Width="22"
-                        Height="22"
-                        VerticalAlignment="Top"
-                        CornerRadius="3"
-                        Background="{DynamicResource SystemControlHighlightAccentBrush}">
+                <Grid Grid.Row="0" RowSpacing="4" ColumnDefinitions="Auto,*">
+                    <!-- ================================= -->
+                    <!-- Index -->
+                    <!-- ================================= -->
+                    <Border Grid.Column="0"
+                            Width="22"
+                            Height="22"
+                            VerticalAlignment="Top"
+                            CornerRadius="3"
+                            Background="{DynamicResource SystemControlHighlightAccentBrush}">
 
-                    <TextBlock Text="{Binding DisplayIndex}"
-                               FontSize="10"
-                               FontWeight="Bold"
-                               Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding DisplayIndex}"
+                                   FontSize="10"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource SystemControlHighlightAltBaseHighBrush}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
 
-                </Border>
+                    </Border>
 
 
-                <!-- ================================= -->
-                <!-- Timestamp -->
-                <!-- ================================= -->
+                    <!-- ================================= -->
+                    <!-- Timestamp -->
+                    <!-- ================================= -->
 
-                <TextBlock Grid.Row="0"
-                           Grid.Column="1"
-                           VerticalAlignment="Top"
-                           Text="{Binding Timestamp,
+                    <TextBlock Grid.Column="1"
+                               Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               Text="{Binding Timestamp,
                                           StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
-                           FontSize="10"
-                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                               FontSize="10"
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                </Grid>
 
+                <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                    <!-- ================================= -->
+                    <!-- Item-specific content -->
+                    <!-- ================================= -->
 
-                <!-- ================================= -->
-                <!-- Actions -->
-                <!-- ================================= -->
-
-                <StackPanel Grid.Row="0"
-                            Grid.Column="2"
-                            Grid.RowSpan="2"
-                            Orientation="Vertical"
-                            Spacing="2"
-                            VerticalAlignment="Top">
-
-                    <!-- Optional actions -->
-                    <ContentPresenter Content="{Binding ExtraActions,
-                                                        ElementName=BaseControl}" />
-                    <!-- Pin -->
-                    <Button Command="{Binding PinCommand}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            CornerRadius="3"
-                            Padding="4"
-                            Width="24"
-                            Height="24"
-                            ToolTip.Tip="Toggle Pinned">
-
-                        <avalonia:FluentIcon
-                            Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
-                            FontSize="13" />
-
-                    </Button>
-
-                    <!-- Common Save As -->
-                    <Button Command="{Binding SaveAsCommand}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            CornerRadius="3"
-                            Padding="4"
-                            Width="24"
-                            Height="24"
-                            ToolTip.Tip="Save To File">
-
-                        <avalonia:FluentIcon Icon="Save"
-                                             FontSize="13" />
-
-                    </Button>
-                    <!-- Common Edit -->
-                    <Button Command="{Binding EditCommand}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            CornerRadius="3"
-                            Padding="4"
-                            Width="24"
-                            Height="24"
-                            ToolTip.Tip="Edit Item">
-
-                        <avalonia:FluentIcon Icon="Edit"
-                                             FontSize="13" />
-
-                    </Button>
-                    <!-- Common delete -->
-                    <Button Command="{Binding DeleteCommand}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            CornerRadius="3"
-                            Padding="4"
-                            Width="24"
-                            Height="24"
-                            ToolTip.Tip="Delete Item">
-
-                        <avalonia:FluentIcon Icon="Delete"
-                                             FontSize="13" />
-
-                    </Button>
-    
-                </StackPanel>
-
-
-                <!-- ================================= -->
-                <!-- Item-specific content -->
-                <!-- ================================= -->
-
-                <ContentPresenter Grid.Row="1"
-                                  Grid.Column="1"
-                                  Content="{Binding ItemContent,
+                    <ContentPresenter Grid.Column="0"
+                                      MaxHeight="100"
+                                      Content="{Binding ItemContent,
                                                     ElementName=BaseControl}" />
 
+                    <!-- ================================= -->
+                    <!-- Actions -->
+                    <!-- ================================= -->
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Vertical"
+                                Spacing="2"
+                                VerticalAlignment="Top">
+
+                        <!-- Optional actions -->
+                        <ContentPresenter
+                            Content="{Binding ExtraActions,
+                                                        ElementName=BaseControl}" />
+                        <!-- Pin -->
+                        <Button Command="{Binding PinCommand}"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Padding="4"
+                                Width="24"
+                                Height="24"
+                                ToolTip.Tip="Toggle Pinned">
+
+                            <avalonia:FluentIcon
+                                Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
+                                FontSize="13" />
+
+                        </Button>
+
+                        <!-- Common Save As -->
+                        <Button Command="{Binding SaveAsCommand}"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Padding="4"
+                                Width="24"
+                                Height="24"
+                                ToolTip.Tip="Save To File">
+
+                            <avalonia:FluentIcon Icon="Save"
+                                                 FontSize="13" />
+
+                        </Button>
+                        <!-- Common Edit -->
+                        <Button Command="{Binding EditCommand}"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Padding="4"
+                                Width="24"
+                                Height="24"
+                                ToolTip.Tip="Edit Item">
+
+                            <avalonia:FluentIcon Icon="Edit"
+                                                 FontSize="13" />
+
+                        </Button>
+                        <!-- Common delete -->
+                        <Button Command="{Binding DeleteCommand}"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Padding="4"
+                                Width="24"
+                                Height="24"
+                                ToolTip.Tip="Delete Item">
+
+                            <avalonia:FluentIcon Icon="Delete"
+                                                 FontSize="13" />
+
+                        </Button>
+                    </StackPanel>
+                </Grid>
 
                 <!-- ================================= -->
                 <!-- Tags -->
                 <!-- ================================= -->
 
                 <ItemsControl Grid.Row="2"
-                              Grid.Column="1"
                               ItemsSource="{Binding Tags}">
 
                     <ItemsControl.ItemsPanel>
@@ -175,4 +171,5 @@
             </Grid>
         </Border>
     </Grid>
+
 </UserControl>

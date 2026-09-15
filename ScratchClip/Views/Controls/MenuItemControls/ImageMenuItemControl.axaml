@@ -20,7 +20,7 @@
             <ToolTip.Tip>
                 <Border Padding="5">
                     <Image Source="{Binding Image}"
-                           MaxWidth="300"
+                           MaxWidth="500"
                            MaxHeight="500"
                            Stretch="Uniform" />
                 </Border>

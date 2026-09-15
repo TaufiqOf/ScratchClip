@@ -7,12 +7,15 @@
     <Border CornerRadius="6"
             ClipToBounds="True"
             DoubleTapped="OnDoubleTapped">
+        <Border Padding="10"
+                CornerRadius="8"
+                Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+            <Image Source="{Binding Image}"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
 
-        <Image Source="{Binding Image}"
-               Stretch="Uniform"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center" />
-
+        </Border>
     </Border>
 
 </UserControl>
