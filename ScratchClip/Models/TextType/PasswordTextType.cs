@@ -26,6 +26,8 @@ public class PasswordTextType : ATextType
 
     public override bool IsMatch(string text)
     {
+        if(text.Contains(" "))
+            return false;
         if (string.IsNullOrWhiteSpace(text))
             return false;
         var trimmed = text.Trim();

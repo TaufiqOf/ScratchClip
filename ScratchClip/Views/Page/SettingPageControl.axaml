@@ -178,7 +178,7 @@
                         CornerRadius="8"
                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
-                        <StackPanel Spacing="8">
+                        <StackPanel Spacing="12">
 
                             <TextBlock
                                 Text="Global shortcut"
@@ -215,6 +215,92 @@
                                         Height="16" />
 
                                 </Button>
+
+                            </Grid>
+
+                            <Separator Margin="0,4" />
+
+                            <TextBlock
+                                Text="Available shortcuts"
+                                FontWeight="Medium" />
+
+                            <Grid
+                                ColumnDefinitions="Auto,*"
+                                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                                RowSpacing="8"
+                                ColumnSpacing="20">
+
+                                <!-- Alt + S -->
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Text="Alt + S"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Text="Focus the search input field"
+                                    TextWrapping="Wrap" />
+
+                                <!-- Alt + L -->
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Text="Alt + L"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="Focus the Item List"
+                                    TextWrapping="Wrap" />
+
+                                <!-- Enter -->
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Text="Enter"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Text="Copy the selected item and paste it into the previously focused application. If focus is on the Search Input, focus the Item List."
+                                    TextWrapping="Wrap" />
+
+                                <!-- Double Click -->
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Text="Double Click"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    Text="Copy the selected item and paste it into the previously focused application"
+                                    TextWrapping="Wrap" />
+
+                                <!-- 1 - 200 -->
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Text="1 – 200"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Text="Instantly choose the corresponding item in the visible list and paste it"
+                                    TextWrapping="Wrap" />
+
+                                <!-- Escape -->
+                                <TextBlock
+                                    Grid.Row="5"
+                                    Text="Escape"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="5"
+                                    Grid.Column="1"
+                                    Text="Hide the window to the system tray"
+                                    TextWrapping="Wrap" />
 
                             </Grid>
 

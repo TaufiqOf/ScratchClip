@@ -163,7 +163,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public bool IsPinned
     {
         get => field;
-
         set
         {
             SetProperty(ref field, value);
@@ -173,17 +172,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             SettingsManager.Save(appSettings);
         }
     }
-
-    public bool IsPasswordSet
-    {
-        get => field;
-        set
-        {
-            SetProperty(ref field, value);
-            OnPropertyChanged();
-        }
-    }
-
+    
     public bool IsSearchFocused
     {
         get => field;
@@ -546,17 +535,27 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     {
         if (!string.IsNullOrEmpty(_registerNumber))
         {
-            var item = FilteredHistory.FirstOrDefault(q => q.DisplayIndex == int.Parse(_registerNumber));
-            if (item == null)
+            try
             {
-                return;
+                var item = FilteredHistory.FirstOrDefault(q => q.DisplayIndex == int.Parse(_registerNumber));
+                if (item == null)
+                {
+                    _registerNumber = string.Empty;
+                    return;
+                }
+
+                ClipboardManager.SelectedClipboardItem = item;
+                OnHideToTray?.Invoke();
+                await _hotkeyService.SimulatePasteAsync();
+
+                _registerNumber = string.Empty;
             }
-
-            ClipboardManager.SelectedClipboardItem = item;
-            OnHideToTray?.Invoke();
-            await _hotkeyService.SimulatePasteAsync();
-
-            _registerNumber = string.Empty;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                _registerNumber = string.Empty;
+            }
+   
         }
     }
 }
