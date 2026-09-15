@@ -59,14 +59,15 @@ It runs silently in the system tray, tracks your recent copied items, and lets y
 
 ## ⌨️ Keyboard Shortcuts
 
-| Shortcut              | Action                                                                  |
-|:----------------------|:------------------------------------------------------------------------|
-| `Alt` + `Shift` + `K` | Show or hide the ScratchClip window globally (configurable in Settings) |
-| `Ctrl` + `S`          | Focus the search input field                                            |
-| `Ctrl` + `L`          | Focus the search input List                                             |
-| `Enter`               | Copy selected item and paste into the previously focused application    |
-| `1` – `99`            | Instantly choose the corresponding item in the visible list             |
-| `Escape`              | Hide the window to the system tray                                      |
+| Shortcut              | Action                                                                   |
+|:----------------------|:-------------------------------------------------------------------------|
+| `Alt` + `Shift` + `K` | Show or hide the ScratchClip window globally (configurable in Settings)  |
+| `Ctrl` + `S`          | Focus the search input field                                             |
+| `Ctrl` + `L`          | Focus the Item List                                                      |
+| `Enter`               | Copy selected item and paste into the previously focused application     |
+| `Double Click`        | Copy selected item and paste into the previously focused application     |
+| `1` – `99`            | Instantly choose the corresponding item in the visible list and paste it |
+| `Escape`              | Hide the window to the system tray                                       |
 
 ---
 
