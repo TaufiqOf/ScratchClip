@@ -13,6 +13,7 @@
     <Grid>
         <Border Padding="8"
                 CornerRadius="6"
+                DoubleTapped="OnDoubleTapped"
                 Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
 
             <Grid RowDefinitions="Auto,*,Auto"
@@ -82,14 +83,14 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 CornerRadius="3"
-                                Padding="4"
-                                Width="24"
-                                Height="24"
+                                Padding="5"
+                                Width="26"
+                                Height="26"
                                 ToolTip.Tip="Toggle Pinned">
 
                             <avalonia:FluentIcon
                                 Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
-                                FontSize="13" />
+                                FontSize="14" />
 
                         </Button>
 
@@ -98,13 +99,13 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 CornerRadius="3"
-                                Padding="4"
-                                Width="24"
-                                Height="24"
+                                Padding="5"
+                                Width="26"
+                                Height="26"
                                 ToolTip.Tip="Save To File">
 
                             <avalonia:FluentIcon Icon="Save"
-                                                 FontSize="13" />
+                                                 FontSize="14" />
 
                         </Button>
                         <!-- Common Edit -->
@@ -112,13 +113,13 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 CornerRadius="3"
-                                Padding="4"
-                                Width="24"
-                                Height="24"
+                                Padding="5"
+                                Width="26"
+                                Height="26"
                                 ToolTip.Tip="Edit Item">
 
                             <avalonia:FluentIcon Icon="Edit"
-                                                 FontSize="13" />
+                                                 FontSize="14" />
 
                         </Button>
                         <!-- Common delete -->
@@ -126,13 +127,13 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 CornerRadius="3"
-                                Padding="4"
-                                Width="24"
-                                Height="24"
+                                Padding="5"
+                                Width="26"
+                                Height="26"
                                 ToolTip.Tip="Delete Item">
 
                             <avalonia:FluentIcon Icon="Delete"
-                                                 FontSize="13" />
+                                                 FontSize="14" />
 
                         </Button>
                     </StackPanel>

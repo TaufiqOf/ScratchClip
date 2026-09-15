@@ -6,8 +6,7 @@
              x:Class="ScratchClip.Views.Controls.DetailItemControls.TextItemControl"
              x:DataType="models:TextClipboardItem">
 
-    <Border CornerRadius="4"
-            DoubleTapped="OnDoubleTapped">
+    <Border CornerRadius="4">
         <StackPanel Spacing="8">
             <ContentControl Content="{Binding TextType}">
                 <ContentControl.DataTemplates>

@@ -12,11 +12,16 @@
     </UserControl.Resources>
     <UserControl.Styles>
         <Style Selector="FlyoutPresenter">
-            <Setter Property="Padding" Value="2"/>
-            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="MinWidth" Value="0" />
         </Style>
     </UserControl.Styles>
+
     <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto"
+          VerticalAlignment="Stretch"
+          HorizontalAlignment="Stretch"
+          DoubleTapped="OnDoubleTapped"
+          Background="Transparent"
           Height="40">
 
         <!-- Index -->
@@ -39,38 +44,38 @@
 
         <ContentPresenter Grid.Column="1"
                           Content="{Binding ItemContent, ElementName=BaseControl}" />
-        
+
         <DropDownButton
             Grid.Column="2"
             Height="32"
             Width="32"
             HorizontalAlignment="Stretch">
-            <DropDownButton.Flyout >
+            <DropDownButton.Flyout>
                 <Flyout Placement="Right" ShowMode="Standard">
                     <StackPanel Width="34"
                                 Orientation="Vertical"
                                 HorizontalAlignment="Left">
                         <!-- Pin -->
-                        <Button 
-                                Height="32"
-                                Width="32"
-                                Margin="0,0,1,0"
-                                ToolTip.Tip="Toggle Pinned"
-                                Command="{Binding PinCommand}">
+                        <Button
+                            Height="32"
+                            Width="32"
+                            Margin="0,0,1,0"
+                            ToolTip.Tip="Toggle Pinned"
+                            Command="{Binding PinCommand}">
 
                             <avalonia:FluentIcon
                                 Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
                                 FontSize="15" />
 
                         </Button>
-        
+
                         <!-- Save -->
-                        <Button 
-                                Height="32"
-                                Width="32"
-                                Margin="0,0,1,0"
-                                ToolTip.Tip="Save To File"
-                                Command="{Binding SaveAsCommand}">
+                        <Button
+                            Height="32"
+                            Width="32"
+                            Margin="0,0,1,0"
+                            ToolTip.Tip="Save To File"
+                            Command="{Binding SaveAsCommand}">
 
                             <avalonia:FluentIcon Icon="Save"
                                                  FontSize="15" />
@@ -78,24 +83,24 @@
                         </Button>
 
                         <!-- Edit -->
-                        <Button 
-                                Height="32"
-                                Width="32"
-                                Margin="0,0,1,0"
-                                ToolTip.Tip="Edit"
-                                Command="{Binding EditCommand}">
+                        <Button
+                            Height="32"
+                            Width="32"
+                            Margin="0,0,1,0"
+                            ToolTip.Tip="Edit"
+                            Command="{Binding EditCommand}">
 
                             <avalonia:FluentIcon Icon="Edit"
-                                                 FontSize="15"  />
+                                                 FontSize="15" />
 
                         </Button>
                         <!-- Delete -->
-                        <Button 
-                                Height="32"
-                                Width="32"
-                                Margin="0,0,1,0"
-                                ToolTip.Tip="Delete"
-                                Command="{Binding DeleteCommand}">
+                        <Button
+                            Height="32"
+                            Width="32"
+                            Margin="0,0,1,0"
+                            ToolTip.Tip="Delete"
+                            Command="{Binding DeleteCommand}">
 
                             <avalonia:FluentIcon Icon="Delete"
                                                  FontSize="15" />
@@ -106,7 +111,7 @@
                 </Flyout>
             </DropDownButton.Flyout>
         </DropDownButton>
-        
+
     </Grid>
 
 </UserControl>

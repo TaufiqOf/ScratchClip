@@ -5,8 +5,7 @@
              x:Class="ScratchClip.Views.Controls.DetailItemControls.StorageItemsControl"
              x:DataType="models:StorageClipboardItem">
 
-    <Border CornerRadius="4"
-            DoubleTapped="OnDoubleTapped">
+    <Border CornerRadius="4">
 
         <Border Padding="10"
                 CornerRadius="8"

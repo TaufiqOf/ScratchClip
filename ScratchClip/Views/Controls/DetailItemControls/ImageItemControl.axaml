@@ -5,8 +5,7 @@
              x:DataType="models:ImageClipboardItem">
 
     <Border CornerRadius="6"
-            ClipToBounds="True"
-            DoubleTapped="OnDoubleTapped">
+            ClipToBounds="True">
         <Border Padding="10"
                 CornerRadius="8"
                 Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">

@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace ScratchClip.Views.Controls.MenuItemControls;
 
@@ -18,5 +19,12 @@ public partial class BaseMenuItemControl : UserControl
     public BaseMenuItemControl()
     {
         InitializeComponent();
+    }
+    private async void OnDoubleTapped(object? sender, RoutedEventArgs e)
+    {
+        if (TopLevel.GetTopLevel(this) is MainWindow window)
+            await window.ActivateSelectedItemAsync();
+
+        e.Handled = true;
     }
 }

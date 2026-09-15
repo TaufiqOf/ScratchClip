@@ -11,7 +11,9 @@
         <converters:PinIconConverter x:Key="PinIconConverter" />
     </UserControl.Resources>
 
-    <Grid RowDefinitions="*,Auto">
+    <Grid RowDefinitions="*,Auto" 
+          Background="Transparent"
+          DoubleTapped="OnDoubleTapped">
 
         <!-- ========================================= -->
         <!-- Item-specific content -->
