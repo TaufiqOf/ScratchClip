@@ -7,7 +7,6 @@
     x:Class="ScratchClip.Views.Page.MainPageControl"
     x:DataType="viewModels:MainViewModel">
     <UserControl.Resources>
-        <converters:ToUpperConverter x:Key="ToUpperConverter" />
         <converters:PinIconConverter x:Key="PinIconConverter" />
     </UserControl.Resources>
     <Grid

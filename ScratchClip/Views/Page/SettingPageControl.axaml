@@ -197,6 +197,7 @@
                                 <TextBox
                                     x:Name="HotkeyTextBox"
                                     Grid.Column="0"
+                                    VerticalContentAlignment="Center"
                                     IsReadOnly="True"
                                     Text="{Binding HotkeyDisplay, Mode=OneWay}"
                                     PlaceholderText="Click here and press a shortcut..."
@@ -205,6 +206,7 @@
                                 <Button
                                     Grid.Column="1"
                                     Width="38"
+                                    Height="38"
                                     Margin="8,0,0,0"
                                     Command="{Binding ClearHotkeyCommand}"
                                     ToolTip.Tip="Reset shortcut">
@@ -245,6 +247,7 @@
                                 <!-- Alt + L -->
                                 <TextBlock
                                     Grid.Row="1"
+                                    Grid.Column="0"
                                     Text="Alt + L"
                                     FontWeight="SemiBold" />
 
@@ -257,6 +260,7 @@
                                 <!-- Enter -->
                                 <TextBlock
                                     Grid.Row="2"
+                                    Grid.Column="0"
                                     Text="Enter"
                                     FontWeight="SemiBold" />
 
@@ -269,6 +273,7 @@
                                 <!-- Double Click -->
                                 <TextBlock
                                     Grid.Row="3"
+                                    Grid.Column="0"
                                     Text="Double Click"
                                     FontWeight="SemiBold" />
 
@@ -281,6 +286,7 @@
                                 <!-- 1 - 200 -->
                                 <TextBlock
                                     Grid.Row="4"
+                                    Grid.Column="0"
                                     Text="1 – 200"
                                     FontWeight="SemiBold" />
 
@@ -293,6 +299,7 @@
                                 <!-- Escape -->
                                 <TextBlock
                                     Grid.Row="5"
+                                    Grid.Column="0"
                                     Text="Escape"
                                     FontWeight="SemiBold" />
 
@@ -303,10 +310,8 @@
                                     TextWrapping="Wrap" />
 
                             </Grid>
-
                         </StackPanel>
                     </Border>
-
                 </StackPanel>
 
 

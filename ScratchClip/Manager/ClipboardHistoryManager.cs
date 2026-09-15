@@ -21,8 +21,6 @@ public static class ClipboardHistoryManager
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "ScratchClip");
 
-    private static readonly string FilePath = Path.Combine(FolderPath, "history.json");
-
     public static async Task<IReadOnlyList<AClipboardItem>> Load(
         string? password)
     {
@@ -187,7 +185,7 @@ public static class ClipboardHistoryManager
                 };
                 item.Tags.Clear();
                 item.Tags.AddRange(record.Tags ?? new List<string>());
-                item.UpdateByTags();
+                await item.UpdateByTags();
                 return item;
             }
             case ClipboardDataFormat.Image:

@@ -10,7 +10,6 @@ public static class FileEncryption
     private const int SaltSize = 16;
     private const int NonceSize = 12;
     private const int TagSize = 16;
-    private const int KeySize = 32;
 
     public static byte[] Encrypt(
         byte[] plaintext,
@@ -29,21 +28,19 @@ public static class FileEncryption
                     keyringSecret,
                     salt);
 
-            try
-            {
-                var nonce = RandomNumberGenerator.GetBytes(NonceSize);
-                var ciphertext = new byte[plaintext.Length];
-                var tag = new byte[TagSize];
+            var nonce = RandomNumberGenerator.GetBytes(NonceSize);
+            var ciphertext = new byte[plaintext.Length];
+            var tag = new byte[TagSize];
 
-                using var aes = new AesGcm(key, TagSize);
+            using var aes = new AesGcm(key, TagSize);
 
-                aes.Encrypt(
-                    nonce,
-                    plaintext,
-                    ciphertext,
-                    tag);
+            aes.Encrypt(
+                nonce,
+                plaintext,
+                ciphertext,
+                tag);
 
-                /*
+            /*
                  * File format:
                  *
                  * [version: 1]
@@ -53,59 +50,54 @@ public static class FileEncryption
                  * [ciphertext: N]
                  */
 
-                var result = new byte[
-                    1 +
-                    SaltSize +
-                    NonceSize +
-                    TagSize +
-                    ciphertext.Length];
+            var result = new byte[
+                1 +
+                SaltSize +
+                NonceSize +
+                TagSize +
+                ciphertext.Length];
 
-                var offset = 0;
+            var offset = 0;
 
-                result[offset++] = Version;
+            result[offset++] = Version;
 
-                Buffer.BlockCopy(
-                    salt,
-                    0,
-                    result,
-                    offset,
-                    SaltSize);
+            Buffer.BlockCopy(
+                salt,
+                0,
+                result,
+                offset,
+                SaltSize);
 
-                offset += SaltSize;
+            offset += SaltSize;
 
-                Buffer.BlockCopy(
-                    nonce,
-                    0,
-                    result,
-                    offset,
-                    NonceSize);
+            Buffer.BlockCopy(
+                nonce,
+                0,
+                result,
+                offset,
+                NonceSize);
 
-                offset += NonceSize;
+            offset += NonceSize;
 
-                Buffer.BlockCopy(
-                    tag,
-                    0,
-                    result,
-                    offset,
-                    TagSize);
+            Buffer.BlockCopy(
+                tag,
+                0,
+                result,
+                offset,
+                TagSize);
 
-                offset += TagSize;
+            offset += TagSize;
 
-                Buffer.BlockCopy(
-                    ciphertext,
-                    0,
-                    result,
-                    offset,
-                    ciphertext.Length);
+            Buffer.BlockCopy(
+                ciphertext,
+                0,
+                result,
+                offset,
+                ciphertext.Length);
 
-                CryptographicOperations.ZeroMemory(key);
+            CryptographicOperations.ZeroMemory(key);
 
-                return result;
-            }
-            catch
-            {
-                throw;
-            }
+            return result;
         }
         finally
         {

@@ -1,7 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
-             xmlns:helper="clr-namespace:ScratchClip.Helper"
              xmlns:models1="clr-namespace:ScratchClip.Models"
              xmlns:detailItemControls1="clr-namespace:ScratchClip.Views.Controls.DetailItemControls"
              x:DataType="viewModels:ListViewModel"

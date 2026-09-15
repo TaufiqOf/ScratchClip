@@ -61,7 +61,7 @@
                     <!-- ================================= -->
 
                     <ContentPresenter Grid.Column="0"
-                                      MaxHeight="100"
+                                      MaxHeight="150"
                                       Content="{Binding ItemContent,
                                                     ElementName=BaseControl}" />
 
@@ -70,6 +70,7 @@
                     <!-- ================================= -->
 
                     <StackPanel Grid.Column="1"
+                                Margin="5,0,0,0"
                                 Orientation="Vertical"
                                 Spacing="2"
                                 VerticalAlignment="Top">

@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using ScratchClip.Helper;
@@ -27,8 +25,7 @@ public partial class MainWindow : Window
     private readonly MainViewModel _viewModel;
     private bool _isClosingForReal;
     private SettingPageControl? _settingsPage;
-    private bool _loaded;
-
+    private bool _loaded = false;
 
     public MainWindow() : this(new GlobalHotkeyService(() => { }))
     {
@@ -45,8 +42,10 @@ public partial class MainWindow : Window
         _viewModel.OnShowLockPage += ShowLockPage;
         _viewModel.OnShowEditPage += OnShowEditPage;
         DataContext = _viewModel;
-        _mainPage = new MainPageControl(this.Icon);
-        _mainPage.DataContext = _viewModel;
+        _mainPage = new MainPageControl
+        {
+            DataContext = _viewModel
+        };
 
         if (ApplicationKeyStore.HasPassword())
         {
@@ -70,7 +69,7 @@ public partial class MainWindow : Window
     {
         EditClipboardItemPageControl editPage = new EditClipboardItemPageControl(obj);
         PageHost.Content = editPage;
-        editPage.OnClose += (AClipboardItem? item) =>
+        editPage.OnClose += _ =>
         {
             ShowMainPage();
             Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
@@ -110,7 +109,6 @@ public partial class MainWindow : Window
             HideToTray();
         Dispatcher.UIThread.Post(() =>
         {
-            var settings = SettingsManager.Load();
             settings.WindowWidth = Width;
             settings.WindowHeight = Height;
             settings.IsPinned = Topmost;
@@ -210,8 +208,7 @@ public partial class MainWindow : Window
                     var container = listBox.ContainerFromItem(listBox.SelectedItem);
 
                     container?.Focus(
-                        NavigationMethod.Tab,
-                        KeyModifiers.None);
+                        NavigationMethod.Tab);
                 }
             });
         }
@@ -309,7 +306,7 @@ public partial class MainWindow : Window
                     listBox.SelectedIndex = 0;
 
                 var container = listBox.ContainerFromIndex(listBox.SelectedIndex);
-                if (container is Control control)
+                if (container is { } control)
                     control.Focus();
                 else
                     listBox.Focus();

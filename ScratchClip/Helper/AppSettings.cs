@@ -1,5 +1,4 @@
 using ScratchClip.Models;
-using ScratchClip.ViewModels;
 using SharpHook.Data;
 
 namespace ScratchClip.Helper;

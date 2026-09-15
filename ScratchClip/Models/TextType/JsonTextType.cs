@@ -8,7 +8,7 @@ namespace ScratchClip.Models.TextType;
 
 public class JsonTextType : ATextType
 {
-    public JsonTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
+    public JsonTextType(string text, ObservableCollection<string> tags, List<string>? _) : base(text, tags)
     {
         Icon = Icon.Markdown;
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -27,7 +28,7 @@ internal class ImageClipboardService : AClipboardService
             Format = ClipboardDataFormat.Image,
             Timestamp = DateTime.Now,
             DisplayText = "Image",
-            MataData= clipboardData?.Formats.Select(f => f.Identifier).ToList(),
+            MataData= clipboardData?.Formats.Select(f => f.Identifier).ToList()?? new List<string>(),
             Image = bitmap
         };
     }

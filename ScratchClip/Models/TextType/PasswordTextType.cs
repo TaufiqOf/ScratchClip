@@ -10,12 +10,10 @@ namespace ScratchClip.Models.TextType;
 
 public class PasswordTextType : ATextType
 {
-    private readonly List<string?> _mataData;
     private const double MinimumConfidence = 0.60;
 
-    public PasswordTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
+    public PasswordTextType(string text, ObservableCollection<string> tags, List<string>? _) : base(text, tags)
     {
-        _mataData = mataData;
         Icon = Icon.Key;
         Text = text;
     }

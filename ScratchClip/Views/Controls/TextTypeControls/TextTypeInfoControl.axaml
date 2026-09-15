@@ -30,8 +30,7 @@
                     CornerRadius="6"
                     ClipToBounds="True">
 
-                <StackPanel Grid.Column="1"
-                            Spacing="2">
+                <StackPanel Spacing="2">
 
                     <avaloniaEdit:TextEditor
                         x:Name="PreviewEditor"

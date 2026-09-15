@@ -8,7 +8,7 @@ namespace ScratchClip.Models.TextType;
 
 public class XmlTextType : ATextType
 {
-    public XmlTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
+    public XmlTextType(string text, ObservableCollection<string> tags, List<string>? _) : base(text, tags)
     {
         Icon = Icon.Markdown;
     }

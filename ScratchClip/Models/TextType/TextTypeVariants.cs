@@ -196,7 +196,7 @@ public class CodeTextType : ATextType
             ])
     ];
 
-    public CodeTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
+    public CodeTextType(string text, ObservableCollection<string> tags, List<string>? _) : base(text, tags)
     {
         Icon = Icon.CodeBlock;
         Text = text;
@@ -416,9 +416,7 @@ public class CodeTextType : ATextType
 
         return new DetectionResult(
             definition.Name,
-            confidence,
-            syntaxScore,
-            fingerprintScore
+            confidence
         );
     }
 
@@ -527,9 +525,7 @@ public class CodeTextType : ATextType
 
     private readonly record struct DetectionResult(
         string Language,
-        double Confidence,
-        double SyntaxScore,
-        double FingerprintScore
+        double Confidence
     );
 
     private sealed record LanguageDefinition(

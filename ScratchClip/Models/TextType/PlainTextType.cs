@@ -12,7 +12,7 @@ public partial class PlainTextType : ATextType
 {
     private readonly string _text;
     private int _maxLength = 600;
-    public PlainTextType(string text, ObservableCollection<string> tags, List<string?> mataData) : base(text, tags)
+    public PlainTextType(string text, ObservableCollection<string> tags, List<string>? _) : base(text, tags)
     {
         ShowMore = false;
         _text = text;

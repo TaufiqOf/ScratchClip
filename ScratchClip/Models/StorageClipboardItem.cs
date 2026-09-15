@@ -4,33 +4,29 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Input;
 using FluentIcons.Common;
 
 namespace ScratchClip.Models;
 
-public partial class StorageClipboardItem : AClipboardItem
+public class StorageClipboardItem : AClipboardItem
 {
-    private Icon _icon;
-    private string _content = string.Empty;
-
     public string Content
     {
-        get => _content;
+        get;
         set
         {
-            if (value == _content) return;
-            _content = value;
+            if (value == field) return;
+            field = value;
             OnPropertyChanged();
         }
-    }
+    } = string.Empty;
 
     public Icon Icon
     {
-        get => _icon;
+        get;
         set
         {
-            _icon = value;
+            field = value;
             OnPropertyChanged();
         }
     }

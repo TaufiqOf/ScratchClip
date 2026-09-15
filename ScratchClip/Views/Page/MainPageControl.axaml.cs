@@ -12,14 +12,10 @@ namespace ScratchClip.Views.Page;
 
 public partial class MainPageControl : UserControl
 {
-    private readonly WindowIcon? _icon;
-
-    public MainPageControl(WindowIcon? icon)
+    public MainPageControl()
     {
-        _icon = icon;
-
         InitializeComponent();
-        OnThemeChanged(ApplicationTheme.Theme);
+        OnThemeChanged(ApplicationTheme.Theme!);
         OnPasswordChanged();
         ApplicationKeyStore.OnPasswordChanged+= OnPasswordChanged;
         ApplicationTheme.OnThemeChanged += OnThemeChanged;

@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Input;
 using CommunityToolkit.Mvvm.Input;
 using ScratchClip.Manager;
 using ScratchClip.Models.TextType;
@@ -10,8 +8,6 @@ namespace ScratchClip.Models;
 
 public partial class TextClipboardItem : AClipboardItem
 {
-    private ATextType? _textType;
-
     public TextClipboardItem()
     {
         Tags.Add("TEXT");
@@ -19,11 +15,11 @@ public partial class TextClipboardItem : AClipboardItem
 
     public ATextType? TextType
     {
-        get => _textType;
+        get;
         private set
         {
-            if (ReferenceEquals(_textType, value)) return;
-            _textType = value;
+            if (ReferenceEquals(field, value)) return;
+            field = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(Type));
         }

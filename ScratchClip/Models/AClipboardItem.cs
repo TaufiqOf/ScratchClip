@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
@@ -100,7 +98,7 @@ public abstract partial class AClipboardItem : ViewModelBase
         }
     } = DateTime.Now;
 
-    public List<string?> MataData { get; set; } = new List<string?>();
+    public List<string>? MataData { get; set; } = new List<string>();
     
     [RelayCommand]
     public void Pin()
@@ -190,7 +188,7 @@ public abstract partial class AClipboardItem : ViewModelBase
                 {
                     await using var destination = await file.OpenWriteAsync();
 
-                    bitmap.Save(destination);
+                    bitmap.Save(destination, new PngBitmapEncoderOptions());
                     break;
                 }
 

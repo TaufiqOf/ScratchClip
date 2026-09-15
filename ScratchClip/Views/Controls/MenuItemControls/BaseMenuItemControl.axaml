@@ -7,7 +7,6 @@
              x:DataType="models:AClipboardItem"
              x:Class="ScratchClip.Views.Controls.MenuItemControls.BaseMenuItemControl">
     <UserControl.Resources>
-        <converters:ToUpperConverter x:Key="ToUpperConverter" />
         <converters:PinIconConverter x:Key="PinIconConverter" />
     </UserControl.Resources>
     <UserControl.Styles>
