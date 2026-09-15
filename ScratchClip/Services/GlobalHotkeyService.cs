@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using SharpHook;
@@ -60,20 +61,104 @@ public class GlobalHotkeyService : IDisposable
             return;
         }
 
-        if (_simulator == null) return;
+        if (_simulator == null)
+            return;
+
+        var pid = GetFocusedProcessId();
+        var processName = string.Empty;
+
+        if (pid.HasValue)
+        {
+            try
+            {
+                var process = Process.GetProcessById(pid.Value);
+                processName = process.ProcessName;
+
+                Console.WriteLine($"Focused process: {processName}");
+            }
+            catch
+            {
+                return;
+            }
+        }
 
         var isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-        var modifierKey = isMac ? KeyCode.VcLeftMeta : KeyCode.VcLeftControl;
-        var shiftKey = KeyCode.VcLeftShift;
+        var isTerminal =
+            processName.Contains("terminal", StringComparison.OrdinalIgnoreCase) ||
+            processName.Contains("konsole", StringComparison.OrdinalIgnoreCase) ||
+            processName.Contains("kitty", StringComparison.OrdinalIgnoreCase) ||
+            processName.Contains("alacritty", StringComparison.OrdinalIgnoreCase);
+        if (isTerminal)
+        {
+            // Terminal: Ctrl + Shift + V
+            _simulator.SimulateKeyPress(KeyCode.VcLeftControl);
+            _simulator.SimulateKeyPress(KeyCode.VcLeftShift);
 
-        // X11 / Windows / macOS Simulation
-        _simulator.SimulateKeyPress(modifierKey);
-        _simulator.SimulateKeyPress(shiftKey);
-        _simulator.SimulateKeyPress(KeyCode.VcV);
+            await Task.Delay(30);
 
-        _simulator.SimulateKeyRelease(KeyCode.VcV);
-        _simulator.SimulateKeyRelease(shiftKey);
-        _simulator.SimulateKeyRelease(modifierKey);
+            _simulator.SimulateKeyPress(KeyCode.VcV);
+            _simulator.SimulateKeyRelease(KeyCode.VcV);
+
+            _simulator.SimulateKeyRelease(KeyCode.VcLeftShift);
+            _simulator.SimulateKeyRelease(KeyCode.VcLeftControl);
+        }
+        else
+        {
+            // Normal application: Ctrl + V
+            var modifierKey = isMac
+                ? KeyCode.VcLeftMeta
+                : KeyCode.VcLeftControl;
+
+            _simulator.SimulateKeyPress(modifierKey);
+
+            await Task.Delay(30);
+
+            _simulator.SimulateKeyPress(KeyCode.VcV);
+            _simulator.SimulateKeyRelease(KeyCode.VcV);
+
+            _simulator.SimulateKeyRelease(modifierKey);
+        }
+    }
+
+    private static int? GetFocusedProcessId()
+    {
+        var psi = new ProcessStartInfo
+        {
+            FileName = "xprop",
+            Arguments = "-root _NET_ACTIVE_WINDOW",
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            CreateNoWindow = true
+        };
+
+        using var process = Process.Start(psi);
+        if (process == null)
+            return null;
+
+        var output = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+
+        var match = Regex.Match(output, @"window id # (0x[0-9a-fA-F]+)");
+
+        if (!match.Success)
+            return null;
+
+        var windowId = match.Groups[1].Value;
+
+        psi.Arguments = $"-id {windowId} _NET_WM_PID";
+
+        using var pidProcess = Process.Start(psi);
+        if (pidProcess == null)
+            return null;
+
+        var pidOutput = pidProcess.StandardOutput.ReadToEnd();
+        pidProcess.WaitForExit();
+
+        var pidMatch = Regex.Match(pidOutput, @"= (\d+)");
+
+        return pidMatch.Success
+            ? int.Parse(pidMatch.Groups[1].Value)
+            : null;
     }
 
     private static async Task SimulateWaylandPasteAsync()
