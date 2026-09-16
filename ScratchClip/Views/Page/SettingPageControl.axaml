@@ -228,7 +228,7 @@
 
                             <Grid
                                 ColumnDefinitions="Auto,*"
-                                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                                 RowSpacing="8"
                                 ColumnSpacing="20">
 
@@ -244,11 +244,11 @@
                                     Text="Focus the search input field"
                                     TextWrapping="Wrap" />
 
-                                <!-- Alt + L -->
+                                <!-- Alt + Up Or Down -->
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="0"
-                                    Text="Alt + L"
+                                    Text="Alt + Up Or Down"
                                     FontWeight="SemiBold" />
 
                                 <TextBlock
@@ -359,8 +359,43 @@
                                     Text="Save preference in the preference screen, save item on the edit screen"
                                     TextWrapping="Wrap" />
                                 
-                 
+                                <!-- Alt + L -->
+                                <TextBlock
+                                    Grid.Row="10"
+                                    Grid.Column="0"
+                                    Text="Alt + L"
+                                    FontWeight="SemiBold" />
 
+                                <TextBlock
+                                    Grid.Row="10"
+                                    Grid.Column="1"
+                                    Text="Lock the application, if the password is set."
+                                    TextWrapping="Wrap" />
+                 
+                                <!-- Alt + Q -->
+                                <TextBlock
+                                    Grid.Row="11"
+                                    Grid.Column="0"
+                                    Text="Alt + Q"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="11"
+                                    Grid.Column="1"
+                                    Text="Pin/Unpin main screen to the top of the screen."
+                                    TextWrapping="Wrap" />
+                                <!-- Alt + M -->
+                                <TextBlock
+                                    Grid.Row="12"
+                                    Grid.Column="0"
+                                    Text="Alt + M"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="12"
+                                    Grid.Column="1"
+                                    Text="Toggle Clipboard Monitoring On/Off."
+                                    TextWrapping="Wrap" />
                             </Grid>
                         </StackPanel>
                     </Border>

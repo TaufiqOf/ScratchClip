@@ -148,11 +148,27 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        if ((e.Key == Key.Up || e.Key == Key.Down) && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
             SetListFocus(e);
+            e.Handled = true;
+            
         }
-
+        if (e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        {
+            _viewModel.Lock();
+            e.Handled = true;
+        }
+        if (e.Key == Key.Q && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        {
+            _viewModel.IsPinned = !_viewModel.IsPinned;
+            e.Handled = true;
+        }
+        if (e.Key == Key.M && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        {
+            _viewModel.IsMonitoringClipboard = !_viewModel.IsMonitoringClipboard;
+            e.Handled = true;
+        }
         if (e.Key == Key.Escape)
         {
             e.Handled = true;

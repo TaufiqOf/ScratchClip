@@ -56,7 +56,7 @@ public partial class PasswordPageControl : UserControl
         }
         else
         {
-            // Show invalid password message here.
+           NotificationHelper.Error("Login failed", "Incorrect password. Please try again.");
         }
     }
 

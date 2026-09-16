@@ -183,8 +183,9 @@ public partial class SettingPageControl : UserControl
     
     private void ShowPasswordStatus(string message)
     {
-        PasswordStatusText.Text = message;
-        PasswordStatusText.IsVisible = true;
+        NotificationHelper.Success(
+            "Password status",
+            message);
     }
     private void SetPasswordButtonOnClick(
         object? sender,

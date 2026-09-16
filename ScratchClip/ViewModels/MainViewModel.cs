@@ -178,6 +178,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             var appSettings = SettingsManager.Load();
             appSettings.IsPinned = value;
             OnTopMostChanged?.Invoke(value);
+            NotificationHelper.Info(
+                value ? "Pinned" : "Unpinned",
+                value ? "The application window is now pinned on top." : "The application window is no longer pinned on top.");
             SettingsManager.Save(appSettings);
         }
     }
@@ -253,7 +256,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         _timer.Start();
         _monitorTimer.Start();
-        NotificationHelper.Success(
+        NotificationHelper.Info(
             "Monitoring Active",
             "The clipboard monitoring has been successfully activated.");
     }
@@ -314,7 +317,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _monitorCts = null;
         if (showNotification)
         {
-            NotificationHelper.Success(
+            NotificationHelper.Info(
             "Monitoring Stopped",
             "The clipboard monitoring has been successfully stopped.");
         }
