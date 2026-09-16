@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using ScratchClip.Helper;
 using ScratchClip.Models;
 
 namespace ScratchClip.Views.Page;
@@ -139,7 +140,9 @@ public partial class EditClipboardItemPageControl : UserControl
             foreach (var tag in item.Tags)
                 storageItem.Tags.Add(tag);
         }
-
+        NotificationHelper.Success(
+            "Item updated",
+            "The item has been successfully updated.");
         OnClose?.Invoke(_item);
     }
 

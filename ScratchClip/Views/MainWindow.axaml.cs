@@ -62,6 +62,7 @@ public partial class MainWindow : Window
         Activated += OnActivated;
         // Use Tunnel routing strategy to catch key presses before ListBox consumes them
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
+        NotificationHelper.Initialize(this);
     }
 
 

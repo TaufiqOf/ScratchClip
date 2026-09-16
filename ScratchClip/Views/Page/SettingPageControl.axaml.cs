@@ -27,6 +27,7 @@ public partial class SettingPageControl : UserControl
         if(e.Key== Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             OnSaveClick(sender, new RoutedEventArgs());
+
         }
     }
 
@@ -137,6 +138,9 @@ public partial class SettingPageControl : UserControl
         if (DataContext is SettingsViewModel vm)
         {
             vm.SaveCommand.Execute(null);
+            NotificationHelper.Success(
+                "Preferences saved",
+                "Your preferences have been successfully saved.");
         }
 
         CloseRequested?.Invoke(

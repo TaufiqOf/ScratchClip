@@ -246,13 +246,16 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private void StartMonitoringClipboard()
     {
-        StopMonitoringClipboard();
+        StopMonitoringClipboard(false);
 
         _monitorCts = new CancellationTokenSource();
         _token = _monitorCts.Token;
 
         _timer.Start();
         _monitorTimer.Start();
+        NotificationHelper.Success(
+            "Monitoring Active",
+            "The clipboard monitoring has been successfully activated.");
     }
 
     private void MonitorTimerCallback(object? sender, ElapsedEventArgs e)
@@ -304,11 +307,17 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 
-    private void StopMonitoringClipboard()
+    private void StopMonitoringClipboard(bool showNotification = true)
     {
         _monitorCts?.Cancel();
         _monitorCts?.Dispose();
         _monitorCts = null;
+        if (showNotification)
+        {
+            NotificationHelper.Success(
+            "Monitoring Stopped",
+            "The clipboard monitoring has been successfully stopped.");
+        }
     }
 
     private void OnClipboardItemAdded(AClipboardItem clipboardItem)
