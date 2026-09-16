@@ -1,3 +1,4 @@
+using System.IO;
 using ScratchClip.ViewModels;
 
 namespace ScratchClip.Models;
@@ -28,4 +29,7 @@ public class StorageItem : ViewModelBase
             OnPropertyChanged();
         }
     }
+    
+    public bool IsFolder => Directory.Exists(FullPath);
+    public bool IsFile => File.Exists(FullPath);
 }
