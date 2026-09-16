@@ -80,6 +80,7 @@
                     <ComboBox x:Name="TagComboBox"
                               Width="180"
                               IsEditable="True"
+                              KeyDown="TagComboBox_OnKeyDown"
                               ItemsSource="{Binding AvailableTags,
                                                     ElementName=TagEditor}"
                               SelectedItem="{Binding SelectedTag,
@@ -91,7 +92,7 @@
                               PlaceholderText="Select or type tag..."
                               VerticalAlignment="Center"
                               VerticalContentAlignment="Center" />
-                    <Button Grid.Column="1"
+                    <Button 
                             Command="{Binding AddTagCommand,
                                       ElementName=TagEditor}"
                             Background="Transparent"

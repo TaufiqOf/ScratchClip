@@ -228,7 +228,7 @@
 
                             <Grid
                                 ColumnDefinitions="Auto,*"
-                                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                                 RowSpacing="8"
                                 ColumnSpacing="20">
 
@@ -306,8 +306,60 @@
                                 <TextBlock
                                     Grid.Row="5"
                                     Grid.Column="1"
-                                    Text="Hide the window to the system tray"
+                                    Text="Hide the window to the system tray, if in the Preference or edit screen, go back to the main screen"
                                     TextWrapping="Wrap" />
+ 
+                                <!-- Alt + E -->
+                                <TextBlock
+                                    Grid.Row="6"
+                                    Grid.Column="0"
+                                    Text="Alt + E"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="6"
+                                    Grid.Column="1"
+                                    Text="Edit Selected Item"
+                                    TextWrapping="Wrap" />
+                                <!-- Delete -->
+                                <TextBlock
+                                    Grid.Row="7"
+                                    Grid.Column="0"
+                                    Text="Delete"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="7"
+                                    Grid.Column="1"
+                                    Text="Delete Selected Item"
+                                    TextWrapping="Wrap" />
+                                <!-- Alt + P -->
+                                <TextBlock
+                                    Grid.Row="8"
+                                    Grid.Column="0"
+                                    Text="Alt + P"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="8"
+                                    Grid.Column="1"
+                                    Text="Show Preferences Screen"
+                                    TextWrapping="Wrap" />
+
+                                <!-- Ctrl + S -->
+                                <TextBlock
+                                    Grid.Row="9"
+                                    Grid.Column="0"
+                                    Text="Ctrl + S"
+                                    FontWeight="SemiBold" />
+
+                                <TextBlock
+                                    Grid.Row="9"
+                                    Grid.Column="1"
+                                    Text="Save preference in the preference screen, save item on the edit screen"
+                                    TextWrapping="Wrap" />
+                                
+                 
 
                             </Grid>
                         </StackPanel>

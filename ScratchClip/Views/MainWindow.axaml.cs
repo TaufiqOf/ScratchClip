@@ -140,6 +140,12 @@ public partial class MainWindow : Window
             searchBox?.Focus();
             searchBox?.SelectAll();
         }
+        if(e.Key == Key.P && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        {
+            ShowSettingsPage();
+            e.Handled = true;
+            return;
+        }
 
         if (e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
@@ -171,6 +177,20 @@ public partial class MainWindow : Window
                 }
             }
         }
+        if(e.Key == Key.E && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        {
+            if (HistoryListBox?.SelectedItem != null)
+            {
+                var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
+                if (container?.IsFocused == true)
+                {
+                    if (_viewModel.SelectedItem != null)
+                    {
+                        _viewModel.SelectedItem.Edit();
+                    }
+                }
+            }
+        }
 
         if (e.Key == Key.Enter)
         {
@@ -179,9 +199,14 @@ public partial class MainWindow : Window
                 SetListFocus(e);
                 return;
             }
+            if(HistoryListBox is { IsFocused: true, SelectedItem: not null })
+            {
 
-            e.Handled = true;
-            _ = ActivateSelectedItemAsync();
+                e.Handled = true;
+                _ = ActivateSelectedItemAsync();
+                return;
+            }
+
         }
 
         _viewModel.OnWindowKeyDown(e);

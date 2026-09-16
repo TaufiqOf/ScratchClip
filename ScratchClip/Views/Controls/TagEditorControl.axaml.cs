@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using CommunityToolkit.Mvvm.Input;
 
 namespace ScratchClip.Views.Controls;
@@ -106,5 +107,13 @@ public partial class TagEditorControl : UserControl
         }
 
         Tags.Remove(tag);
+    }
+
+    private void TagComboBox_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            AddTag();
+        }
     }
 }

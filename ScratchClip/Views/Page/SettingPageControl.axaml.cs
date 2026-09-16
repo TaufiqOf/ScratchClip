@@ -18,6 +18,16 @@ public partial class SettingPageControl : UserControl
     {
         InitializeComponent();
         UpdatePasswordControls();
+        AddHandler(KeyDownEvent, InputElementOnKeyDown, RoutingStrategies.Tunnel);
+
+    }
+
+    private void InputElementOnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if(e.Key== Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            OnSaveClick(sender, new RoutedEventArgs());
+        }
     }
 
     private void HotkeyTextBox_OnKeyDown(

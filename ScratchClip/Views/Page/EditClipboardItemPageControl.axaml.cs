@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using ScratchClip.Models;
 
@@ -15,6 +16,7 @@ public partial class EditClipboardItemPageControl : UserControl
     public EditClipboardItemPageControl()
     {
         InitializeComponent();
+        AddHandler(KeyDownEvent, InputElementOnKeyDown, RoutingStrategies.Tunnel);
     }
 
     public EditClipboardItemPageControl(AClipboardItem item)
@@ -64,6 +66,8 @@ public partial class EditClipboardItemPageControl : UserControl
         };
         DataContext = _unsavedItem;
         InitializeComponent();
+        AddHandler(KeyDownEvent, InputElementOnKeyDown, RoutingStrategies.Tunnel);
+
         TagEditor.AvailableTags =
             new ObservableCollection<string>("PLAINTEXT,MARKDOWN,CODE,PASSWORD,WEBSITE,JSON,XML".Split(','));
     }
@@ -144,5 +148,13 @@ public partial class EditClipboardItemPageControl : UserControl
         // TODO:
         // Cancel / close page
         OnClose?.Invoke(null);
+    }
+
+    private void InputElementOnKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control) && e.Key == Key.S)
+        {
+            OnSaveClick(sender, new RoutedEventArgs());
+        }
     }
 }
