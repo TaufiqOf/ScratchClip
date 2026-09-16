@@ -21,10 +21,11 @@ public static class ClipboardManager
     public static Action<AClipboardItem>? OnEditExistingClipboardItem;
     public static Action? OnClearExistingClipboardItem;
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
-    
+
     private static AClipboardItem? _selectedClipboardItem;
     public static bool IsLoaded { get; set; } = false;
     public static int MaxItemsInHistory { get; set; } = 20;
+
     static ClipboardManager()
     {
         ClipboardServices = new Dictionary<ClipboardDataFormat, AClipboardService>();
@@ -69,7 +70,6 @@ public static class ClipboardManager
     }
 
 
-
     private static IClipboard? GetClipboard()
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -83,40 +83,41 @@ public static class ClipboardManager
     {
         try
         {
-            var clipboard = GetClipboard();
-            if (clipboard == null)
-                return;
-            var type = await GetDataTypeAsync(clipboard);
-            if (type == null)
-                return;
-            if (_lastSignature != null)
-                if (!await HasCheckDataChanged(type.Value, _lastSignature))
+                var clipboard = GetClipboard();
+                if (clipboard == null)
                     return;
+                var type = await GetDataTypeAsync(clipboard);
+                if (type == null)
+                    return;
+                if (_lastSignature != null)
+                    if (!await HasCheckDataChanged(type.Value, _lastSignature))
+                        return;
 
-            var item = await GetItemAsync(type.Value);
-            if (item == null)
-                return;
-            _lastSignature = item.Signature;
-            var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == item.Signature);
-            if (existingItem != null)
-            {
-                if (SelectedClipboardItem != existingItem)
+                var item = await GetItemAsync(type.Value);
+                if (item == null)
+                    return;
+                _lastSignature = item.Signature;
+                var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == item.Signature);
+                if (existingItem != null)
                 {
-                    _selectedClipboardItem = existingItem;
-                    OnSelectExistingClipboardItem?.Invoke(existingItem);
+                    if (SelectedClipboardItem != existingItem)
+                    {
+                        _selectedClipboardItem = existingItem;
+                        OnSelectExistingClipboardItem?.Invoke(existingItem);
+                    }
                 }
-            }
-            else
-            {
-                if(ClipboardHistory.Count >= MaxItemsInHistory)
+                else
                 {
-                    var lastItem = ClipboardHistory.Last();
-                    ClipboardHistory.Remove(lastItem);
-                    OnRemoveExistingClipboardItem?.Invoke(lastItem);
+                    if (ClipboardHistory.Count >= MaxItemsInHistory)
+                    {
+                        var lastItem = ClipboardHistory.Last();
+                        ClipboardHistory.Remove(lastItem);
+                        OnRemoveExistingClipboardItem?.Invoke(lastItem);
+                    }
+
+                    ClipboardHistory.Insert(0, item);
+                    OnClipboardItemAdded?.Invoke(item);
                 }
-                ClipboardHistory.Insert(0, item);
-                OnClipboardItemAdded?.Invoke(item);
-            }
         }
         catch (Exception e)
         {
@@ -162,12 +163,12 @@ public static class ClipboardManager
         if (existingItem.Format != type)
             return true;
         var data = await ClipboardServices[type].GetClipboardData();
-        if(data == null)
+        if (data == null)
             return false;
         return !await ClipboardServices[type].IsDataSame(existingItem, data);
     }
-    
-    
+
+
     public static async Task SetClipboardItemAsync(AClipboardItem targetItem)
     {
         _lastSignature = targetItem.Signature;
@@ -180,7 +181,7 @@ public static class ClipboardManager
 
     public static void ClearClipboardHistory()
     {
-        ClipboardHistory.RemoveAll(q=>!q.IsPinned);
+        ClipboardHistory.RemoveAll(q => !q.IsPinned);
         OnClearExistingClipboardItem?.Invoke();
     }
 
@@ -204,7 +205,7 @@ public static class ClipboardManager
         ClipboardHistory.Remove(item);
         OnRemoveExistingClipboardItem?.Invoke(item);
     }
-    
+
     private static void EditClipboardItem(AClipboardItem obj)
     {
         OnEditExistingClipboardItem?.Invoke(obj);

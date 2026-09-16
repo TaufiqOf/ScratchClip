@@ -4,12 +4,21 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
+using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FluentIcons.Common;
+using ScratchClip.Helper;
 
 namespace ScratchClip.Models;
 
-public class StorageClipboardItem : AClipboardItem
+public partial class StorageClipboardItem : AClipboardItem
 {
+    Timer _lazyUpdateTimer = new Timer(500);
+
+    [ObservableProperty]
+    private List<StorageItem> _storageItems;
+
     public string Content
     {
         get;
@@ -31,6 +40,22 @@ public class StorageClipboardItem : AClipboardItem
         }
     }
 
+    public StorageClipboardItem()
+    {
+        _lazyUpdateTimer.Elapsed += LazyUpdateTimerOnElapsed;
+        _lazyUpdateTimer.Start();
+    }
+
+    void LazyUpdateTimerOnElapsed(object? sender, ElapsedEventArgs e)
+    {
+        _lazyUpdateTimer.Stop();
+
+        Dispatcher.UIThread.Post(async void () =>
+        {
+            StorageItems = await GetStorageItems();
+        });
+    }
+
     public List<string> Paths
     {
         get;
@@ -47,6 +72,30 @@ public class StorageClipboardItem : AClipboardItem
 
     public List<string> Files => Paths.Where(File.Exists).ToList();
     public List<string> Folders => Paths.Where(Directory.Exists).ToList();
+
+
+
+    private Task<List<StorageItem>> GetStorageItems()
+    {
+        return Task.Factory.StartNew(() =>
+        {
+            return Paths
+                .Where(path =>
+                    File.Exists(path) ||
+                    Directory.Exists(path))
+                .Select(path => new StorageItem
+                {
+                    FilePath = Path.GetFileName(
+                        path.TrimEnd(
+                            Path.DirectorySeparatorChar,
+                            Path.AltDirectorySeparatorChar)),
+                    FullPath = path,
+                    IconPath =
+                        LinuxFileIconService.GetIconPath(path)
+                })
+                .ToList();
+        });
+    }
 
     private void SetContent(List<string> value)
     {
@@ -216,6 +265,7 @@ public class StorageClipboardItem : AClipboardItem
 
         await source.CopyToAsync(target);
     }
+
     private static async Task AddDirectoryToZip(
         ZipArchive archive,
         string directory,

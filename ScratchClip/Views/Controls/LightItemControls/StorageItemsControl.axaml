@@ -1,14 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:models="clr-namespace:ScratchClip.Models"
+             xmlns:storageTypeControls="clr-namespace:ScratchClip.Views.Controls.StorageTypeControls"
              x:Class="ScratchClip.Views.Controls.LightItemControls.StorageItemsControl"
              x:DataType="models:StorageClipboardItem">
     <Border Padding="4"
             CornerRadius="4"
             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
-        <SelectableTextBlock Text="{Binding Content}"
-                             FontSize="12"
-                             Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
-                             TextWrapping="Wrap" />
+        <storageTypeControls:StorageItemsViewerControl DataContext="{Binding }" />
     </Border>
 </UserControl>

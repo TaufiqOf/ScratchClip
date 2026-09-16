@@ -121,7 +121,6 @@ public static class ClipboardHistoryManager
                 MataData = textItem.MataData!,
                 Tags = textItem.Tags.ToList(),
                 IsPinned = textItem.IsPinned
-
             };
         }
 
@@ -142,7 +141,6 @@ public static class ClipboardHistoryManager
                 MataData = imageItem.MataData!,
                 Tags = imageItem.Tags.ToList(),
                 IsPinned = imageItem.IsPinned
-
             };
         }
 
@@ -154,8 +152,7 @@ public static class ClipboardHistoryManager
                 DisplayText = storageItem.DisplayText,
                 Signature = storageItem.Signature,
                 Timestamp = storageItem.Timestamp,
-                Files = storageItem.Files,
-                Folders = storageItem.Folders,
+                Paths = storageItem.Paths,
                 MataData = storageItem.MataData!,
                 Tags = storageItem.Tags.ToList(),
                 IsPinned = storageItem.IsPinned
@@ -181,7 +178,6 @@ public static class ClipboardHistoryManager
                     Timestamp = record.Timestamp == default ? DateTime.Now : record.Timestamp,
                     MataData = record.MataData!,
                     IsPinned = record.IsPinned
-
                 };
                 item.Tags.Clear();
                 item.Tags.AddRange(record.Tags ?? new List<string>());
@@ -212,12 +208,6 @@ public static class ClipboardHistoryManager
             }
             case ClipboardDataFormat.Storage:
             {
-                if (string.IsNullOrWhiteSpace(record.ImageBase64))
-                    return null;
-
-                var bytes = Convert.FromBase64String(record.ImageBase64);
-                using var stream = new MemoryStream(bytes);
-
                 var storageClipboardItem = new StorageClipboardItem
                 {
                     Format = ClipboardDataFormat.Storage,
@@ -228,8 +218,7 @@ public static class ClipboardHistoryManager
                     MataData = record.MataData!,
                     IsPinned = record.IsPinned
                 };
-                storageClipboardItem.Files.AddRange(record.Files ?? new List<string>());
-                storageClipboardItem.Folders.AddRange(record.Folders ?? new List<string>());
+                storageClipboardItem.Paths = record.Paths ?? new List<string>();
                 storageClipboardItem.Tags.Clear();
                 storageClipboardItem.Tags.AddRange(record.Tags ?? new List<string>());
 
@@ -254,8 +243,7 @@ public static class ClipboardHistoryManager
         public DateTime Timestamp { get; set; }
         public string? ImageBase64 { get; set; }
 
-        public List<string>? Files { get; set; }
-        public List<string>? Folders { get; set; }
+        public List<string>? Paths { get; set; }
         public List<string>? MataData { get; set; }
         public List<string>? Tags { get; set; }
         public bool IsPinned { get; set; }

@@ -29,6 +29,11 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private readonly GlobalHotkeyService _hotkeyService;
     private readonly Timer _searchDebounceTimer;
+    private readonly Timer _timer;
+    private readonly Timer _monitorTimer;
+
+    private CancellationToken _token;
+
     private readonly List<AClipboardItem> _historyItems = new();
 
     public Action? OnHideToTray;
@@ -42,6 +47,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private CancellationTokenSource? _monitorCts;
     private string _registerNumber = string.Empty;
     private readonly ListViewModel _listViewModel;
+
+    private readonly SemaphoreSlim _clipboardCheckLock = new(1, 1);
 
     public MainViewModel(GlobalHotkeyService hotkeyService)
     {
@@ -67,11 +74,16 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         TagFilterOptions.CollectionChanged += OnTagFilterOptionsCollectionChanged;
         RefreshList();
-
-        StartMonitoringClipboard();
         _searchDebounceTimer = new Timer(800);
         _searchDebounceTimer.Stop();
         _searchDebounceTimer.Elapsed += SearchDebounceTimerOnElapsed;
+        _timer = new Timer(500);
+        _timer.Elapsed += ClipboardTimerCallback;
+        _timer.Stop();
+        _monitorTimer = new Timer(2000);
+        _monitorTimer.Elapsed += MonitorTimerCallback;
+        _monitorTimer.Stop();
+        StartMonitoringClipboard();
     }
 
 
@@ -169,7 +181,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             SettingsManager.Save(appSettings);
         }
     }
-    
+
     public bool IsSearchFocused
     {
         get => field;
@@ -231,11 +243,65 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         await _hotkeyService.SimulatePasteAsync();
     }
 
+
     private void StartMonitoringClipboard()
     {
         StopMonitoringClipboard();
+
         _monitorCts = new CancellationTokenSource();
-        _ = MonitorClipboardAsync(_monitorCts.Token);
+        _token = _monitorCts.Token;
+
+        _timer.Start();
+        _monitorTimer.Start();
+    }
+
+    private void MonitorTimerCallback(object? sender, ElapsedEventArgs e)
+    {
+        if (_token.IsCancellationRequested || !IsMonitoringClipboard)
+        {
+            _timer.Stop();
+            _monitorTimer.Stop();
+            return;
+        }
+        _timer.Start();
+    }
+
+    private async void ClipboardTimerCallback(
+        object? sender,
+        ElapsedEventArgs e)
+    {
+        if (_token.IsCancellationRequested || !IsMonitoringClipboard)
+            return;
+
+        if (!await _clipboardCheckLock.WaitAsync(0))
+            return;
+
+        try
+        {
+            var clipboardTask = Dispatcher.UIThread.InvokeAsync(
+                () => ClipboardManager.CheckClipboard());
+
+            var completed = await Task.WhenAny(
+                clipboardTask,
+                Task.Delay(TimeSpan.FromSeconds(3)));
+
+            if (completed == clipboardTask)
+            {
+                await clipboardTask;
+            }
+            else
+            {
+                Console.WriteLine("Clipboard check exceeded 3 seconds.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+        finally
+        {
+            _clipboardCheckLock.Release();
+        }
     }
 
     private void StopMonitoringClipboard()
@@ -284,13 +350,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         RefreshTagFilterOptions();
     }
 
-    private async Task MonitorClipboardAsync(CancellationToken cancellationToken)
-    {
-        using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(500));
-
-        while (!cancellationToken.IsCancellationRequested && await timer.WaitForNextTickAsync(cancellationToken))
-            await Dispatcher.UIThread.InvokeAsync(() => _ = ClipboardManager.CheckClipboard());
-    }
 
     [RelayCommand]
     public void Lock()
@@ -552,7 +611,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
                 Console.WriteLine(e);
                 _registerNumber = string.Empty;
             }
-   
         }
     }
 }

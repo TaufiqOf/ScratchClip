@@ -1,0 +1,133 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:models="clr-namespace:ScratchClip.Models"
+             x:DataType="models:StorageClipboardItem"
+             x:Class="ScratchClip.Views.Controls.StorageTypeControls.StorageItemsViewerControl">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                  VerticalScrollBarVisibility="Auto">
+
+        <ItemsControl ItemsSource="{Binding StorageItems}">
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"
+                               ItemWidth="110"
+                               ItemHeight="105" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+
+                    <Border Width="100"
+                            Height="95"
+                            Padding="5"
+                            CornerRadius="6"
+                            Background="Transparent">
+
+                        <Border.ContextFlyout>
+                            <MenuFlyout>
+
+                                <!-- Open -->
+                                <MenuItem Header="Open"
+                                          CommandParameter="{Binding}"
+                                          Click="OpenFile_Click">
+
+                                    <MenuItem.Icon>
+                                        <avalonia:FluentIcon Icon="Open"
+                                                             FontSize="18" />
+                                    </MenuItem.Icon>
+
+                                </MenuItem>
+
+
+                                <!-- Copy -->
+                                <MenuItem Header="Copy"
+                                          CommandParameter="{Binding}"
+                                          Click="CopyFile_Click">
+
+                                    <MenuItem.Icon>
+                                        <avalonia:FluentIcon Icon="Copy"
+                                                             FontSize="18" />
+                                    </MenuItem.Icon>
+
+                                </MenuItem>
+
+
+                                <!-- Move -->
+                                <MenuItem Header="Move"
+                                          CommandParameter="{Binding}"
+                                          Click="MoveFile_Click">
+
+                                    <MenuItem.Icon>
+                                        <avalonia:FluentIcon Icon="ArrowMove"
+                                                             FontSize="18" />
+                                    </MenuItem.Icon>
+
+                                </MenuItem>
+
+
+                                <Separator />
+
+
+                                <!-- Delete -->
+                                <MenuItem Header="Delete"
+                                          CommandParameter="{Binding}"
+                                          Click="DeleteFile_Click">
+
+                                    <MenuItem.Icon>
+                                        <avalonia:FluentIcon Icon="Delete"
+                                                             FontSize="18" />
+                                    </MenuItem.Icon>
+
+                                </MenuItem>
+
+                            </MenuFlyout>
+                        </Border.ContextFlyout>
+
+
+                        <!-- File manager item -->
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="5">
+
+                            <!-- File icon -->
+                            <Border Width="44"
+                                    Height="56"
+                                    Background="White"
+                                    CornerRadius="4">
+
+                                <Svg Path="{Binding IconPath}"
+                                     Width="52"
+                                     Height="52"
+                                     Stretch="Uniform"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
+
+                            </Border>
+
+
+                            <!-- Filename -->
+                            <TextBlock Text="{Binding FilePath}"
+                                       Width="100"
+                                       FontSize="12"
+                                       TextAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       MaxLines="2"
+                                       TextTrimming="CharacterEllipsis" />
+
+                        </StackPanel>
+
+                    </Border>
+
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
+
+    </ScrollViewer>
+
+</UserControl>
