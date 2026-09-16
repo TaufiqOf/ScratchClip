@@ -14,7 +14,7 @@ namespace ScratchClip.Models;
 
 public partial class StorageClipboardItem : AClipboardItem
 {
-    Timer _lazyUpdateTimer = new Timer(500);
+    Timer _lazyUpdateTimer = new Timer(800);
 
     [ObservableProperty] private List<StorageItem> _storageItems;
 
@@ -47,14 +47,20 @@ public partial class StorageClipboardItem : AClipboardItem
     void LazyUpdateTimerOnElapsed(object? sender, ElapsedEventArgs e)
     {
         _lazyUpdateTimer.Stop();
-
+        var list = StorageItems
+            .Where(q => !string.IsNullOrEmpty(q.FullPath))
+            .ToList();
+        foreach (var storageItem in list)
+        {
+            storageItem.IconPath = LinuxFileIconService.GetIconPath(storageItem.FullPath);
+        }
         Dispatcher.UIThread.Post(async void () =>
         {
-            foreach (var storageItem in StorageItems)
+            foreach (var storageItem in list)
             {
-                storageItem.IconPath = LinuxFileIconService.GetIconPath(storageItem.FullPath);
+                StorageItems[StorageItems.IndexOf(storageItem)].IconPath = storageItem.IconPath;
             }
-        });
+        }, DispatcherPriority.Background);
     }
 
     public List<string> Paths
