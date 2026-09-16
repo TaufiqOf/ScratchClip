@@ -22,6 +22,7 @@ public partial class WebsiteTextType : ATextType
     }
 
     public override string DisplayName => "WEBSITE";
+    public override string SuggestedExtension => ".html";
 
 
     static WebsiteTextType()

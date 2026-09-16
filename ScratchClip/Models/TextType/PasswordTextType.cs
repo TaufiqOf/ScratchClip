@@ -19,6 +19,7 @@ public class PasswordTextType : ATextType
     }
 
     public override string DisplayName => "PASSWORD";
+    public override string SuggestedExtension => ".txt";
 
     public double DetectionConfidence { get; private set; }
 

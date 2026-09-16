@@ -57,6 +57,7 @@ public partial class PlainTextType : ATextType
     public bool IsTruncated => Text.Length < _maxLength;
     
     public override string DisplayName => "Plain Text";
+    public override string SuggestedExtension => ".txt";
 
     public override bool IsMatch(string text)
     {

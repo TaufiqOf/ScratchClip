@@ -37,6 +37,8 @@ public abstract class ATextType : ViewModelBase
         }
     }
     public abstract string DisplayName { get; }
+    public abstract string SuggestedExtension { get; }
+
     public abstract bool IsMatch(string text);
     public abstract Task PopulateMetadataAsync(string text);
     public abstract Task UpdateTagsAsync(string text);

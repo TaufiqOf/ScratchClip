@@ -190,8 +190,25 @@ public partial class MainWindow : Window
                     }
                 }
             }
+            e.Handled = true;
+            return;
         }
-
+        if(e.Key == Key.O && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        {
+            if (HistoryListBox?.SelectedItem != null)
+            {
+                var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
+                if (container?.IsFocused == true)
+                {
+                    if (_viewModel.SelectedItem != null)
+                    {
+                        _viewModel.SelectedItem.Open();
+                    }
+                }
+            }
+            e.Handled = true;
+            return;
+        }
         if (e.Key == Key.Enter)
         {
             if (SearchTextBoxControl?.IsFocused == true)
@@ -199,12 +216,15 @@ public partial class MainWindow : Window
                 SetListFocus(e);
                 return;
             }
-            if(HistoryListBox is { IsFocused: true, SelectedItem: not null })
+            var container = HistoryListBox?.ContainerFromItem(HistoryListBox.SelectedItem);
+            if (container?.IsFocused == true)
             {
-
-                e.Handled = true;
-                _ = ActivateSelectedItemAsync();
-                return;
+                if (_viewModel.SelectedItem != null)
+                {
+                    e.Handled = true;
+                    _ = ActivateSelectedItemAsync();
+                    return;
+                }
             }
 
         }

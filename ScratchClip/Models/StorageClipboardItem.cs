@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FluentIcons.Common;
@@ -54,6 +56,7 @@ public partial class StorageClipboardItem : AClipboardItem
         {
             storageItem.IconPath = LinuxFileIconService.GetIconPath(storageItem.FullPath);
         }
+
         Dispatcher.UIThread.Post(async void () =>
         {
             foreach (var storageItem in list)
@@ -98,8 +101,6 @@ public partial class StorageClipboardItem : AClipboardItem
 
     public List<string> Files => Paths.Where(File.Exists).ToList();
     public List<string> Folders => Paths.Where(Directory.Exists).ToList();
-
-
 
 
     private void SetContent(List<string> value)
@@ -322,5 +323,26 @@ public partial class StorageClipboardItem : AClipboardItem
     public override void Delete()
     {
         OnDelete?.Invoke(this);
+    }
+
+    public override Task OpenItem()
+    {
+        //get temporary file path
+        var tempFilePath = "";
+        if (Paths.Count > 0 && File.Exists(Paths[0]))
+        {
+            tempFilePath = Path.GetDirectoryName(Paths[0]);
+        }
+        else
+        {
+            tempFilePath = Path.GetDirectoryName(Folders[0]);
+        }
+        if(string.IsNullOrEmpty(tempFilePath))
+        {
+            return Task.CompletedTask;
+        }
+        Process.Start(new ProcessStartInfo(tempFilePath)
+            { UseShellExecute = true });
+        return Task.CompletedTask;
     }
 }

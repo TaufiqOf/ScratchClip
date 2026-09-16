@@ -14,6 +14,7 @@ public class JsonTextType : ATextType
     }
 
     public override string DisplayName => "JSON";
+    public override string SuggestedExtension => ".json";
 
     public override bool IsMatch(string text)
     {

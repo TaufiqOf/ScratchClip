@@ -40,6 +40,8 @@ public abstract partial class AClipboardItem : ViewModelBase
 
     public abstract string SuggestedFile { get; }
 
+    public abstract Task OpenItem();
+
 
     public string Text
     {
@@ -106,6 +108,7 @@ public abstract partial class AClipboardItem : ViewModelBase
     } = DateTime.Now;
 
     public List<string>? MataData { get; set; } = new List<string>();
+
 
     [RelayCommand]
     public void Pin()
@@ -208,5 +211,10 @@ public abstract partial class AClipboardItem : ViewModelBase
         {
             Console.WriteLine(e);
         }
+    }
+    [RelayCommand]
+    public async Task Open()
+    {
+        await OpenItem();
     }
 }

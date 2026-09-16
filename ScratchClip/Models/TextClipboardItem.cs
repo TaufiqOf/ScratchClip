@@ -1,3 +1,6 @@
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
@@ -41,7 +44,6 @@ public partial class TextClipboardItem : AClipboardItem
     [RelayCommand]
     private void ItemClicked()
     {
-        
     }
 
     public async Task PopulateMetadataAsync()
@@ -50,7 +52,7 @@ public partial class TextClipboardItem : AClipboardItem
 
         TextType = CreateTextType(text);
         UpdateTags();
-        if(TextType is PasswordTextType passwordTextType)
+        if (TextType is PasswordTextType passwordTextType)
             DisplayText = new string('•', passwordTextType.Text.Length);
         await TextType.PopulateMetadataAsync(text);
         await TextType.UpdateTagsAsync(text);
@@ -60,13 +62,13 @@ public partial class TextClipboardItem : AClipboardItem
     {
         var candidates = new ATextType[]
         {
-            new WebsiteTextType(text,Tags,MataData),
-            new JsonTextType(text,Tags,MataData),
-            new XmlTextType(text,Tags,MataData),
-            new CodeTextType(text,Tags,MataData),
-            new MarkdownTextType(text,Tags,MataData),
-            new PasswordTextType(text,Tags,MataData),
-            new PlainTextType(text,Tags,MataData),//must be last, as it will match anything
+            new WebsiteTextType(text, Tags, MataData),
+            new JsonTextType(text, Tags, MataData),
+            new XmlTextType(text, Tags, MataData),
+            new CodeTextType(text, Tags, MataData),
+            new MarkdownTextType(text, Tags, MataData),
+            new PasswordTextType(text, Tags, MataData),
+            new PlainTextType(text, Tags, MataData), //must be last, as it will match anything
         };
 
         return candidates.First(type => type.IsMatch(text));
@@ -79,6 +81,7 @@ public partial class TextClipboardItem : AClipboardItem
         // foreach (var tag in tags.Distinct())
         //     Tags.Add(tag);
     }
+
     [RelayCommand]
     private async Task CopyToClipboardAsync()
     {
@@ -91,6 +94,29 @@ public partial class TextClipboardItem : AClipboardItem
     }
 
     public override string SuggestedFile { get; } = "text.txt";
+
+    public override Task OpenItem()
+    {
+        //get temporary file path
+        if (TextType is WebsiteTextType)
+        {
+            //open the website in the default browser
+            if (Uri.TryCreate(Text, UriKind.Absolute, out var uri))
+                Process.Start(new ProcessStartInfo(uri.ToString()) { UseShellExecute = true });
+        }
+        else
+        {
+            var tempFilePath = Path.Combine(Path.GetTempPath(), "ScratchClip",
+                $"{Guid.NewGuid().ToString()}{TextType?.SuggestedExtension ?? ".txt"}");
+            //open the file with the default application
+            Directory.CreateDirectory(Path.GetDirectoryName(tempFilePath) ?? string.Empty);
+            File.WriteAllText(tempFilePath, Text);
+            Process.Start(new ProcessStartInfo(tempFilePath) { UseShellExecute = true });
+        }
+
+        return Task.CompletedTask;
+    }
+
 
     public override void Delete()
     {
@@ -106,17 +132,17 @@ public partial class TextClipboardItem : AClipboardItem
             Tags.Contains("MARKDOWN") ? new MarkdownTextType(Text, Tags, MataData) :
             Tags.Contains("PASSWORD") ? new PasswordTextType(Text, Tags, MataData) :
             new PlainTextType(Text, Tags, MataData);
-        if(TextType is PasswordTextType passwordTextType)
+        if (TextType is PasswordTextType passwordTextType)
             DisplayText = new string('•', passwordTextType.Text.Length);
         else
         {
             DisplayText = TextType.Text.Length > 600 ? TextType.Text.Substring(0, 600) : TextType.Text;
         }
+
         await TextType.PopulateMetadataAsync(Text);
     }
 
     public void UpdateDisplayText()
     {
-        
     }
 }

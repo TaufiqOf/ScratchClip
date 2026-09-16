@@ -14,6 +14,7 @@ public class XmlTextType : ATextType
     }
 
     public override string DisplayName => "XML";
+    public override string SuggestedExtension => ".xml";
 
     public override bool IsMatch(string text)
     {

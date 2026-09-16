@@ -203,6 +203,7 @@ public class CodeTextType : ATextType
     }
 
     public override string DisplayName => "CODE";
+    public override string SuggestedExtension => ".txt";
 
     public string? DetectedLanguage { get; private set; }
 

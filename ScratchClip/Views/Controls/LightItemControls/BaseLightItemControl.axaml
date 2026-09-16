@@ -94,7 +94,21 @@
                                 FontSize="14" />
 
                         </Button>
+                        <!-- Open -->
+                        <Button Command="{Binding OpenCommand}"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Padding="5"
+                                Width="26"
+                                Height="26"
+                                ToolTip.Tip="Open Item(Ctrl+O)">
 
+                            <avalonia:FluentIcon
+                                Icon="Open"
+                                FontSize="14" />
+
+                        </Button>
                         <!-- Common Save As -->
                         <Button Command="{Binding SaveAsCommand}"
                                 Background="Transparent"

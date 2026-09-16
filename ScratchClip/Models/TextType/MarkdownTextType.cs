@@ -14,6 +14,7 @@ public class MarkdownTextType : ATextType
     }
 
     public override string DisplayName => "MARKDOWN";
+    public override string SuggestedExtension => ".md";
 
     public override bool IsMatch(string text)
     {
