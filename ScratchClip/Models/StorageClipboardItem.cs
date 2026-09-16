@@ -16,8 +16,7 @@ public partial class StorageClipboardItem : AClipboardItem
 {
     Timer _lazyUpdateTimer = new Timer(500);
 
-    [ObservableProperty]
-    private List<StorageItem> _storageItems;
+    [ObservableProperty] private List<StorageItem> _storageItems;
 
     public string Content
     {
@@ -43,7 +42,6 @@ public partial class StorageClipboardItem : AClipboardItem
     public StorageClipboardItem()
     {
         _lazyUpdateTimer.Elapsed += LazyUpdateTimerOnElapsed;
-        _lazyUpdateTimer.Start();
     }
 
     void LazyUpdateTimerOnElapsed(object? sender, ElapsedEventArgs e)
@@ -52,7 +50,10 @@ public partial class StorageClipboardItem : AClipboardItem
 
         Dispatcher.UIThread.Post(async void () =>
         {
-            StorageItems = await GetStorageItems();
+            foreach (var storageItem in StorageItems)
+            {
+                storageItem.IconPath = LinuxFileIconService.GetIconPath(storageItem.FullPath);
+            }
         });
     }
 
@@ -66,36 +67,34 @@ public partial class StorageClipboardItem : AClipboardItem
             SetIcon(value);
             UpdateTags(value);
             SetContent(value);
+            UpdateStorageItems(value);
             OnPropertyChanged();
         }
     } = new List<string>();
+
+    private void UpdateStorageItems(List<string> value)
+    {
+        StorageItems = Paths
+            .Where(path =>
+                File.Exists(path) ||
+                Directory.Exists(path))
+            .Select(path => new StorageItem
+            {
+                FilePath = Path.GetFileName(
+                    path.TrimEnd(
+                        Path.DirectorySeparatorChar,
+                        Path.AltDirectorySeparatorChar)),
+                FullPath = path,
+            })
+            .ToList();
+        _lazyUpdateTimer.Start();
+    }
 
     public List<string> Files => Paths.Where(File.Exists).ToList();
     public List<string> Folders => Paths.Where(Directory.Exists).ToList();
 
 
 
-    private Task<List<StorageItem>> GetStorageItems()
-    {
-        return Task.Factory.StartNew(() =>
-        {
-            return Paths
-                .Where(path =>
-                    File.Exists(path) ||
-                    Directory.Exists(path))
-                .Select(path => new StorageItem
-                {
-                    FilePath = Path.GetFileName(
-                        path.TrimEnd(
-                            Path.DirectorySeparatorChar,
-                            Path.AltDirectorySeparatorChar)),
-                    FullPath = path,
-                    IconPath =
-                        LinuxFileIconService.GetIconPath(path)
-                })
-                .ToList();
-        });
-    }
 
     private void SetContent(List<string> value)
     {
