@@ -255,175 +255,245 @@
                                 FontWeight="Medium" />
 
                             <Grid
-                                ColumnDefinitions="Auto,*"
-                                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                                 RowSpacing="8"
                                 ColumnSpacing="20">
+                                <!--Main Screen General-->
+                                <Grid Grid.Row="0"
+                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                      ColumnDefinitions="200,*">
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2">
+                                        <Run>Main Screen</Run>
+                                        <Run FontSize="10">General Navigation</Run>
+                                    </TextBlock>
+                                    <!-- Alt + S -->
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Text="Alt + S"
+                                        FontWeight="SemiBold" />
 
-                                <!-- Alt + S -->
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Text="Alt + S"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Text="Focus the search input field"
+                                        TextWrapping="Wrap" />
 
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Text="Focus the search input field"
-                                    TextWrapping="Wrap" />
+                                    <!-- Alt + Up Or Down -->
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Text="Alt + Up Or Down"
+                                        FontWeight="SemiBold" />
 
-                                <!-- Alt + Up Or Down -->
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Text="Alt + Up Or Down"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Text="Focus the Item List"
+                                        TextWrapping="Wrap" />
+                                    <!-- Alt + L -->
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Text="Alt + L"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Text="Focus the Item List"
-                                    TextWrapping="Wrap" />
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Text="Lock the application, if the password is set."
+                                        TextWrapping="Wrap" />
 
-                                <!-- Enter -->
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Text="Enter"
-                                    FontWeight="SemiBold" />
+                                    <!-- Alt + Q -->
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="0"
+                                        Text="Alt + Q"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Text="Copy the selected item and paste it into the previously focused application. If focus is on the Search Input, focus the Item List."
-                                    TextWrapping="Wrap" />
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        Text="Pin/Unpin main screen to the top of the screen."
+                                        TextWrapping="Wrap" />
+                                    <!-- Alt + M -->
+                                    <TextBlock
+                                        Grid.Row="5"
+                                        Grid.Column="0"
+                                        Text="Alt + M"
+                                        FontWeight="SemiBold" />
 
-                                <!-- Double Click -->
-                                <TextBlock
-                                    Grid.Row="3"
-                                    Grid.Column="0"
-                                    Text="Double Click"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="5"
+                                        Grid.Column="1"
+                                        Text="Toggle Clipboard Monitoring On/Off."
+                                        TextWrapping="Wrap" />
+                                    
+                                    <!-- Alt + P -->
+                                    <TextBlock
+                                        Grid.Row="6"
+                                        Grid.Column="0"
+                                        Text="Alt + P"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="3"
-                                    Grid.Column="1"
-                                    Text="Copy the selected item and paste it into the previously focused application"
-                                    TextWrapping="Wrap" />
+                                    <TextBlock
+                                        Grid.Row="6"
+                                        Grid.Column="1"
+                                        Text="Show Preferences Screen"
+                                        TextWrapping="Wrap" />
+                                    <!-- 1 - 200 -->
+                                    <TextBlock
+                                        Grid.Row="7"
+                                        Grid.Column="0"
+                                        Text="1 – 200"
+                                        FontWeight="SemiBold" />
 
-                                <!-- 1 - 200 -->
-                                <TextBlock
-                                    Grid.Row="4"
-                                    Grid.Column="0"
-                                    Text="1 – 200"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="7"
+                                        Grid.Column="1"
+                                        Text="Instantly choose the corresponding item in the visible list and paste it"
+                                        TextWrapping="Wrap" />
 
-                                <TextBlock
-                                    Grid.Row="4"
-                                    Grid.Column="1"
-                                    Text="Instantly choose the corresponding item in the visible list and paste it"
-                                    TextWrapping="Wrap" />
+                                    <!-- Escape -->
+                                    <TextBlock
+                                        Grid.Row="8"
+                                        Grid.Column="0"
+                                        Text="Esc"
+                                        FontWeight="SemiBold" />
+                                    
+                                    <TextBlock
+                                        Grid.Row="8"
+                                        Grid.Column="1"
+                                        Text="Hide the window to the system tray, if in the Preference or edit screen, go back to the main screen"
+                                        TextWrapping="Wrap" />
 
-                                <!-- Escape -->
-                                <TextBlock
-                                    Grid.Row="5"
-                                    Grid.Column="0"
-                                    Text="Escape"
-                                    FontWeight="SemiBold" />
+                                </Grid>
+                                <Separator Grid.Row="1" Margin="0,4" />
+                                <Grid Grid.Row="2"
+                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                      ColumnDefinitions="200,*">
+                       
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2">
+                                        <Run >Main Screen</Run>
+                                        <Run FontSize="10">Focused On List</Run>
+                                    </TextBlock>
+                                    <!-- Enter -->
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Text="Enter"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="5"
-                                    Grid.Column="1"
-                                    Text="Hide the window to the system tray, if in the Preference or edit screen, go back to the main screen"
-                                    TextWrapping="Wrap" />
- 
-                                <!-- Alt + E -->
-                                <TextBlock
-                                    Grid.Row="6"
-                                    Grid.Column="0"
-                                    Text="Alt + E"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Text="Copy the selected item and paste it into the previously focused application. If focus is on the Search Input, focus the Item List."
+                                        TextWrapping="Wrap" />
 
-                                <TextBlock
-                                    Grid.Row="6"
-                                    Grid.Column="1"
-                                    Text="Edit Selected Item"
-                                    TextWrapping="Wrap" />
-                                <!-- Delete -->
-                                <TextBlock
-                                    Grid.Row="7"
-                                    Grid.Column="0"
-                                    Text="Delete"
-                                    FontWeight="SemiBold" />
+                                    <!-- Double Click -->
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Text="Double Click"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="7"
-                                    Grid.Column="1"
-                                    Text="Delete Selected Item"
-                                    TextWrapping="Wrap" />
-                                <!-- Alt + P -->
-                                <TextBlock
-                                    Grid.Row="8"
-                                    Grid.Column="0"
-                                    Text="Alt + P"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Text="Copy the selected item and paste it into the previously focused application"
+                                        TextWrapping="Wrap" />
+                                    <!-- Ctrl + E -->
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="0"
+                                        Text="Ctrl + E"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="8"
-                                    Grid.Column="1"
-                                    Text="Show Preferences Screen"
-                                    TextWrapping="Wrap" />
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Text="Edit Selected Item"
+                                        TextWrapping="Wrap" />
+                                    
+                                    <!-- Ctrl + S -->
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="0"
+                                        Text="Ctrl + S"
+                                        FontWeight="SemiBold" />
 
-                                <!-- Ctrl + S -->
-                                <TextBlock
-                                    Grid.Row="9"
-                                    Grid.Column="0"
-                                    Text="Ctrl + S"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        Text="Save the focused item to a file."
+                                        TextWrapping="Wrap" />
+                                    <!-- Ctrl + 0 -->
+                                    <TextBlock
+                                        Grid.Row="5"
+                                        Grid.Column="0"
+                                        Text="Ctrl + 0"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="9"
-                                    Grid.Column="1"
-                                    Text="Save preference in the preference screen, save item on the edit screen"
-                                    TextWrapping="Wrap" />
-                                
-                                <!-- Alt + L -->
-                                <TextBlock
-                                    Grid.Row="10"
-                                    Grid.Column="0"
-                                    Text="Alt + L"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="5"
+                                        Grid.Column="1"
+                                        Text="Save the file in a temporary folder and open it with the default application. if its a file or folder open it with file manager"
+                                        TextWrapping="Wrap" />
+                                    
+                                    <!-- Delete -->
+                                    <TextBlock
+                                        Grid.Row="6"
+                                        Grid.Column="0"
+                                        Text="Delete"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="10"
-                                    Grid.Column="1"
-                                    Text="Lock the application, if the password is set."
-                                    TextWrapping="Wrap" />
-                 
-                                <!-- Alt + Q -->
-                                <TextBlock
-                                    Grid.Row="11"
-                                    Grid.Column="0"
-                                    Text="Alt + Q"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="6"
+                                        Grid.Column="1"
+                                        Text="Delete Selected Item"
+                                        TextWrapping="Wrap" />
+                                </Grid>
+                                <Separator Grid.Row="3" Margin="0,4" />
+                                <Grid Grid.Row="4"
+                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                      ColumnDefinitions="200,*">
+                       
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Grid.ColumnSpan="2">
+                                        <Run >Edit and Preferences Screen</Run>
+                                        <Run FontSize="10">General</Run>
+                                    </TextBlock>
+                                    <!-- Ctrl + S -->
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        Text="Ctrl + S"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="11"
-                                    Grid.Column="1"
-                                    Text="Pin/Unpin main screen to the top of the screen."
-                                    TextWrapping="Wrap" />
-                                <!-- Alt + M -->
-                                <TextBlock
-                                    Grid.Row="12"
-                                    Grid.Column="0"
-                                    Text="Alt + M"
-                                    FontWeight="SemiBold" />
+                                    <TextBlock
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Text="Save and return to main screen"
+                                        TextWrapping="Wrap" />
+                                    <!-- Escape -->
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Text="Esc"
+                                        FontWeight="SemiBold" />
 
-                                <TextBlock
-                                    Grid.Row="12"
-                                    Grid.Column="1"
-                                    Text="Toggle Clipboard Monitoring On/Off."
-                                    TextWrapping="Wrap" />
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Text="Return to main screen"
+                                        TextWrapping="Wrap" />
+                                </Grid>
                             </Grid>
                         </StackPanel>
                     </Border>

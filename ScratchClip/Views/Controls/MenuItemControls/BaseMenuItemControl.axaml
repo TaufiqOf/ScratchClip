@@ -45,7 +45,7 @@
 
         <DropDownButton
             Grid.Column="2"
-            Height="32"
+            Height="28"
             Width="32"
             HorizontalAlignment="Stretch">
             <DropDownButton.Flyout>
@@ -58,7 +58,7 @@
                             Height="32"
                             Width="32"
                             Margin="0,0,1,0"
-                            ToolTip.Tip="Toggle Pinned"
+                            ToolTip.Tip="Toggle Pinned(Ctrl+P)"
                             Command="{Binding PinCommand}">
 
                             <avalonia:FluentIcon
@@ -71,7 +71,7 @@
                             Height="32"
                             Width="32"
                             Margin="0,0,1,0"
-                            ToolTip.Tip="Open Item(Ctrl+O)"
+                            ToolTip.Tip="Open(Ctrl+O)"
                             Command="{Binding OpenCommand}">
 
                             <avalonia:FluentIcon
@@ -84,7 +84,7 @@
                             Height="32"
                             Width="32"
                             Margin="0,0,1,0"
-                            ToolTip.Tip="Save To File"
+                            ToolTip.Tip="Save To File(Ctrl+S)"
                             Command="{Binding SaveAsCommand}">
 
                             <avalonia:FluentIcon Icon="Save"
@@ -97,7 +97,7 @@
                             Height="32"
                             Width="32"
                             Margin="0,0,1,0"
-                            ToolTip.Tip="Edit"
+                            ToolTip.Tip="Edit(Ctrl+E)"
                             Command="{Binding EditCommand}">
 
                             <avalonia:FluentIcon Icon="Edit"
@@ -109,7 +109,7 @@
                             Height="32"
                             Width="32"
                             Margin="0,0,1,0"
-                            ToolTip.Tip="Delete"
+                            ToolTip.Tip="Delete(Del)"
                             Command="{Binding DeleteCommand}">
 
                             <avalonia:FluentIcon Icon="Delete"

@@ -20,7 +20,12 @@ public partial class MenuWindow : Window
 {
     private readonly GlobalHotkeyService? _hotkeyService;
     private readonly ListViewModel _listViewModel;
-
+    private ListBox? HistoryListBoxControl =>
+        this.MenuViewModeControl
+            .GetVisualDescendants()
+            .OfType<ListBox>()
+            .FirstOrDefault(x => x.Name == "ListBox");
+    
     public MenuWindow(GlobalHotkeyService? hotkeyService)
     {
         _hotkeyService = hotkeyService;
@@ -31,6 +36,7 @@ public partial class MenuWindow : Window
             FilteredHistory = new ObservableCollection<AClipboardItem>()
         };
         MenuViewModeControl.DataContext = _listViewModel;
+        
         ClipboardManager.OnClipboardItemAdded += (item) =>
         {
             Search();
@@ -43,6 +49,7 @@ public partial class MenuWindow : Window
         {
             Search();
         };
+        
         ClipboardManager.OnDoubleTappedExistingClipboardItem += OnDoubleTappedExistingClipboardItem;
         _listViewModel.SelectedItem = ClipboardManager.SelectedClipboardItem;
         AddHandler(KeyDownEvent,  OnWindowKeyDown,RoutingStrategies.Tunnel);
@@ -100,6 +107,12 @@ public partial class MenuWindow : Window
         this.Close();
     }
 
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        ClipboardManager.OnDoubleTappedExistingClipboardItem -= OnDoubleTappedExistingClipboardItem;
+        base.OnClosing(e);
+    }
+
     private void SearchTextBoxOnTextChanged(object? sender, TextChangedEventArgs e)
     {
         Search();
@@ -114,11 +127,7 @@ public partial class MenuWindow : Window
             item.Text.Contains(SearchTextBox.Text ?? string.Empty, StringComparison.OrdinalIgnoreCase)));
         UpdateDisplayIndexes();
     }
-    private ListBox? HistoryListBoxControl =>
-        this.MenuViewModeControl
-            .GetVisualDescendants()
-            .OfType<ListBox>()
-            .FirstOrDefault(x => x.Name == "ListBox");
+
 
     private void UpdateDisplayIndexes()
     {

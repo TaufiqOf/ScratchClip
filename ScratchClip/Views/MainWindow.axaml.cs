@@ -27,6 +27,15 @@ public partial class MainWindow : Window
     private SettingPageControl? _settingsPage;
     private bool _loaded = false;
 
+    private TextBox? SearchTextBoxControl =>
+        _mainPage.FindControl<TextBox>("SearchTextBox");
+
+    private ListBox? HistoryListBox =>
+        _mainPage
+            .GetVisualDescendants()
+            .OfType<ListBox>()
+            .FirstOrDefault(x => x.Name == "ListBox");
+    
     public MainWindow(GlobalHotkeyService hotkeyService)
     {
         _hotkeyService = hotkeyService;
@@ -61,7 +70,6 @@ public partial class MainWindow : Window
         NotificationHelper.Initialize(this);
     }
 
-
     private void OnShowEditPage(AClipboardItem obj)
     {
         EditClipboardItemPageControl editPage = new EditClipboardItemPageControl(obj);
@@ -74,31 +82,23 @@ public partial class MainWindow : Window
     }
 
 
-    private void ShowLockPage()
-    {
-        PasswordPageControl passwordPage = new PasswordPageControl();
-        PageHost.Content = passwordPage;
-        passwordPage.OnLogin += async () =>
-        {
-            ShowMainPage();
-            Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
-        };
-    }
 
     private void TopMostChanged(bool isPinned)
     {
         Topmost = isPinned;
     }
-
-    private TextBox? SearchTextBoxControl =>
-        _mainPage.FindControl<TextBox>("SearchTextBox");
-
-    private ListBox? HistoryListBox =>
-        _mainPage
-            .GetVisualDescendants()
-            .OfType<ListBox>()
-            .FirstOrDefault(x => x.Name == "ListBox");
-
+    
+    private void OnActivated(object? sender, EventArgs e)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            var settings = SettingsManager.Load();
+            Width = settings.WindowWidth;
+            Height = settings.WindowHeight;
+            TopMostChanged(settings.IsPinned);
+        }, DispatcherPriority.Background);
+    }
+    
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
         var settings = SettingsManager.Load();
@@ -110,18 +110,6 @@ public partial class MainWindow : Window
             settings.WindowHeight = Height;
             settings.IsPinned = Topmost;
             SettingsManager.Save(settings);
-        }, DispatcherPriority.Background);
-    }
-
-
-    private void OnActivated(object? sender, EventArgs e)
-    {
-        Dispatcher.UIThread.Post(() =>
-        {
-            var settings = SettingsManager.Load();
-            Width = settings.WindowWidth;
-            Height = settings.WindowHeight;
-            TopMostChanged(settings.IsPinned);
         }, DispatcherPriority.Background);
     }
 
@@ -145,11 +133,6 @@ public partial class MainWindow : Window
             return;
         }
 
-        if ((e.Key == Key.Up || e.Key == Key.Down) && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
-        {
-            SetListFocus(e);
-            e.Handled = true;
-        }
 
         if (e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
@@ -171,14 +154,16 @@ public partial class MainWindow : Window
             _viewModel.IsMonitoringClipboard = !_viewModel.IsMonitoringClipboard;
             e.Handled = true;
         }
-
-        if (e.Key == Key.Escape)
+        
+        
+        if ((e.Key == Key.Up || e.Key == Key.Down) && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
+            SetListFocus(e);
             e.Handled = true;
-            HideToTray();
         }
+        
 
-        if (e.Key == Key.Delete)
+        if (e.Key == Key.O && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -187,18 +172,16 @@ public partial class MainWindow : Window
                 {
                     if (_viewModel.SelectedItem != null)
                     {
-                        var index = _viewModel.FilteredHistory.IndexOf(_viewModel.SelectedItem);
-                        _viewModel.SelectedItem.Delete();
-                        await Task.Delay(100);
-                        _viewModel.SelectedItem = _viewModel.FilteredHistory.ElementAtOrDefault(index) ??
-                                                  _viewModel.FilteredHistory.LastOrDefault();
-                        SetListFocus(e);
+                        _viewModel.SelectedItem.Open();
                     }
                 }
             }
-        }
 
-        if (e.Key == Key.E && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+            e.Handled = true;
+            return;
+        }
+        
+        if (e.Key == Key.E && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -215,8 +198,8 @@ public partial class MainWindow : Window
             e.Handled = true;
             return;
         }
-
-        if (e.Key == Key.O && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        
+        if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -225,7 +208,25 @@ public partial class MainWindow : Window
                 {
                     if (_viewModel.SelectedItem != null)
                     {
-                        _viewModel.SelectedItem.Open();
+                        await _viewModel.SelectedItem.SaveAs();
+                    }
+                }
+            }
+
+            e.Handled = true;
+            return;
+        }
+        
+        if (e.Key == Key.P && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            if (HistoryListBox?.SelectedItem != null)
+            {
+                var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
+                if (container?.IsFocused == true)
+                {
+                    if (_viewModel.SelectedItem != null)
+                    {
+                        _viewModel.SelectedItem.Pin();
                     }
                 }
             }
@@ -250,6 +251,32 @@ public partial class MainWindow : Window
                     e.Handled = true;
                     _ = ActivateSelectedItemAsync();
                     return;
+                }
+            }
+        }
+        
+        if (e.Key == Key.Escape)
+        {
+            e.Handled = true;
+            HideToTray();
+        }
+
+        if (e.Key == Key.Delete)
+        {
+            if (HistoryListBox?.SelectedItem != null)
+            {
+                var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
+                if (container?.IsFocused == true)
+                {
+                    if (_viewModel.SelectedItem != null)
+                    {
+                        var index = _viewModel.FilteredHistory.IndexOf(_viewModel.SelectedItem);
+                        _viewModel.SelectedItem.Delete();
+                        await Task.Delay(100);
+                        _viewModel.SelectedItem = _viewModel.FilteredHistory.ElementAtOrDefault(index) ??
+                                                  _viewModel.FilteredHistory.LastOrDefault();
+                        SetListFocus(e);
+                    }
                 }
             }
         }
@@ -290,7 +317,6 @@ public partial class MainWindow : Window
         await _viewModel.DoubleClickAsync();
         await _viewModel.SimulatePasteAsync();
     }
-
 
     private void OnOpened(object? sender, EventArgs e)
     {
@@ -341,7 +367,16 @@ public partial class MainWindow : Window
         ShowInTaskbar = false;
         Hide();
     }
-
+    private void ShowLockPage()
+    {
+        PasswordPageControl passwordPage = new PasswordPageControl();
+        PageHost.Content = passwordPage;
+        passwordPage.OnLogin += async () =>
+        {
+            ShowMainPage();
+            Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
+        };
+    }
     public void ShowFromTray()
     {
         //ShowMainPage();
@@ -355,6 +390,7 @@ public partial class MainWindow : Window
         Activate();
         Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
     }
+    
 
     private void FocusControls()
     {

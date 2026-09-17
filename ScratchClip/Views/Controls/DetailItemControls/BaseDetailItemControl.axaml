@@ -112,7 +112,7 @@
                         Height="26"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
-                        ToolTip.Tip="Toggle Pinned">
+                        ToolTip.Tip="Toggle Pinned(Ctrl+P)">
 
                     <avalonia:FluentIcon
                         Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
@@ -154,7 +154,7 @@
                         Height="26"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
-                        ToolTip.Tip="Save To File">
+                        ToolTip.Tip="Save To File(Ctrl+S)">
 
                     <avalonia:FluentIcon Icon="Save"
                                          FontSize="14" />
@@ -173,7 +173,7 @@
                         Height="26"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
-                        ToolTip.Tip="Edit Item">
+                        ToolTip.Tip="Edit(Ctrl+E)">
 
                     <avalonia:FluentIcon Icon="Edit"
                                          FontSize="14" />
@@ -193,7 +193,7 @@
                         Height="26"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"
-                        ToolTip.Tip="Delete Item">
+                        ToolTip.Tip="Delete(Del)">
 
                     <avalonia:FluentIcon Icon="Delete"
                                          FontSize="14" />

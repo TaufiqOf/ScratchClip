@@ -6,7 +6,7 @@
         xmlns:controls="clr-namespace:ScratchClip.Views.Controls"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ScratchClip.Views.MenuWindow"
-        Width="350" Height="400"
+        Width="400" Height="400"
         WindowStartupLocation="Manual"
         Icon="avares://ScratchClip/Assets/icon-dark.ico"
         CanMinimize="False"
@@ -15,10 +15,36 @@
         Title="ScratchClip">
     <Grid RowDefinitions="Auto,*,Auto">
         <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
-            <avalonia:FluentIcon Icon="Search" Width="20" Height="20" />
-            <TextBox x:Name="SearchTextBox" Grid.Column="1"  TextChanged="SearchTextBoxOnTextChanged"/>
+            <Border Grid.Column="0" Width="30" Height="30" Background="Transparent">
+                <avalonia:FluentIcon Icon="Search" Width="20" Height="20" />
+            </Border>
+            <TextBox x:Name="SearchTextBox"
+                     Grid.Column="1"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     TextChanged="SearchTextBoxOnTextChanged">
+                <TextBox.Styles>
+                    <!-- Removes the internal template border and background across all states -->
+                    <Style Selector="TextBox /template/ Border#PART_BorderElement">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="Background" Value="Transparent" />
+                    </Style>
+                </TextBox.Styles>
+            </TextBox>
         </Grid>
-        <controls:MenuViewModeControl x:Name="MenuViewModeControl" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <controls:MenuViewModeControl x:Name="MenuViewModeControl" Grid.Row="1" VerticalAlignment="Stretch"
+                                      HorizontalAlignment="Stretch" />
 
     </Grid>
 </Window>

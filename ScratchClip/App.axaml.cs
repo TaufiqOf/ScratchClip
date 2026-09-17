@@ -30,6 +30,7 @@ public class App : Application
 
     private TrayIcon? _trayIcon;
     private MenuWindow? _menuWindow;
+    private DateTime _lastMenuToggleTime;
 
     public bool IsShuttingDown { get; private set; }
 
@@ -103,8 +104,6 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-   
-
     private static bool CanConnectToExistingInstance(bool isToggleRequested)
     {
         try
@@ -126,7 +125,6 @@ public class App : Application
             return false; // Connection failed -> Primary instance
         }
     }
-
 
     private async Task StartIpcListenerAsync()
     {
@@ -228,11 +226,14 @@ public class App : Application
                 window.ShowFromTray();
         }
     }
+    
     private void ToggleMenuWindow()
     {
         if (IsShuttingDown)
             return;
-
+        if ((DateTime.UtcNow - _lastMenuToggleTime).TotalMilliseconds < 250)
+            return;
+        _lastMenuToggleTime = DateTime.UtcNow;
         if (_menuWindow == null)
         {
             _menuWindow = new MenuWindow(_hotkeyService)
@@ -263,49 +264,6 @@ public class App : Application
 
         _menuWindow.Show();
         _menuWindow.Activate();
-    }
-    private void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
-    {
-        IsShuttingDown = true;
-
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
-            desktop.MainWindow is MainWindow window)
-            window.ForceExit();
-
-        CleanupResources();
-    }
-
-    private void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
-    {
-        IsShuttingDown = true;
-        CleanupResources();
-        AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
-    }
-
-    private void OnProcessExit(object? sender, EventArgs e)
-    {
-        IsShuttingDown = true;
-        CleanupResources();
-    }
-
-    private void CleanupResources()
-    {
-        if (_isCleanedUp) return;
-
-        _isCleanedUp = true;
-
-        var settings = SettingsManager.Load();
-        if (settings.IsSaveHistoryOnExitEnabled && ClipboardManager.IsLoaded)
-        {
-            var history = ClipboardManager.GetClipboardHistorySnapshot();
-            ClipboardHistoryManager.Save(history,ApplicationKeyStore.GetSessionPassword());
-        }
-
-        ActualThemeVariantChanged -= OnActualThemeVariantChanged;
-        ClipboardManager.OnClipboardItemAdded -= OnClipboardHistoryChanged;
-        ClipboardManager.OnRemoveExistingClipboardItem -= OnClipboardHistoryChanged;
-        _hotkeyService?.Dispose();
-        _hotkeyService = null;
     }
 
     private void OnClearExistingClipboardItem()
@@ -457,4 +415,49 @@ public class App : Application
 
         //return $"{index}. {label}";
     }
+    
+    private void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
+    {
+        IsShuttingDown = true;
+
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
+            desktop.MainWindow is MainWindow window)
+            window.ForceExit();
+
+        CleanupResources();
+    }
+
+    private void OnDesktopExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        IsShuttingDown = true;
+        CleanupResources();
+        AppDomain.CurrentDomain.ProcessExit -= OnProcessExit;
+    }
+
+    private void OnProcessExit(object? sender, EventArgs e)
+    {
+        IsShuttingDown = true;
+        CleanupResources();
+    }
+    
+    private void CleanupResources()
+    {
+        if (_isCleanedUp) return;
+
+        _isCleanedUp = true;
+
+        var settings = SettingsManager.Load();
+        if (settings.IsSaveHistoryOnExitEnabled && ClipboardManager.IsLoaded)
+        {
+            var history = ClipboardManager.GetClipboardHistorySnapshot();
+            ClipboardHistoryManager.Save(history,ApplicationKeyStore.GetSessionPassword());
+        }
+
+        ActualThemeVariantChanged -= OnActualThemeVariantChanged;
+        ClipboardManager.OnClipboardItemAdded -= OnClipboardHistoryChanged;
+        ClipboardManager.OnRemoveExistingClipboardItem -= OnClipboardHistoryChanged;
+        _hotkeyService?.Dispose();
+        _hotkeyService = null;
+    }
+
 }

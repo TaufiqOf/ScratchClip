@@ -99,7 +99,7 @@
                         Command="{Binding LockCommand}"
                         Width="32"
                         Height="32"
-                        ToolTip.Tip="Lock Clipboard">
+                        ToolTip.Tip="Lock Clipboard(Alt+L)">
 
                         <avalonia:FluentIcon
                             Icon="LockClosed"
@@ -119,7 +119,7 @@
                     <!-- Clipboard monitoring -->
                     <ToggleButton
                         IsChecked="{Binding IsMonitoringClipboard}"
-                        ToolTip.Tip="Toggle Clipboard Monitoring"
+                        ToolTip.Tip="Toggle Clipboard Monitoring(Alt+M)"
                         Height="32">
 
                         <StackPanel
@@ -141,7 +141,7 @@
                         IsChecked="{Binding IsPinned}"
                         Width="32"
                         Height="32"
-                        ToolTip.Tip="Toggle Pinned">
+                        ToolTip.Tip="Toggle Pinned(Alt+Q)">
 
                         <avalonia:FluentIcon
                             Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
@@ -169,7 +169,7 @@
                     Width="32"
                     Height="32"
                     Command="{Binding OpenSettingsCommand}"
-                    ToolTip.Tip="Settings">
+                    ToolTip.Tip="Settings(Alt+P)">
 
                     <avalonia:FluentIcon
                         Icon="Settings"

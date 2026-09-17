@@ -94,36 +94,23 @@
                                     Spacing="5">
 
                             <!-- File icon -->
-                            <Border Width="44"
-                                    Height="56"
-                                    IsVisible="{Binding IsFile}"
-                                    Background="WhiteSmoke"
-                                    CornerRadius="4">
+                            <Svg Path="{Binding IconPath}"
+                                 IsVisible="{Binding IsFile}"
+                                 Width="52"
+                                 Height="52"
+                                 Stretch="Uniform"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center" />
 
-                                <Svg Path="{Binding IconPath}"
-                                     Width="52"
-                                     Height="52"
-                                     Stretch="Uniform"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center" />
 
-                            </Border>
-                            <Border Width="62"
-                                    Height="47"
-                                    IsVisible="{Binding IsFolder}"
-                                    Background="{DynamicResource SystemAccentColor}"
-                                    CornerRadius="4">
-
-                                <Svg Path="{Binding IconPath}"
-                                     Width="102"
-                                     Height="102"
-                                     Margin="0,-6,0,0"
-                                     Stretch="Uniform"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center" />
-
-                            </Border>
-
+                            <Svg Path="{Binding IconPath}"
+                                 IsVisible="{Binding IsFolder}"
+                                 Width="52"
+                                 Height="52"
+                                 Margin="0,-6,0,0"
+                                 Stretch="Uniform"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center" />
 
                             <!-- Filename -->
                             <TextBlock Text="{Binding FilePath}"
