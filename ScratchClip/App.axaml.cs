@@ -235,7 +235,9 @@ public class App : Application
         }
         if (IsShuttingDown)
             return;
-        if ((DateTime.UtcNow - _lastMenuToggleTime).TotalMilliseconds < 250)
+        if(_menuWindow != null)
+            return;
+        if ((DateTime.UtcNow - _lastMenuToggleTime).TotalMilliseconds < 500)
             return;
         _lastMenuToggleTime = DateTime.UtcNow;
         if (_menuWindow == null)
