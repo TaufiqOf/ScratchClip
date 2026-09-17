@@ -50,7 +50,34 @@
                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
                         <StackPanel Spacing="16">
+                            <!-- Auto start -->
+                            <Grid ColumnDefinitions="*,Auto">
 
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="Theme"
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Select the theme for ScratchClip."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <ComboBox
+                                    SelectedItem="{Binding SelectedTheme, Mode=TwoWay}"
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center" >
+                                    <x:String>Light</x:String>
+                                    <x:String>Dark</x:String>
+                                    <x:String>System</x:String>
+                                </ComboBox>
+
+                            </Grid>
                             <!-- Auto start -->
                             <Grid ColumnDefinitions="*,Auto">
 

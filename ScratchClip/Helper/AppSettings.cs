@@ -18,5 +18,5 @@ public class AppSettings
     public int MaxItemsInHistory { get; set; } = 200;
     public bool IsPinned { get; set; } = false;
     public bool IsReverseOrder { get; set; }
-
+    public string Theme { get; set; }
 }

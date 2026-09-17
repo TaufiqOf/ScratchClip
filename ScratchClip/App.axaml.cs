@@ -80,6 +80,16 @@ public class App : Application
 
             // Start background IPC server listener
             _ = StartIpcListenerAsync();
+            
+            if (Current != null)
+            {
+                Current.RequestedThemeVariant = settings.Theme switch
+                {
+                    "Light" => ThemeVariant.Light,
+                    "Dark" => ThemeVariant.Dark,
+                    _ => ThemeVariant.Default
+                };
+            }
 
             if (isToggleRequested) Dispatcher.UIThread.Post(ToggleMainWindow);
         }

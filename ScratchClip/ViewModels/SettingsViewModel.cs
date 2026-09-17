@@ -1,3 +1,5 @@
+using Avalonia;
+using Avalonia.Styling;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ScratchClip.Manager;
@@ -31,6 +33,13 @@ public partial class SettingsViewModel : ObservableObject
         IsSaveHistoryOnExitEnabled = settings.IsSaveHistoryOnExitEnabled;
         MaximumItemsInHistory = settings.MaxItemsInHistory;
         IsReverseOrder = settings.IsReverseOrder;
+        SelectedTheme = settings.Theme;
+        SelectedTheme = settings.Theme switch
+        {
+            "Light" => "Light",
+            "Dark" => "Dark",
+            _ => "System"
+        };
     }
 
     public bool IsReverseOrder
@@ -64,6 +73,18 @@ public partial class SettingsViewModel : ObservableObject
     public EventMask PendingMenuModifiers { get; set; }
     public KeyCode PendingMenuKey { get; set; }
 
+    public string SelectedTheme
+    {
+        get;
+        set
+        {
+            if (SetProperty(ref field, value))
+            {
+          
+            }
+        }
+    }
+
 
     [RelayCommand]
     private void ClearHotkey()
@@ -86,7 +107,12 @@ public partial class SettingsViewModel : ObservableObject
         // 1. Update active runtime hotkey configuration
         _hotkeyService.UpdateHotkey(PendingModifiers, PendingKey);
         _hotkeyService.UpdateMenuHotkey(PendingMenuModifiers, PendingMenuKey);
-
+        Application.Current.RequestedThemeVariant = SelectedTheme?.ToLowerInvariant() switch
+        {
+            "light" => ThemeVariant.Light,
+            "dark" => ThemeVariant.Dark,
+            _ => ThemeVariant.Default // "System" or default
+        };
         // 2. Persist to disk
         var settings = SettingsManager.Load();
         settings.IsSaveHistoryOnExitEnabled = IsSaveHistoryOnExitEnabled;
@@ -99,6 +125,7 @@ public partial class SettingsViewModel : ObservableObject
         settings.IsAutoStartEnabled = AutoStartManager.IsEnabled();
         settings.MaxItemsInHistory = MaximumItemsInHistory;
         settings.IsReverseOrder = IsReverseOrder;
+        settings.Theme = SelectedTheme;
         ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
         SettingsManager.Save(settings);
     }
