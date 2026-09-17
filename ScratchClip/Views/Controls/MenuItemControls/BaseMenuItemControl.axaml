@@ -20,8 +20,7 @@
           VerticalAlignment="Stretch"
           HorizontalAlignment="Stretch"
           DoubleTapped="OnDoubleTapped"
-          Background="Transparent"
-          Height="40">
+          Background="Transparent">
 
         <!-- Index -->
         <Border Width="22"
