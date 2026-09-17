@@ -73,6 +73,7 @@ Detected content can be displayed using specialized views and syntax highlightin
 - **Startup Control** — Configure whether ScratchClip launches automatically with the operating system.
 - **Context Menus** — Quickly perform actions on clipboard entries.
 - **Keyboard Navigation** — Most common clipboard operations can be performed without using the mouse.
+- **Global Context Menu** - Press Alt + Shift + L to open the context menu from anywhere for fast Copy Paste.
 
 ### ⌨️ Productivity
 
@@ -189,25 +190,47 @@ When password protection is enabled:
 |:---:|:---:|
 | ![ScratchClip edit](Docs/dark-5.png) | ![ScratchClip settings](Docs/dark-4.png) |
 
-### Files & Folders
+### Files & Folders &  Context Menu
 
-![ScratchClip file and folder support](Docs/dark-6.png)
+
+| File and Folder support |          Context Menu          |
+|:---:|:------------------------------:|
+| ![ScratchClip file and folder support](Docs/dark-6.png)| ![Context Menu](Docs/menu.png) |
 
 ---
 
 ## ⌨️ Keyboard Shortcuts
 
+### Main Screen — General Navigation
+
 | Shortcut | Action |
 |:---|:---|
-| `Alt` + `Shift` + `K` | Show or hide the ScratchClip window globally. Configurable in Settings. |
 | `Alt` + `S` | Focus the search input field. |
-| `Alt` + `L` | Focus the clipboard item list. |
-| `Enter` | Copy the selected item and paste it into the previously focused application. If the search field is focused, move focus to the item list. |
-| `Double Click` | Copy the selected item and paste it into the previously focused application. |
-| `1` – `200` | Instantly select the corresponding visible clipboard item and paste it. |
-| `Escape` | Hide ScratchClip to the system tray. |
+| `Alt` + `Up` / `Down` | Focus the item list. |
+| `Alt` + `L` | Lock the application, if a password is set. |
+| `Alt` + `Q` | Pin/unpin the main screen to the top of the screen. |
+| `Alt` + `M` | Toggle clipboard monitoring on/off. |
+| `Alt` + `P` | Show the Preferences screen. |
+| `1` – `200` | Instantly choose the corresponding item in the visible list and paste it. |
+| `Esc` | Hide the window to the system tray. From the Preferences or Edit screen, returns to the main screen. |
 
----
+### Main Screen — Focused on List
+
+| Shortcut | Action |
+|:---|:---|
+| `Enter` | Copy the selected item and paste it into the previously focused application. If focus is on the Search Input, focus the Item List. |
+| `Double Click` | Copy the selected item and paste it into the previously focused application. |
+| `Ctrl` + `E` | Edit the selected item. |
+| `Ctrl` + `S` | Save the focused item to a file. |
+| `Ctrl` + `0` | Save the item in a temporary folder and open it with the default application. If it is a file or folder, open it with the file manager. |
+| `Delete` | Delete the selected item. |
+
+### Edit and Preferences Screen — General
+
+| Shortcut | Action |
+|:---|:---|
+| `Ctrl` + `S` | Save and return to the main screen. |
+| `Esc` | Return to the main screen. |
 
 ## 🛠️ Tech Stack
 
