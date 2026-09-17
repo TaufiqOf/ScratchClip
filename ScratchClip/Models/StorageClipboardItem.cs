@@ -126,7 +126,7 @@ public partial class StorageClipboardItem : AClipboardItem
                     Path.AltDirectorySeparatorChar)));
             }
         }
-
+        Text = contentBuilder.ToString();
         Content = contentBuilder.ToString();
     }
 

@@ -556,8 +556,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         var display = item.DisplayText;
 
         var bestScore = Math.Max(
-            Fuzz.PartialRatio(query, text),
-            Fuzz.PartialRatio(query, display));
+            Fuzz.PartialRatio(query.ToLower(), text.ToLower()),
+            Fuzz.PartialRatio(query.ToLower(), display.ToLower()));
 
         if (item is TextClipboardItem { TextType: WebsiteTextType websiteTextType })
         {
