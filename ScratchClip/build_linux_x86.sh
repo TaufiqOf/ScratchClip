@@ -53,6 +53,15 @@ if ! command -v wget >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! command -v xclip >/dev/null 2>&1; then
+    echo "ERROR: xclip was not found."
+    echo
+    echo "Install with:"
+    echo
+    echo "  sudo apt install xclip"
+    exit 1
+fi
+
 if [ ! -f "$PROJECT_FILE" ]; then
     echo "ERROR: $PROJECT_FILE was not found."
     exit 1
@@ -94,10 +103,8 @@ dotnet restore "$PROJECT_FILE" \
 # ============================================================
 
 echo
-echo "==> Publishing "$APP_NAME"..."
+echo "==> Publishing $APP_NAME..."
 
-# Note: IncludeNativeLibrariesForSelfExtract ensures native assets 
-# are emitted to the publish directory during the publish step.
 dotnet publish "$PROJECT_FILE" \
     -c "$CONFIGURATION" \
     -f "$FRAMEWORK" \
@@ -120,7 +127,7 @@ GENERATED_EXECUTABLE="$PUBLISH_DIR/$APP_NAME"
 
 if [ ! -f "$GENERATED_EXECUTABLE" ]; then
     echo
-    echo "ERROR: "$APP_NAME" executable was not generated."
+    echo "ERROR: $APP_NAME executable was not generated."
     exit 1
 fi
 
@@ -136,15 +143,45 @@ cp -a "$PUBLISH_DIR/." "$APPDIR/usr/bin/"
 
 # Copy any extracted or unmanaged native libraries from NuGet cache if missing
 NUGET_NATIVE_DIR="$HOME/.nuget/packages/treesitter.dotnet"
+
 if [ -d "$NUGET_NATIVE_DIR" ]; then
-    find "$NUGET_NATIVE_DIR" -type f -name "*.so" -exec cp {} "$APPDIR/usr/bin/" \; 2>/dev/null || true
+    find "$NUGET_NATIVE_DIR" \
+        -type f \
+        -name "*.so" \
+        -exec cp {} "$APPDIR/usr/bin/" \; \
+        2>/dev/null || true
 fi
 
 chmod +x "$APPDIR/usr/bin/$APP_NAME"
 
 
 # ============================================================
-# Create AppRun (with LD_LIBRARY_PATH configured)
+# Copy xclip
+# ============================================================
+
+echo
+echo "==> Bundling xclip..."
+
+XCLIP_PATH="$(command -v xclip)"
+
+if [ -z "$XCLIP_PATH" ]; then
+    echo "ERROR: xclip was not found."
+    exit 1
+fi
+
+echo "    System xclip:"
+echo "      $XCLIP_PATH"
+
+cp "$XCLIP_PATH" "$APPDIR/usr/bin/xclip"
+
+chmod +x "$APPDIR/usr/bin/xclip"
+
+echo "    Bundled xclip:"
+echo "      $APPDIR/usr/bin/xclip"
+
+
+# ============================================================
+# Create AppRun
 # ============================================================
 
 echo
@@ -155,7 +192,8 @@ cat > "$APPDIR/AppRun" <<EOF
 
 HERE="\$(dirname "\$(readlink -f "\$0")")"
 
-# Export shared library paths so DllImport finds TreeSitter .so binaries
+# Export shared library paths so DllImport finds TreeSitter
+# and other bundled native libraries.
 export LD_LIBRARY_PATH="\$HERE/usr/bin:\$LD_LIBRARY_PATH"
 
 exec "\$HERE/usr/bin/$APP_NAME" "\$@"
