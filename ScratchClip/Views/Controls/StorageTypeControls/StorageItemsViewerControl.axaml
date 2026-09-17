@@ -2,9 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
              xmlns:models="clr-namespace:ScratchClip.Models"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
              x:DataType="models:StorageClipboardItem"
              x:Class="ScratchClip.Views.Controls.StorageTypeControls.StorageItemsViewerControl">
-
+    <UserControl.Resources>
+        <converters:PathToImageConverter x:Key="PathToImageConverter" />
+    </UserControl.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Auto">
 
@@ -94,24 +97,13 @@
                                     Spacing="5">
 
                             <!-- File icon -->
-                            <Svg Path="{Binding IconPath}"
-                                 IsVisible="{Binding IsFile}"
-                                 Width="52"
-                                 Height="52"
-                                 Stretch="Uniform"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center" />
-
-
-                            <Svg Path="{Binding IconPath}"
-                                 IsVisible="{Binding IsFolder}"
-                                 Width="52"
-                                 Height="52"
-                                 Margin="0,-6,0,0"
-                                 Stretch="Uniform"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center" />
-
+                            <!-- File / Folder icon (Handles PNG & SVG dynamically) -->
+                            <Image Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
+                                   Width="52"
+                                   Height="52"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
                             <!-- Filename -->
                             <TextBlock Text="{Binding FilePath}"
                                        Width="100"

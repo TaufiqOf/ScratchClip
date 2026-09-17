@@ -1,14 +1,14 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace ScratchClip.Helper;
 
 public static class LinuxFileIconService
 {
-    private static readonly Dictionary<string, string?> _cachedMimeTypes = new();
+    private static readonly ConcurrentDictionary<string, string?> CachedIcons = new(StringComparer.OrdinalIgnoreCase);
 
     private const string Gio = "libgio-2.0.so.0";
     private const string GObject = "libgobject-2.0.so.0";
@@ -16,7 +16,7 @@ public static class LinuxFileIconService
     private const string Gtk = "libgtk-3.so.0";
 
     // ============================================================
-    // Native Methods
+    // Native GIO / GObject / GTK3 Imports
     // ============================================================
 
     [DllImport(Gio)]
@@ -34,15 +34,8 @@ public static class LinuxFileIconService
     [DllImport(Gio)]
     private static extern IntPtr g_themed_icon_get_names(IntPtr icon);
 
-    [DllImport(GObject)]
-    private static extern void g_object_unref(IntPtr obj);
-
-    [DllImport(Glib)]
-    private static extern void g_error_free(IntPtr error);
-
-    // GTK Native Calls for Theme Lookup
     [DllImport(Gtk)]
-    private static extern bool gtk_init_check(IntPtr argc, IntPtr argv);
+    private static extern bool gtk_init_check(ref int argc, ref IntPtr argv);
 
     [DllImport(Gtk)]
     private static extern IntPtr gtk_icon_theme_get_default();
@@ -53,99 +46,85 @@ public static class LinuxFileIconService
     [DllImport(Gtk)]
     private static extern IntPtr gtk_icon_info_get_filename(IntPtr iconInfo);
 
+    [DllImport(GObject)]
+    private static extern void g_object_unref(IntPtr obj);
+
+    [DllImport(Glib)]
+    private static extern void g_error_free(IntPtr error);
+
+    private static readonly bool IsGtkInitialized;
+
     static LinuxFileIconService()
     {
         if (OperatingSystem.IsLinux())
         {
             try
             {
-                // Ensure GTK is initialized for GTK theme queries
-                gtk_init_check(IntPtr.Zero, IntPtr.Zero);
+                int argc = 0;
+                IntPtr argv = IntPtr.Zero;
+                IsGtkInitialized = gtk_init_check(ref argc, ref argv);
             }
             catch
             {
-                // Ignore if running headlessly
+                IsGtkInitialized = false;
             }
         }
     }
 
-    public static string? GetIconPath(string filePath)
+    public static string? GetIconPath(string rawFilePath)
     {
-        if (!OperatingSystem.IsLinux() || string.IsNullOrWhiteSpace(filePath))
+        if (!OperatingSystem.IsLinux() || string.IsNullOrWhiteSpace(rawFilePath))
             return null;
+
+        // 1. Sanitize input path (Strip 'file://' scheme)
+        var filePath = SanitizeFilePath(rawFilePath);
 
         if (!File.Exists(filePath) && !Directory.Exists(filePath))
             return null;
 
-        try
-        {
-            var mimeType = GetMimeType(filePath);
-            if (string.IsNullOrWhiteSpace(mimeType))
-                return null;
+        var cacheKey = Directory.Exists(filePath) ? "inode/directory" : Path.GetExtension(filePath).ToLowerInvariant();
 
-            if (_cachedMimeTypes.TryGetValue(mimeType, out var cachedPath))
-            {
-                return cachedPath;
-            }
+        if (CachedIcons.TryGetValue(cacheKey, out var cachedPath))
+            return cachedPath;
 
-            var iconNames = GetIconNames(mimeType);
-            if (iconNames.Count == 0)
-                return null;
+        var resolvedPath = ResolveIconPathInternal(filePath);
+        CachedIcons[cacheKey] = resolvedPath;
 
-            // First attempt: Resolve using GTK's native engine (Handles Xfce/Mint themes)
-            var iconPath = ResolveWithGtkTheme(iconNames, 64);
+        Console.WriteLine($"[LinuxFileIconService] Input: '{rawFilePath}' -> Sanitized: '{filePath}' | Resolved Icon: '{resolvedPath}'");
 
-            // Fallback attempt: Manual file search
-            iconPath ??= FindIconFallback(iconNames, 64);
-
-            _cachedMimeTypes[mimeType] = iconPath;
-            return iconPath;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"GetIconPath failed: {ex}");
-            return null;
-        }
+        return resolvedPath;
     }
 
-    private static string? ResolveWithGtkTheme(List<string> iconNames, int size)
+    private static string SanitizeFilePath(string path)
     {
-        try
+        if (path.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
         {
-            var iconTheme = gtk_icon_theme_get_default();
-            if (iconTheme == IntPtr.Zero)
-                return null;
-
-            // Convert string list to null-terminated UTF-8 pointer array
-            var ptrArray = new IntPtr[iconNames.Count + 1];
-            for (int i = 0; i < iconNames.Count; i++)
+            try
             {
-                ptrArray[i] = Marshal.StringToHGlobalAnsi(iconNames[i]);
+                return Uri.UnescapeDataString(new Uri(path).AbsolutePath);
             }
-            ptrArray[iconNames.Count] = IntPtr.Zero;
-
-            IntPtr iconInfo = gtk_icon_theme_choose_icon(iconTheme, ptrArray, size, 0);
-
-            // Free allocated string pointers
-            foreach (var ptr in ptrArray)
+            catch
             {
-                if (ptr != IntPtr.Zero)
-                    Marshal.FreeHGlobal(ptr);
+                return path.Replace("file://", string.Empty);
             }
-
-            if (iconInfo == IntPtr.Zero)
-                return null;
-
-            var filenamePtr = gtk_icon_info_get_filename(iconInfo);
-            string? filename = Marshal.PtrToStringUTF8(filenamePtr);
-
-            g_object_unref(iconInfo);
-            return filename;
         }
-        catch
-        {
+        return path;
+    }
+
+    private static string? ResolveIconPathInternal(string filePath)
+    {
+        if (!IsGtkInitialized)
             return null;
-        }
+
+        var mimeType = GetMimeType(filePath);
+        if (string.IsNullOrWhiteSpace(mimeType))
+            return null;
+
+        var iconNames = GetIconNamesFromMime(mimeType);
+        if (iconNames.Count == 0)
+            return null;
+
+        return ResolveGtkIconFromNames(iconNames, 48);
     }
 
     private static string? GetMimeType(string filePath)
@@ -178,7 +157,7 @@ public static class LinuxFileIconService
         }
     }
 
-    private static List<string> GetIconNames(string mimeType)
+    private static List<string> GetIconNamesFromMime(string mimeType)
     {
         var result = new List<string>();
         IntPtr icon = IntPtr.Zero;
@@ -188,75 +167,65 @@ public static class LinuxFileIconService
             icon = g_content_type_get_icon(mimeType);
             if (icon == IntPtr.Zero) return result;
 
-            var names = g_themed_icon_get_names(icon);
-            if (names == IntPtr.Zero) return result;
+            var namesPtr = g_themed_icon_get_names(icon);
+            if (namesPtr == IntPtr.Zero) return result;
 
-            return ReadStringArray(names);
+            var pointerSize = IntPtr.Size;
+            for (var i = 0; i < 100; i++)
+            {
+                var ptr = Marshal.ReadIntPtr(namesPtr, i * pointerSize);
+                if (ptr == IntPtr.Zero) break;
+
+                var value = Marshal.PtrToStringUTF8(ptr);
+                if (!string.IsNullOrWhiteSpace(value))
+                    result.Add(value);
+            }
         }
         finally
         {
             if (icon != IntPtr.Zero) g_object_unref(icon);
         }
-    }
-
-    private static List<string> ReadStringArray(IntPtr array)
-    {
-        var result = new List<string>();
-        if (array == IntPtr.Zero) return result;
-
-        var pointerSize = IntPtr.Size;
-        for (var i = 0; i < 100; i++)
-        {
-            var ptr = Marshal.ReadIntPtr(array, i * pointerSize);
-            if (ptr == IntPtr.Zero) break;
-
-            var value = Marshal.PtrToStringUTF8(ptr);
-            if (!string.IsNullOrWhiteSpace(value))
-                result.Add(value);
-        }
 
         return result;
     }
 
-    private static string? FindIconFallback(IEnumerable<string> iconNames, int size)
+    private static string? ResolveGtkIconFromNames(List<string> iconNames, int size)
     {
-        var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        var roots = new[]
+        IntPtr iconInfo = IntPtr.Zero;
+        try
         {
-            Path.Combine(home, ".local", "share", "icons"),
-            Path.Combine(home, ".icons"),
-            "/usr/share/icons",
-            "/usr/local/share/icons",
-            "/usr/share/pixmaps"
-        };
+            var iconTheme = gtk_icon_theme_get_default();
+            if (iconTheme == IntPtr.Zero) return null;
 
-        var extensions = new[] { ".png", ".svg", ".xpm" };
-
-        foreach (var iconName in iconNames)
-        {
-            if (string.IsNullOrWhiteSpace(iconName) || iconName.EndsWith("-symbolic"))
-                continue;
-
-            foreach (var root in roots)
+            var ptrArray = new IntPtr[iconNames.Count + 1];
+            for (int i = 0; i < iconNames.Count; i++)
             {
-                if (!Directory.Exists(root)) continue;
-
-                foreach (var ext in extensions)
-                {
-                    try
-                    {
-                        var files = Directory.EnumerateFiles(root, iconName + ext, SearchOption.AllDirectories);
-                        var match = files.FirstOrDefault();
-                        if (match != null) return match;
-                    }
-                    catch
-                    {
-                        // Ignore restricted access folders
-                    }
-                }
+                ptrArray[i] = Marshal.StringToHGlobalAnsi(iconNames[i]);
             }
-        }
+            ptrArray[iconNames.Count] = IntPtr.Zero;
 
-        return null;
+            iconInfo = gtk_icon_theme_choose_icon(iconTheme, ptrArray, size, 0);
+
+            for (int i = 0; i < iconNames.Count; i++)
+            {
+                if (ptrArray[i] != IntPtr.Zero)
+                    Marshal.FreeHGlobal(ptrArray[i]);
+            }
+
+            if (iconInfo == IntPtr.Zero) return null;
+
+            var filenamePtr = gtk_icon_info_get_filename(iconInfo);
+            if (filenamePtr == IntPtr.Zero) return null;
+
+            return Marshal.PtrToStringUTF8(filenamePtr);
+        }
+        catch
+        {
+            return null;
+        }
+        finally
+        {
+            if (iconInfo != IntPtr.Zero) g_object_unref(iconInfo);
+        }
     }
 }
