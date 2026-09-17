@@ -37,7 +37,6 @@ public class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-
     }
 
     public override async void OnFrameworkInitializationCompleted()
@@ -229,6 +228,11 @@ public class App : Application
     
     private void ToggleMenuWindow()
     {
+        if (ApplicationKeyStore.HasPassword() && ApplicationKeyStore.GetSessionPassword() == null)
+        {
+            NotificationHelper.Warning("Application Locked","Please unlock the application first to access the menu.");
+            return;
+        }
         if (IsShuttingDown)
             return;
         if ((DateTime.UtcNow - _lastMenuToggleTime).TotalMilliseconds < 250)
