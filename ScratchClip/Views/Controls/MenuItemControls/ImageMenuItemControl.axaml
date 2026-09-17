@@ -14,7 +14,6 @@
         <Image Grid.Column="1"
                Source="{Binding Image}"
                HorizontalAlignment="Left"
-               ToolTip.IsOpen="{Binding $parent[ListBoxItem].IsSelected, Mode=OneWay}"
                Width="32"
                Height="32"
                Stretch="Uniform" >
