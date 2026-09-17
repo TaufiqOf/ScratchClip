@@ -40,6 +40,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public Action? OnOpenSettings;
     public Action? OnShowLockPage;
     public Action<AClipboardItem>? OnShowEditPage;
+    public Action? OnListSetFocus;
 
     public Action<bool>? OnTopMostChanged;
     private bool _isInternalSelectionChange;
@@ -627,8 +628,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
                 }
 
                 ClipboardManager.SelectedClipboardItem = item;
-                OnHideToTray?.Invoke();
-                await _hotkeyService.SimulatePasteAsync();
+                OnListSetFocus?.Invoke();
+                // OnHideToTray?.Invoke();
+                // await _hotkeyService.SimulatePasteAsync();
 
                 _registerNumber = string.Empty;
             }
@@ -639,6 +641,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             }
         }
     }
+
 }
 
 public class TagFilterOption(string name) : ViewModelBase

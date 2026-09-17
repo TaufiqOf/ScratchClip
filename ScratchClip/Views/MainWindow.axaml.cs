@@ -46,6 +46,7 @@ public partial class MainWindow : Window
         _viewModel.OnTopMostChanged += TopMostChanged;
         _viewModel.OnShowLockPage += ShowLockPage;
         _viewModel.OnShowEditPage += OnShowEditPage;
+        _viewModel.OnListSetFocus += SetListFocus;
         DataContext = _viewModel;
         _mainPage = new MainPageControl
         {
@@ -158,7 +159,7 @@ public partial class MainWindow : Window
         
         if ((e.Key == Key.Up || e.Key == Key.Down) && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
-            SetListFocus(e);
+            SetListFocus();
             e.Handled = true;
         }
         
@@ -239,7 +240,8 @@ public partial class MainWindow : Window
         {
             if (SearchTextBoxControl?.IsFocused == true)
             {
-                SetListFocus(e);
+                SetListFocus();
+                e.Handled = true;
                 return;
             }
 
@@ -275,7 +277,8 @@ public partial class MainWindow : Window
                         await Task.Delay(100);
                         _viewModel.SelectedItem = _viewModel.FilteredHistory.ElementAtOrDefault(index) ??
                                                   _viewModel.FilteredHistory.LastOrDefault();
-                        SetListFocus(e);
+                        SetListFocus();
+                        e.Handled = true;
                     }
                 }
             }
@@ -284,13 +287,13 @@ public partial class MainWindow : Window
         _viewModel.OnWindowKeyDown(e);
     }
 
-    private void SetListFocus(KeyEventArgs e)
+    public void SetListFocus()
     {
         var listBox = HistoryListBox;
 
         if (listBox != null)
         {
-            e.Handled = true;
+
 
             Dispatcher.UIThread.Post(() =>
             {
