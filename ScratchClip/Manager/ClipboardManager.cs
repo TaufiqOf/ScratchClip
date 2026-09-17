@@ -20,6 +20,7 @@ public static class ClipboardManager
     public static Action<AClipboardItem>? OnRemoveExistingClipboardItem;
     public static Action<AClipboardItem>? OnEditExistingClipboardItem;
     public static Action? OnClearExistingClipboardItem;
+    public static Action<AClipboardItem>? OnDoubleTappedExistingClipboardItem;
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
 
     private static AClipboardItem? _selectedClipboardItem;
@@ -41,7 +42,7 @@ public static class ClipboardManager
         get => _selectedClipboardItem;
         set
         {
-            if (value != null && ClipboardHistory.Contains(value))
+            if (value != null && ClipboardHistory.Contains(value) && CheckingClipboardSignature != value.Signature)
             {
                 _selectedClipboardItem = value;
                 _ = ClipboardServices[value.Format].CopyData(value);
@@ -64,6 +65,7 @@ public static class ClipboardManager
         {
             item.OnDelete += DeleteClipboardItem;
             item.OnEdit += EditClipboardItem;
+            item.OnDoubleTapped += OnDoubleTapped;
             ClipboardHistory.Add(item);
             OnClipboardItemAdded?.Invoke(item);
         }
@@ -78,50 +80,61 @@ public static class ClipboardManager
         return null;
     }
 
+    public static bool IsCheckingClipboard = false;
+    public static string CheckingClipboardSignature = string.Empty;
 
     public static async Task CheckClipboard()
     {
+        if (IsCheckingClipboard)
+            return;
+        IsCheckingClipboard = true;
         try
         {
-                var clipboard = GetClipboard();
-                if (clipboard == null)
+            var clipboard = GetClipboard();
+            if (clipboard == null)
+                return;
+            var type = await GetDataTypeAsync(clipboard);
+            if (type == null)
+                return;
+            if (_lastSignature != null)
+                if (!await HasCheckDataChanged(type.Value, _lastSignature))
                     return;
-                var type = await GetDataTypeAsync(clipboard);
-                if (type == null)
-                    return;
-                if (_lastSignature != null)
-                    if (!await HasCheckDataChanged(type.Value, _lastSignature))
-                        return;
 
-                var item = await GetItemAsync(type.Value);
-                if (item == null)
-                    return;
-                _lastSignature = item.Signature;
-                var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == item.Signature);
-                if (existingItem != null)
+            var item = await GetItemAsync(type.Value);
+            if (item == null)
+                return;
+            _lastSignature = item.Signature;
+            var existingItem = ClipboardHistory.FirstOrDefault(q => q.Signature == item.Signature);
+            if (existingItem != null)
+            {
+                if (SelectedClipboardItem != existingItem)
                 {
-                    if (SelectedClipboardItem != existingItem)
-                    {
-                        _selectedClipboardItem = existingItem;
-                        OnSelectExistingClipboardItem?.Invoke(existingItem);
-                    }
+                    CheckingClipboardSignature = existingItem.Signature;
+                    _selectedClipboardItem = existingItem;
+                    OnSelectExistingClipboardItem?.Invoke(existingItem);
+                    CheckingClipboardSignature = string.Empty;
                 }
-                else
+            }
+            else
+            {
+                if (ClipboardHistory.Count >= MaxItemsInHistory)
                 {
-                    if (ClipboardHistory.Count >= MaxItemsInHistory)
-                    {
-                        var lastItem = ClipboardHistory.Last();
-                        ClipboardHistory.Remove(lastItem);
-                        OnRemoveExistingClipboardItem?.Invoke(lastItem);
-                    }
+                    var lastItem = ClipboardHistory.Last();
+                    ClipboardHistory.Remove(lastItem);
+                    OnRemoveExistingClipboardItem?.Invoke(lastItem);
+                }
 
-                    ClipboardHistory.Insert(0, item);
-                    OnClipboardItemAdded?.Invoke(item);
-                }
+                ClipboardHistory.Insert(0, item);
+                OnClipboardItemAdded?.Invoke(item);
+            }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
+        }
+        finally
+        {
+            IsCheckingClipboard = false;
         }
     }
 
@@ -145,9 +158,15 @@ public static class ClipboardManager
             await service.CreateSignature(item);
             item.OnDelete += DeleteClipboardItem;
             item.OnEdit += EditClipboardItem;
+            item.OnDoubleTapped += OnDoubleTapped;
         }
 
         return item;
+    }
+
+    private static void OnDoubleTapped(AClipboardItem obj)
+    {
+        OnDoubleTappedExistingClipboardItem?.Invoke(obj);
     }
 
     private static async Task<bool> HasCheckDataChanged(

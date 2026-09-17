@@ -27,10 +27,6 @@ public partial class MainWindow : Window
     private SettingPageControl? _settingsPage;
     private bool _loaded = false;
 
-    public MainWindow() : this(new GlobalHotkeyService(() => { }))
-    {
-    }
-
     public MainWindow(GlobalHotkeyService hotkeyService)
     {
         _hotkeyService = hotkeyService;
@@ -141,7 +137,8 @@ public partial class MainWindow : Window
             searchBox?.Focus();
             searchBox?.SelectAll();
         }
-        if(e.Key == Key.P && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+
+        if (e.Key == Key.P && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
             ShowSettingsPage();
             e.Handled = true;
@@ -152,23 +149,29 @@ public partial class MainWindow : Window
         {
             SetListFocus(e);
             e.Handled = true;
-            
         }
+
         if (e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
-            _viewModel.Lock();
+            if (ApplicationKeyStore.HasPassword())
+            {
+                _viewModel.Lock();
+            }
             e.Handled = true;
         }
+
         if (e.Key == Key.Q && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
             _viewModel.IsPinned = !_viewModel.IsPinned;
             e.Handled = true;
         }
+
         if (e.Key == Key.M && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
             _viewModel.IsMonitoringClipboard = !_viewModel.IsMonitoringClipboard;
             e.Handled = true;
         }
+
         if (e.Key == Key.Escape)
         {
             e.Handled = true;
@@ -194,7 +197,8 @@ public partial class MainWindow : Window
                 }
             }
         }
-        if(e.Key == Key.E && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+
+        if (e.Key == Key.E && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -207,10 +211,12 @@ public partial class MainWindow : Window
                     }
                 }
             }
+
             e.Handled = true;
             return;
         }
-        if(e.Key == Key.O && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+
+        if (e.Key == Key.O && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -223,9 +229,11 @@ public partial class MainWindow : Window
                     }
                 }
             }
+
             e.Handled = true;
             return;
         }
+
         if (e.Key == Key.Enter)
         {
             if (SearchTextBoxControl?.IsFocused == true)
@@ -233,6 +241,7 @@ public partial class MainWindow : Window
                 SetListFocus(e);
                 return;
             }
+
             var container = HistoryListBox?.ContainerFromItem(HistoryListBox.SelectedItem);
             if (container?.IsFocused == true)
             {
@@ -243,7 +252,6 @@ public partial class MainWindow : Window
                     return;
                 }
             }
-
         }
 
         _viewModel.OnWindowKeyDown(e);

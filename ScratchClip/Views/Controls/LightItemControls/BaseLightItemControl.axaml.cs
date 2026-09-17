@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using ScratchClip.Models;
 
 namespace ScratchClip.Views.Controls.LightItemControls;
 
@@ -35,8 +36,10 @@ public partial class BaseLightItemControl : UserControl
     
     private async void OnDoubleTapped(object? sender, RoutedEventArgs e)
     {
-        if (TopLevel.GetTopLevel(this) is MainWindow window)
-            await window.ActivateSelectedItemAsync();
+        if(DataContext is AClipboardItem clipboardItem)
+        {
+            await clipboardItem.OnDoubleTappedAsync();
+        }
 
         e.Handled = true;
     }

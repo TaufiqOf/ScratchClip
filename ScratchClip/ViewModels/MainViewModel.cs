@@ -69,6 +69,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         ClipboardManager.OnRemoveExistingClipboardItem += OnRemoveExistingClipboardItem;
         ClipboardManager.OnClearExistingClipboardItem += OnClearExistingClipboardItem;
         ClipboardManager.OnEditExistingClipboardItem += OnEditExistingClipboardItem;
+        ClipboardManager.OnDoubleTappedExistingClipboardItem += OnDoubleTappedExistingClipboardItem;
         foreach (var item in ClipboardManager.GetClipboardHistorySnapshot())
             _historyItems.Add(item);
 
@@ -84,6 +85,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _monitorTimer.Elapsed += MonitorTimerCallback;
         _monitorTimer.Stop();
         StartMonitoringClipboard();
+    }
+
+    private async void OnDoubleTappedExistingClipboardItem(AClipboardItem obj)
+    {
+        OnHideToTray?.Invoke();
+        await CopyAsync(obj);
+        await _hotkeyService.SimulatePasteAsync();
     }
 
 
@@ -163,9 +171,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             if (!SetProperty(ref field, value) || value == null)
                 return;
             _listViewModel.SelectedItem = value;
-            if (_isInternalSelectionChange)
-                return;
-            _ = SetClipboardItemAsync(value);
+            ClipboardManager.SelectedClipboardItem = value;
         }
     }
 
@@ -180,7 +186,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             OnTopMostChanged?.Invoke(value);
             NotificationHelper.Info(
                 value ? "Pinned" : "Unpinned",
-                value ? "The application window is now pinned on top." : "The application window is no longer pinned on top.");
+                value
+                    ? "The application window is now pinned on top."
+                    : "The application window is no longer pinned on top.");
             SettingsManager.Save(appSettings);
         }
     }
@@ -269,6 +277,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             _monitorTimer.Stop();
             return;
         }
+
         _timer.Start();
     }
 
@@ -284,8 +293,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         try
         {
-            var clipboardTask = Dispatcher.UIThread.InvokeAsync(
-                () => ClipboardManager.CheckClipboard());
+            var clipboardTask = Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if(ClipboardManager.IsCheckingClipboard)
+                    return Task.CompletedTask;
+                return ClipboardManager.CheckClipboard();
+            });
 
             var completed = await Task.WhenAny(
                 clipboardTask,
@@ -297,6 +310,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             }
             else
             {
+                ClipboardManager.IsCheckingClipboard = false;
                 Console.WriteLine("Clipboard check exceeded 3 seconds.");
             }
         }
@@ -318,8 +332,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         if (showNotification)
         {
             NotificationHelper.Info(
-            "Monitoring Stopped",
-            "The clipboard monitoring has been successfully stopped.");
+                "Monitoring Stopped",
+                "The clipboard monitoring has been successfully stopped.");
         }
     }
 

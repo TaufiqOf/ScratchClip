@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+        xmlns:controls="clr-namespace:ScratchClip.Views.Controls"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ScratchClip.Views.MenuWindow"
+        Width="350" Height="400"
+        WindowStartupLocation="Manual"
+        Icon="avares://ScratchClip/Assets/icon-dark.ico"
+        CanMinimize="False"
+        CanMaximize="False"
+        WindowDecorations="None"
+        Title="ScratchClip">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
+            <avalonia:FluentIcon Icon="Search" Width="20" Height="20" />
+            <TextBox x:Name="SearchTextBox" Grid.Column="1"  TextChanged="SearchTextBoxOnTextChanged"/>
+        </Grid>
+        <controls:MenuViewModeControl x:Name="MenuViewModeControl" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+
+    </Grid>
+</Window>

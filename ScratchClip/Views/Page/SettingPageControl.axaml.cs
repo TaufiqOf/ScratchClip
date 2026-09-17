@@ -31,55 +31,6 @@ public partial class SettingPageControl : UserControl
         }
     }
 
-    private void HotkeyTextBox_OnKeyDown(
-        object? sender,
-        KeyEventArgs e)
-    {
-        e.Handled = true;
-
-        if (DataContext is not SettingsViewModel vm)
-            return;
-
-        // Ignore modifier-only presses.
-        if (e.Key is
-            Key.LeftCtrl or
-            Key.RightCtrl or
-            Key.LeftAlt or
-            Key.RightAlt or
-            Key.LeftShift or
-            Key.RightShift or
-            Key.LWin or
-            Key.RWin)
-        {
-            return;
-        }
-
-        var mask = EventMask.None;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
-            mask |= EventMask.LeftCtrl;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Alt))
-            mask |= EventMask.LeftAlt;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
-            mask |= EventMask.LeftShift;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Meta))
-            mask |= EventMask.LeftMeta;
-
-        if (!TryMapKeyToSharpHook(e.Key, out var keyCode))
-            return;
-
-        var display = BuildDisplayString(
-            e.KeyModifiers,
-            e.Key);
-
-        vm.SetHotkey(
-            mask,
-            keyCode,
-            display);
-    }
 
     private static bool TryMapKeyToSharpHook(
         Key key,
@@ -252,4 +203,105 @@ public partial class SettingPageControl : UserControl
         ClipboardHistoryManager.Save(clipboardHistory, ApplicationKeyStore.GetSessionPassword());
         ShowPasswordStatus("Password removed.");
     }
+
+    private void HotkeyMenuTextBox_OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        e.Handled = true;
+
+        if (DataContext is not SettingsViewModel vm)
+            return;
+
+        // Ignore modifier-only presses.
+        if (e.Key is
+            Key.LeftCtrl or
+            Key.RightCtrl or
+            Key.LeftAlt or
+            Key.RightAlt or
+            Key.LeftShift or
+            Key.RightShift or
+            Key.LWin or
+            Key.RWin)
+        {
+            return;
+        }
+
+        var mask = EventMask.None;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            mask |= EventMask.LeftCtrl;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+            mask |= EventMask.LeftAlt;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
+            mask |= EventMask.LeftShift;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Meta))
+            mask |= EventMask.LeftMeta;
+
+        if (!TryMapKeyToSharpHook(e.Key, out var keyCode))
+            return;
+
+        var display = BuildDisplayString(
+            e.KeyModifiers,
+            e.Key);
+
+        vm.SetMenuHotkey(
+            mask,
+            keyCode,
+            display);
+    }
+
+
+    
+    private void HotkeyTextBox_OnKeyDown(
+        object? sender,
+        KeyEventArgs e)
+    {
+        e.Handled = true;
+
+        if (DataContext is not SettingsViewModel vm)
+            return;
+
+        // Ignore modifier-only presses.
+        if (e.Key is
+            Key.LeftCtrl or
+            Key.RightCtrl or
+            Key.LeftAlt or
+            Key.RightAlt or
+            Key.LeftShift or
+            Key.RightShift or
+            Key.LWin or
+            Key.RWin)
+        {
+            return;
+        }
+
+        var mask = EventMask.None;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            mask |= EventMask.LeftCtrl;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+            mask |= EventMask.LeftAlt;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
+            mask |= EventMask.LeftShift;
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Meta))
+            mask |= EventMask.LeftMeta;
+
+        if (!TryMapKeyToSharpHook(e.Key, out var keyCode))
+            return;
+
+        var display = BuildDisplayString(
+            e.KeyModifiers,
+            e.Key);
+
+        vm.SetHotkey(
+            mask,
+            keyCode,
+            display);
+    }
+
 }

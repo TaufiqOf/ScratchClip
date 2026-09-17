@@ -16,6 +16,7 @@ using ScratchClip.Manager;
 using ScratchClip.Models;
 using ScratchClip.Services;
 using ScratchClip.Views;
+using SharpHook.Data;
 
 namespace ScratchClip;
 
@@ -28,6 +29,7 @@ public class App : Application
     private bool _isCleanedUp;
 
     private TrayIcon? _trayIcon;
+    private MenuWindow? _menuWindow;
 
     public bool IsShuttingDown { get; private set; }
 
@@ -56,10 +58,16 @@ public class App : Application
             var settings = SettingsManager.Load();
             
 
-            _hotkeyService = new GlobalHotkeyService(ToggleMainWindow)
+            _hotkeyService = new GlobalHotkeyService(
+                ToggleMainWindow,
+                ToggleMenuWindow)
             {
                 TargetModifiers = settings.Modifiers,
-                TargetKey = settings.Key
+                TargetKey = settings.Key,
+
+                MenuTargetModifiers = settings.MenuModifiers,
+
+                MenuTargetKey = settings.MenuKey,
             };
 
             if (_hotkeyService.IsSupported) _hotkeyService.Start();
@@ -95,6 +103,7 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
+   
 
     private static bool CanConnectToExistingInstance(bool isToggleRequested)
     {
@@ -219,7 +228,42 @@ public class App : Application
                 window.ShowFromTray();
         }
     }
+    private void ToggleMenuWindow()
+    {
+        if (IsShuttingDown)
+            return;
 
+        if (_menuWindow == null)
+        {
+            _menuWindow = new MenuWindow(_hotkeyService)
+            {
+                Topmost = true
+            };
+
+            _menuWindow.Closed += (_, _) =>
+            {
+                _menuWindow = null;
+            };
+        }
+
+        if (_menuWindow.IsVisible)
+        {
+            _menuWindow.Hide();
+            return;
+        }
+
+        var position = MousePositionHelper.GetPosition();
+
+        if (position.HasValue)
+        {
+            _menuWindow.Position = new PixelPoint(
+                position.Value.X,
+                position.Value.Y);
+        }
+
+        _menuWindow.Show();
+        _menuWindow.Activate();
+    }
     private void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
     {
         IsShuttingDown = true;

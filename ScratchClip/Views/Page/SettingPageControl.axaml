@@ -219,7 +219,35 @@
                                 </Button>
 
                             </Grid>
+                            <Grid
+                                Margin="0,8,0,0"
+                                ColumnDefinitions="*,Auto">
 
+                                <TextBox
+                                    x:Name="HotkeyMenuTextBox"
+                                    Grid.Column="0"
+                                    VerticalContentAlignment="Center"
+                                    IsReadOnly="True"
+                                    Text="{Binding HotkeyMenuDisplay, Mode=OneWay}"
+                                    PlaceholderText="Click here and press a shortcut..."
+                                    KeyDown="HotkeyMenuTextBox_OnKeyDown" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    Width="38"
+                                    Height="38"
+                                    Margin="8,0,0,0"
+                                    Command="{Binding ClearHotkeyMenuCommand}"
+                                    ToolTip.Tip="Reset shortcut">
+
+                                    <avalonia:FluentIcon
+                                        Icon="Dismiss"
+                                        Width="16"
+                                        Height="16" />
+
+                                </Button>
+
+                            </Grid>
                             <Separator Margin="0,4" />
 
                             <TextBlock

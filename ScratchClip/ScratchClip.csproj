@@ -81,5 +81,9 @@
         <Compile Update="Views\Page\EditClipboardItemPageControl.axaml.cs">
           <DependentUpon>Edit1ClipboardItemPageControl.axaml</DependentUpon>
         </Compile>
+        <Compile Update="Views\MenuWindow.axaml.cs">
+          <DependentUpon>MenuWindow.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

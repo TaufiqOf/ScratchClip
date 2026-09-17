@@ -16,26 +16,49 @@ public class GlobalHotkeyService : IDisposable
     private readonly EventLoopGlobalHook? _hook;
     private readonly bool _isWaylandSession;
     private readonly Action _onHotKeyPressed;
+    private readonly Action _onMenuHotKeyPressed;
     private readonly EventSimulator? _simulator;
 
-    public GlobalHotkeyService(Action onHotKeyPressed)
+    public GlobalHotkeyService(
+        Action onHotKeyPressed,
+        Action onMenuHotKeyPressed)
     {
         _onHotKeyPressed = onHotKeyPressed;
+        _onMenuHotKeyPressed = onMenuHotKeyPressed;
+
         _isWaylandSession = IsWaylandSession();
 
         if (!_isWaylandSession)
         {
-            _simulator = EventSimulator.Create("ScratchClip", UioHookProvider.Instance);
-            _hook = new EventLoopGlobalHook(UioHookProvider.Instance);
+            _simulator = EventSimulator.Create(
+                "ScratchClip",
+                UioHookProvider.Instance);
+
+            _hook = new EventLoopGlobalHook(
+                UioHookProvider.Instance);
+
             _hook.KeyPressed += OnKeyPressed;
         }
     }
 
-    public EventMask TargetModifiers { get; set; } = EventMask.LeftAlt | EventMask.LeftShift;
-    public KeyCode TargetKey { get; set; } = KeyCode.VcK;
+    // Main window hotkey
+    public EventMask TargetModifiers { get; set; } =
+        EventMask.LeftAlt | EventMask.LeftShift;
 
-    // Always true now, as we provide Wayland-compatible fallback mechanisms
+    public KeyCode TargetKey { get; set; } =
+        KeyCode.VcK;
+
+
+    // Menu window hotkey
+    public EventMask MenuTargetModifiers { get; set; } =
+        EventMask.LeftAlt | EventMask.LeftShift;
+
+    public KeyCode MenuTargetKey { get; set; } =
+        KeyCode.VcM;
+
+
     public bool IsSupported => true;
+
 
     public void Dispose()
     {
@@ -46,10 +69,78 @@ public class GlobalHotkeyService : IDisposable
         }
     }
 
+
     public void Start()
     {
-        if (!_isWaylandSession) _hook?.RunAsync();
+        if (!_isWaylandSession)
+            _hook?.RunAsync();
     }
+
+
+    private void OnKeyPressed(
+        object? sender,
+        KeyboardHookEventArgs e)
+    {
+        var currentMask = e.RawEvent.Mask;
+        var keyCode = e.Data.KeyCode;
+
+        // Main hotkey
+        var mainModifiersMatch =
+            (currentMask & TargetModifiers) == TargetModifiers;
+
+        var mainKeyMatches =
+            keyCode == TargetKey;
+
+        if (mainModifiersMatch && mainKeyMatches)
+        {
+            Dispatcher.UIThread.Post(_onHotKeyPressed);
+            return;
+        }
+
+
+        // Menu hotkey
+        var menuModifiersMatch =
+            (currentMask & MenuTargetModifiers) == MenuTargetModifiers;
+
+        var menuKeyMatches =
+            keyCode == MenuTargetKey;
+
+        if (menuModifiersMatch && menuKeyMatches)
+        {
+            Dispatcher.UIThread.Post(_onMenuHotKeyPressed);
+        }
+    }
+
+
+    public void UpdateHotkey(
+        EventMask modifiers,
+        KeyCode key)
+    {
+        TargetModifiers = modifiers;
+        TargetKey = key;
+    }
+
+
+    public void UpdateMenuHotkey(
+        EventMask modifiers,
+        KeyCode key)
+    {
+        MenuTargetModifiers = modifiers;
+        MenuTargetKey = key;
+    }
+
+
+    public void TriggerHotkeyFromSystem()
+    {
+        Dispatcher.UIThread.Post(_onHotKeyPressed);
+    }
+
+
+    public void TriggerMenuHotkeyFromSystem()
+    {
+        Dispatcher.UIThread.Post(_onMenuHotKeyPressed);
+    }
+
 
     public async Task SimulatePasteAsync()
     {
@@ -74,7 +165,8 @@ public class GlobalHotkeyService : IDisposable
                 var process = Process.GetProcessById(pid.Value);
                 processName = process.ProcessName;
 
-                Console.WriteLine($"Focused process: {processName}");
+                Console.WriteLine(
+                    $"Focused process: {processName}");
             }
             catch
             {
@@ -82,43 +174,55 @@ public class GlobalHotkeyService : IDisposable
             }
         }
 
-        var isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        var isMac =
+            RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
         var isTerminal =
-            processName.Contains("terminal", StringComparison.OrdinalIgnoreCase) ||
-            processName.Contains("konsole", StringComparison.OrdinalIgnoreCase) ||
-            processName.Contains("kitty", StringComparison.OrdinalIgnoreCase) ||
-            processName.Contains("alacritty", StringComparison.OrdinalIgnoreCase);
+            processName.Contains(
+                "terminal",
+                StringComparison.OrdinalIgnoreCase) ||
+            processName.Contains(
+                "konsole",
+                StringComparison.OrdinalIgnoreCase) ||
+            processName.Contains(
+                "kitty",
+                StringComparison.OrdinalIgnoreCase) ||
+            processName.Contains(
+                "alacritty",
+                StringComparison.OrdinalIgnoreCase);
+
         if (isTerminal)
         {
-            // Terminal: Ctrl + Shift + V
-            _simulator.SimulateKeyPress(KeyCode.VcLeftControl);
-            _simulator.SimulateKeyPress(KeyCode.VcLeftShift);
+            _simulator.SimulateKeyPress(
+                KeyCode.VcLeftControl);
+
+            _simulator.SimulateKeyPress(
+                KeyCode.VcLeftShift);
 
             await Task.Delay(30);
 
             _simulator.SimulateKeyPress(KeyCode.VcV);
             _simulator.SimulateKeyRelease(KeyCode.VcV);
 
-            _simulator.SimulateKeyRelease(KeyCode.VcLeftShift);
-            _simulator.SimulateKeyRelease(KeyCode.VcLeftControl);
+            _simulator.SimulateKeyRelease(
+                KeyCode.VcLeftShift);
+
+            _simulator.SimulateKeyRelease(
+                KeyCode.VcLeftControl);
         }
         else
         {
-            // Normal application: Ctrl + V
             var modifierKey = isMac
                 ? KeyCode.VcLeftMeta
                 : KeyCode.VcLeftControl;
 
             _simulator.SimulateKeyPress(modifierKey);
-
-            await Task.Delay(30);
-
             _simulator.SimulateKeyPress(KeyCode.VcV);
             _simulator.SimulateKeyRelease(KeyCode.VcV);
-
             _simulator.SimulateKeyRelease(modifierKey);
         }
     }
+
 
     private static int? GetFocusedProcessId()
     {
@@ -132,99 +236,107 @@ public class GlobalHotkeyService : IDisposable
         };
 
         using var process = Process.Start(psi);
+
         if (process == null)
             return null;
 
         var output = process.StandardOutput.ReadToEnd();
         process.WaitForExit();
 
-        var match = Regex.Match(output, @"window id # (0x[0-9a-fA-F]+)");
+        var match = Regex.Match(
+            output,
+            @"window id # (0x[0-9a-fA-F]+)");
 
         if (!match.Success)
             return null;
 
         var windowId = match.Groups[1].Value;
 
-        psi.Arguments = $"-id {windowId} _NET_WM_PID";
+        psi.Arguments =
+            $"-id {windowId} _NET_WM_PID";
 
         using var pidProcess = Process.Start(psi);
+
         if (pidProcess == null)
             return null;
 
-        var pidOutput = pidProcess.StandardOutput.ReadToEnd();
+        var pidOutput =
+            pidProcess.StandardOutput.ReadToEnd();
+
         pidProcess.WaitForExit();
 
-        var pidMatch = Regex.Match(pidOutput, @"= (\d+)");
+        var pidMatch =
+            Regex.Match(pidOutput, @"= (\d+)");
 
         return pidMatch.Success
             ? int.Parse(pidMatch.Groups[1].Value)
             : null;
     }
 
+
     private static async Task SimulateWaylandPasteAsync()
     {
-        // 1. Try 'wtype' first (Wayland native virtual keyboard)
         if (IsToolInstalled("wtype"))
         {
-            RunProcess("wtype", "-M ctrl -k v -m ctrl");
+            RunProcess(
+                "wtype",
+                "-M ctrl -k v -m ctrl");
+
             return;
         }
 
-        // 2. Try 'ydotool' as fallback (Works via uinput daemon across all compositors)
         if (IsToolInstalled("ydotool"))
         {
-            RunProcess("ydotool", "key 29:1 47:1 47:0 29:0"); // 29 = Ctrl, 47 = V
+            RunProcess(
+                "ydotool",
+                "key 29:1 47:1 47:0 29:0");
+
             return;
         }
 
         await Task.CompletedTask;
     }
 
-    // Call this method directly if triggered via a CLI flag or D-Bus signal from system shortcut
-    public void TriggerHotkeyFromSystem()
-    {
-        Dispatcher.UIThread.Post(_onHotKeyPressed);
-    }
 
     private static bool IsWaylandSession()
     {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return false;
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            return false;
 
-        var sessionType = Environment.GetEnvironmentVariable("XDG_SESSION_TYPE");
-        if (string.Equals(sessionType, "wayland", StringComparison.OrdinalIgnoreCase)) return true;
+        var sessionType =
+            Environment.GetEnvironmentVariable(
+                "XDG_SESSION_TYPE");
 
-        return !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("WAYLAND_DISPLAY"));
+        if (string.Equals(
+                sessionType,
+                "wayland",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return !string.IsNullOrWhiteSpace(
+            Environment.GetEnvironmentVariable(
+                "WAYLAND_DISPLAY"));
     }
 
-    private void OnKeyPressed(object? sender, KeyboardHookEventArgs e)
-    {
-        var currentMask = e.RawEvent.Mask;
-
-        var modifiersMatch = (currentMask & TargetModifiers) == TargetModifiers;
-        var keyMatches = e.Data.KeyCode == TargetKey;
-
-        if (modifiersMatch && keyMatches) Dispatcher.UIThread.Post(_onHotKeyPressed);
-    }
-
-    public void UpdateHotkey(EventMask modifiers, KeyCode key)
-    {
-        TargetModifiers = modifiers;
-        TargetKey = key;
-    }
 
     private static bool IsToolInstalled(string toolName)
     {
         try
         {
-            using var process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "which",
-                Arguments = toolName,
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            });
+            using var process = Process.Start(
+                new ProcessStartInfo
+                {
+                    FileName = "which",
+                    Arguments = toolName,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+
             process?.WaitForExit();
+
             return process?.ExitCode == 0;
         }
         catch
@@ -233,21 +345,26 @@ public class GlobalHotkeyService : IDisposable
         }
     }
 
-    private static void RunProcess(string fileName, string args)
+
+    private static void RunProcess(
+        string fileName,
+        string args)
     {
         try
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = fileName,
-                Arguments = args,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            })?.WaitForExit();
+            Process.Start(
+                new ProcessStartInfo
+                {
+                    FileName = fileName,
+                    Arguments = args,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                })?.WaitForExit();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ScratchClip] Failed to run {fileName}: {ex.Message}");
+            Console.WriteLine(
+                $"[ScratchClip] Failed to run {fileName}: {ex.Message}");
         }
     }
 }

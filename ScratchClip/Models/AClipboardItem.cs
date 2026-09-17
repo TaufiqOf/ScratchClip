@@ -18,6 +18,8 @@ public abstract partial class AClipboardItem : ViewModelBase
 {
     public Action<AClipboardItem>? OnEdit { get; set; }
     public Action<AClipboardItem>? OnDelete { get; set; }
+    
+    public Action<AClipboardItem>? OnDoubleTapped { get; set; }
 
     public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
 
@@ -216,5 +218,10 @@ public abstract partial class AClipboardItem : ViewModelBase
     public async Task Open()
     {
         await OpenItem();
+    }
+
+    public async Task OnDoubleTappedAsync()
+    {
+        OnDoubleTapped?.Invoke(this);
     }
 }
