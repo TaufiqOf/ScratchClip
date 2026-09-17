@@ -201,6 +201,14 @@ When password protection is enabled:
 
 ## ⌨️ Keyboard Shortcuts
 
+### Global Shortcuts
+
+| Shortcut              | Action |
+|:----------------------|:---|
+| `Alt` + `Shift` + `K` | Show or hide ScratchClip. |
+| `Alt` + `Shift` + `L` | Show the context menu from anywhere. |
+
+
 ### Main Screen — General Navigation
 
 | Shortcut | Action |
