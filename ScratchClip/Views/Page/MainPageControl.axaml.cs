@@ -17,9 +17,12 @@ public partial class MainPageControl : UserControl
         InitializeComponent();
         OnThemeChanged(ApplicationTheme.Theme!);
         OnPasswordChanged();
+        SearchTextBox.KeyUp += SearchTextBoxOnKeyUp;
         ApplicationKeyStore.OnPasswordChanged+= OnPasswordChanged;
         ApplicationTheme.OnThemeChanged += OnThemeChanged;
     }
+
+
 
     private void OnPasswordChanged()
     {
@@ -54,6 +57,17 @@ public partial class MainPageControl : UserControl
         if(DataContext is MainViewModel viewModel)
         {
             viewModel.IsSearchFocused = false;
+        }
+    }
+    
+    private void SearchTextBoxOnKeyUp(object? sender, KeyEventArgs e)
+    {
+        if(e.Key == Key.Down)
+        {
+            if(DataContext is MainViewModel viewModel)
+            {
+                viewModel.OnListSetFocus?.Invoke();
+            }
         }
     }
 }

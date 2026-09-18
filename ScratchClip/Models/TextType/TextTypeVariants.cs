@@ -43,7 +43,7 @@ public class CodeTextType : ATextType
             ]),
 
         new(
-            "Python",
+            "PYTHON",
             "libtree-sitter-python.so",
             "tree_sitter_python",
             [
@@ -66,7 +66,7 @@ public class CodeTextType : ATextType
             ]),
 
         new(
-            "JavaScript",
+            "JAVASCRIPT",
             "libtree-sitter-javascript.so",
             "tree_sitter_javascript",
             [
@@ -88,7 +88,7 @@ public class CodeTextType : ATextType
             ]),
 
         new(
-            "Java",
+            "JAVA",
             "libtree-sitter-java.so",
             "tree_sitter_java",
             [
@@ -150,7 +150,7 @@ public class CodeTextType : ATextType
             ]),
 
         new(
-            "Go",
+            "GO",
             "libtree-sitter-go.so",
             "tree_sitter_go",
             [
@@ -171,7 +171,7 @@ public class CodeTextType : ATextType
             ]),
 
         new(
-            "Rust",
+            "RUST",
             "libtree-sitter-rust.so",
             "tree_sitter_rust",
             [
