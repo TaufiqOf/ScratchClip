@@ -102,7 +102,9 @@ public abstract partial class AClipboardItem : ViewModelBase
             OnPropertyChanged();
         }
     } = DateTime.Now;
-
+    
+    public string? Note { get; set; } = null;
+    
     public List<string>? MataData { get; set; } = new List<string>();
 
 
