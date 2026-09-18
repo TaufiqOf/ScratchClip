@@ -54,18 +54,18 @@
                                 Orientation="Vertical"
                                 HorizontalAlignment="Left">
                         <!-- Pin -->
-                        <Button
+                        <ToggleButton
                             Height="32"
                             Width="32"
                             Margin="0,0,1,0"
                             ToolTip.Tip="Toggle Pinned(Ctrl+P)"
-                            Command="{Binding PinCommand}">
+                            IsChecked="{Binding IsPinned, Mode=TwoWay}">
 
                             <avalonia:FluentIcon
                                 Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
                                 FontSize="15" />
 
-                        </Button>
+                        </ToggleButton>
                         <!-- Open -->
                         <Button
                             Height="32"

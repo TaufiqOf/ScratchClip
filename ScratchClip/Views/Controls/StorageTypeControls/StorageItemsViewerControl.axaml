@@ -117,13 +117,13 @@
                                     <!-- SVG folder -->
                                     <Border IsVisible="{Binding IsFolder}"
                                             Background="CadetBlue"
-                                            Width="55"
-                                            Height="40"
+                                            Width="62"
+                                            Height="50"
                                             CornerRadius="4">
 
                                         <Image Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
-                                               Width="100"
-                                               Height="90"
+                                               Width="62"
+                                               Height="50"
                                                Stretch="Uniform"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center" />

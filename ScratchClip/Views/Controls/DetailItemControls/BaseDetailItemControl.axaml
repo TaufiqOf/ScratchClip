@@ -102,8 +102,8 @@
                 <!-- ================================= -->
                 <!-- Pin -->
                 <!-- ================================= -->
-                <Button Grid.Column="2"
-                        Command="{Binding PinCommand}"
+                <ToggleButton Grid.Column="2"
+                        IsChecked="{Binding IsPinned, Mode=TwoWay}"
                         Background="Transparent"
                         BorderThickness="0"
                         CornerRadius="3"
@@ -119,7 +119,7 @@
                         FontSize="14" />
 
 
-                </Button>
+                </ToggleButton>
                 <!-- ================================= -->
                 <!-- Open -->
                 <!-- ================================= -->
