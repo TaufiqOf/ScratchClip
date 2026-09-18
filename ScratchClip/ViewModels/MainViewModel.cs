@@ -295,7 +295,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         {
             var clipboardTask = Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if(ClipboardManager.IsCheckingClipboard)
+                if (ClipboardManager.IsCheckingClipboard)
                     return Task.CompletedTask;
                 return ClipboardManager.CheckClipboard();
             });
@@ -476,9 +476,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         FilteredHistory.Clear();
         foreach (var item in filteredItems.OrderByDescending(x => x.Timestamp))
             FilteredHistory.Add(item);
- 
+
         UpdateDisplayIndexes();
     }
+
     private void ShowEditButtons()
     {
         foreach (var item in ClipboardManager.ClipboardHistory)
@@ -556,11 +557,11 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private static int GetFuzzyScore(string query, AClipboardItem item)
     {
         var text = item.Text;
-        var display = item.DisplayText;
+        var note = item.Note ?? string.Empty;
 
         var bestScore = Math.Max(
             Fuzz.PartialRatio(query.ToLower(), text.ToLower()),
-            Fuzz.PartialRatio(query.ToLower(), display.ToLower()));
+            Fuzz.PartialRatio(query.ToLower(), note.ToLower()));
 
         if (item is TextClipboardItem { TextType: WebsiteTextType websiteTextType })
         {
@@ -631,12 +632,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
                 ClipboardManager.SelectedClipboardItem = item;
                 OnListSetFocus?.Invoke();
-                if(SettingsManager.Load().IsFastKeyEnabled)
+                if (SettingsManager.Load().IsFastKeyEnabled)
                 {
                     OnHideToTray?.Invoke();
                     await _hotkeyService.SimulatePasteAsync();
                 }
-                
+
                 _registerNumber = string.Empty;
             }
             catch (Exception e)

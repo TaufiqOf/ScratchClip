@@ -8,8 +8,10 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using AvaloniaEdit.Utils;
+using FuzzySharp;
 using ScratchClip.Manager;
 using ScratchClip.Models;
+using ScratchClip.Models.TextType;
 using ScratchClip.Services;
 using ScratchClip.ViewModels;
 
@@ -22,6 +24,7 @@ public partial class MenuWindow : Window
     private readonly ListViewModel _listViewModel;
     private readonly Timer _debounceTimer = new Timer(600);
     private int? _indexNumber;
+    private const int FuzzyThreshold = 60;
 
     private ListBox? HistoryListBoxControl =>
         this.MenuViewModeControl
@@ -127,8 +130,9 @@ public partial class MenuWindow : Window
                 {
                     HistoryListBoxControl.SelectedItem =
                         _listViewModel.FilteredHistory.FirstOrDefault(x => x.DisplayIndex == _indexNumber.Value);
-                    if (HistoryListBoxControl.SelectedItem is AClipboardItem item)
-                        OnDoubleTappedExistingClipboardItem(item);
+                    if (SettingsManager.Load().IsFastKeyEnabled)
+                        if (HistoryListBoxControl.SelectedItem is AClipboardItem item)
+                            OnDoubleTappedExistingClipboardItem(item);
                 }
 
                 _indexNumber = null;
@@ -162,12 +166,48 @@ public partial class MenuWindow : Window
     private void Search()
     {
         _listViewModel.FilteredHistory.Clear();
-        _listViewModel.FilteredHistory.AddRange(ClipboardManager.ClipboardHistory
-            .OrderByDescending(item => item.Timestamp)
-            .Where(item =>
-                item.Text.Contains(SearchTextBox.Text ?? string.Empty, StringComparison.OrdinalIgnoreCase)));
+        var query = SearchTextBox.Text?.Trim();
+        if (string.IsNullOrEmpty(query))
+        {
+            _listViewModel.FilteredHistory.AddRange(ClipboardManager.ClipboardHistory
+                .OrderByDescending(item => item.Timestamp));
+            UpdateDisplayIndexes();
+            HideEditButtons();
+            return;
+        }
+
+        var filteredItems = ClipboardManager.ClipboardHistory
+            .Select(item => new
+            {
+                Item = item,
+                Score = GetFuzzyScore(query, item)
+            })
+            .Where(x => x.Score >= FuzzyThreshold)
+            .OrderByDescending(x => x.Score)
+            .ThenByDescending(x => x.Item.Timestamp)
+            .Select(x => x.Item);
+        _listViewModel.FilteredHistory.AddRange(filteredItems);
         UpdateDisplayIndexes();
         HideEditButtons();
+    }
+
+    private static int GetFuzzyScore(string query, AClipboardItem item)
+    {
+        var text = item.Text;
+        var note = item.Note ?? string.Empty;
+
+        var bestScore = Math.Max(
+            Fuzz.PartialRatio(query.ToLower(), text.ToLower()),
+            Fuzz.PartialRatio(query.ToLower(), note.ToLower()));
+
+        if (item is TextClipboardItem { TextType: WebsiteTextType websiteTextType })
+        {
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteTitle));
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteDescription));
+            bestScore = Math.Max(bestScore, Fuzz.PartialRatio(query, websiteTextType.WebsiteHost));
+        }
+
+        return bestScore;
     }
 
     private void HideEditButtons()
@@ -187,6 +227,7 @@ public partial class MenuWindow : Window
             {
                 _listViewModel.FilteredHistory[i].DisplayIndex = i + 1;
             }
+
             return;
         }
 

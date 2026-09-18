@@ -31,12 +31,12 @@
 
 
         <Grid Grid.Row="1"
-              RowDefinitions="Auto,*,Auto">
+              RowDefinitions="Auto,Auto,*,Auto">
 
             <StackPanel Grid.Row="0"
                         Spacing="12">
                 <TextBlock Text="Tags"
-                           FontSize="16"
+                           FontSize="12"
                            FontWeight="SemiBold" />
                 <Border Padding="16"
                         CornerRadius="8"
@@ -48,15 +48,26 @@
                     </StackPanel>
                 </Border>
             </StackPanel>
+            <StackPanel Grid.Row="1"
+                        Margin="0,12"
+                        Spacing="12">
+                <TextBlock Text="Note"
+                           FontSize="12"
+                           FontWeight="SemiBold" />
+                <Border Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                    <TextBox Text="{Binding Note}"/>
+                </Border>
+            </StackPanel>
 
-
-            <Grid Grid.Row="1"
+            <Grid Grid.Row="2"
                   RowDefinitions="Auto,*"
                   Margin="0,12">
 
                 <TextBlock Grid.Row="0"
                            Text="Content"
-                           FontSize="16"
+                           FontSize="12"
                            FontWeight="SemiBold"
                            Margin="0,0,0,12" />
 
@@ -88,19 +99,16 @@
                             </Interaction.Behaviors>
 
                         </avaloniaEdit:TextEditor>
-
                     </Grid>
-
                 </Border>
-
             </Grid>
 
 
-            <StackPanel Grid.Row="2"
+            <StackPanel Grid.Row="3"
                         Spacing="12">
 
                 <TextBlock Text="Information"
-                           FontSize="16"
+                           FontSize="12"
                            FontWeight="SemiBold" />
 
                 <Border Padding="16"
@@ -131,13 +139,9 @@
                                        Opacity="0.65" />
 
                         </Grid>
-
                     </StackPanel>
-
                 </Border>
-
             </StackPanel>
-
         </Grid>
 
 

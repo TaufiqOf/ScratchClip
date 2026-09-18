@@ -37,7 +37,8 @@ public partial class EditClipboardItemPageControl : UserControl
 
                 MataData = new List<string>(textItem.MataData ?? new List<string>()),
 
-                Tags = new ObservableCollection<string>(textItem.Tags)
+                Tags = new ObservableCollection<string>(textItem.Tags),
+                Note = textItem.Note
             },
             ImageClipboardItem imageItem => new ImageClipboardItem
             {
@@ -50,7 +51,8 @@ public partial class EditClipboardItemPageControl : UserControl
 
                 MataData = new List<string>(imageItem.MataData ?? new List<string>()),
 
-                Tags = new ObservableCollection<string>(imageItem.Tags)
+                Tags = new ObservableCollection<string>(imageItem.Tags),
+                Note = imageItem.Note
             },
             StorageClipboardItem storageItem => new StorageClipboardItem
             {
@@ -61,7 +63,8 @@ public partial class EditClipboardItemPageControl : UserControl
                 Signature = storageItem.Signature,
                 Timestamp = storageItem.Timestamp,
                 MataData = new List<string>(storageItem.MataData ?? new List<string>()),
-                Tags = new ObservableCollection<string>(storageItem.Tags)
+                Tags = new ObservableCollection<string>(storageItem.Tags),
+                Note = storageItem.Note
             },
 
             _ => null
@@ -88,6 +91,7 @@ public partial class EditClipboardItemPageControl : UserControl
             textItem.Format = item.Format;
             textItem.Signature = item.Signature;
             textItem.Timestamp = item.Timestamp;
+            textItem.Note = item.Note;
 
             textItem.MataData?.Clear();
             foreach (var data in item.MataData!)
@@ -111,6 +115,7 @@ public partial class EditClipboardItemPageControl : UserControl
             imageItem.Format = item.Format;
             imageItem.Signature = item.Signature;
             imageItem.Timestamp = item.Timestamp;
+            imageItem.Note = item.Note;
 
             imageItem.MataData?.Clear();
             foreach (var data in item.MataData!)
@@ -132,7 +137,7 @@ public partial class EditClipboardItemPageControl : UserControl
             storageItem.Format = item.Format;
             storageItem.Signature = item.Signature;
             storageItem.Timestamp = item.Timestamp;
-
+            storageItem.Note = item.Note;
             storageItem.MataData?.Clear();
             foreach (var data in item.MataData!)
                 storageItem.MataData?.Add(data);
