@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
-using System.Timers;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using ScratchClip.ViewModels;
 
@@ -23,10 +21,6 @@ public abstract partial class AClipboardItem : ViewModelBase
 
     public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
 
-    public AClipboardItem()
-    {
-
-    }
 
     public bool IsPinned
     {

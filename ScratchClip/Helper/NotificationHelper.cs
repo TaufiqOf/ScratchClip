@@ -45,8 +45,7 @@ public static class NotificationHelper
     {
         ShowNotification(
             title,
-            message,
-            NotificationType.Information);
+            message);
     }
 
     public static void Warning(string title, string message)

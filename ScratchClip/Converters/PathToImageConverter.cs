@@ -21,7 +21,7 @@ public class PathToImageConverter : IValueConverter
             // Handle SVG icons using static SvgSource API
             if (iconPath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
             {
-                var svgSource = SvgSource.Load(iconPath, null);
+                var svgSource = SvgSource.Load(iconPath);
                 return new SvgImage { Source = svgSource };
             }
 

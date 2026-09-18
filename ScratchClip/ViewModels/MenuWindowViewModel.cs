@@ -5,7 +5,4 @@ namespace ScratchClip.ViewModels;
 public partial class MenuWindowViewModel: ViewModelBase
 {
     
-    [ObservableProperty]
-    private string _searchText;
-    
 }

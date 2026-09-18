@@ -16,7 +16,7 @@ public static class ClipboardManager
 {
     private static string? _lastSignature;
     public static Action<AClipboardItem>? OnClipboardItemAdded;
-    public static Action<AClipboardItem>? OnSelectExistingClipboardItem;
+    public static Action<AClipboardItem?>? OnSelectExistingClipboardItem;
     public static Action<AClipboardItem>? OnRemoveExistingClipboardItem;
     public static Action<AClipboardItem>? OnEditExistingClipboardItem;
     public static Action? OnClearExistingClipboardItem;

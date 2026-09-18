@@ -16,7 +16,6 @@ using ScratchClip.Manager;
 using ScratchClip.Models;
 using ScratchClip.Services;
 using ScratchClip.Views;
-using SharpHook.Data;
 
 namespace ScratchClip;
 

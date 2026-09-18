@@ -114,7 +114,7 @@ public partial class SettingsViewModel : ObservableObject
         // 1. Update active runtime hotkey configuration
         _hotkeyService.UpdateHotkey(PendingModifiers, PendingKey);
         _hotkeyService.UpdateMenuHotkey(PendingMenuModifiers, PendingMenuKey);
-        Application.Current.RequestedThemeVariant = SelectedTheme?.ToLowerInvariant() switch
+        Application.Current?.RequestedThemeVariant = SelectedTheme?.ToLowerInvariant() switch
         {
             "light" => ThemeVariant.Light,
             "dark" => ThemeVariant.Dark,

@@ -43,7 +43,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public Action? OnListSetFocus;
 
     public Action<bool>? OnTopMostChanged;
-    private bool _isInternalSelectionChange;
     private bool _isUpdatingTagOptions;
     private CancellationTokenSource? _monitorCts;
     private string _registerNumber = string.Empty;
@@ -421,9 +420,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         await SetClipboardItemAsync(targetItem);
 
-        _isInternalSelectionChange = true;
         SelectedItem = targetItem;
-        _isInternalSelectionChange = false;
     }
 
     [RelayCommand]
@@ -435,9 +432,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     [RelayCommand]
     private async Task ClearClipboardAsync()
     {
-        _isInternalSelectionChange = true;
         SelectedItem = null;
-        _isInternalSelectionChange = false;
         await ClipboardManager.ClearClipboardData();
     }
 

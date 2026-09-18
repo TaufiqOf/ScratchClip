@@ -186,14 +186,16 @@ internal class StorageClipboardService : AClipboardService
             EnableRaisingEvents = true
         };
 
-        process.Exited += (_, _) =>
+        process.Exited += (sender, _) =>
         {
-            Console.WriteLine($"xclip exited: {process.ExitCode}");
+            if (sender is not Process exitedProcess)
+                return;
+            Console.WriteLine($"xclip exited: {exitedProcess.ExitCode}");
 
-            if (ReferenceEquals(_xclipProcess, process))
+            if (ReferenceEquals(_xclipProcess, exitedProcess))
                 _xclipProcess = null;
 
-            process.Dispose();
+            exitedProcess.Dispose();
         };
 
         if (!process.Start())
