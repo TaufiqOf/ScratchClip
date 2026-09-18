@@ -10,6 +10,7 @@ public class ImageClipboardItem : AClipboardItem
 {
     public ImageClipboardItem()
     {
+        ClipboardType = ClipboardType.Image;
         Tags.Add("IMAGE");
     }
 

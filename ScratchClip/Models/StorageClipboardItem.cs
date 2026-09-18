@@ -43,6 +43,7 @@ public partial class StorageClipboardItem : AClipboardItem
 
     public StorageClipboardItem()
     {
+        ClipboardType = ClipboardType.Storage;
         _lazyUpdateTimer.Elapsed += LazyUpdateTimerOnElapsed;
     }
 

@@ -9,6 +9,9 @@ public class StorageItem : ViewModelBase
     private string _filePath = string.Empty;
     private string? _iconPath;
 
+    public StorageItem()
+    {
+    }
     public string FilePath
     {
         get => _filePath;

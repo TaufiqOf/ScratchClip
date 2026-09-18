@@ -13,6 +13,7 @@ public partial class TextClipboardItem : AClipboardItem
 {
     public TextClipboardItem()
     {
+        ClipboardType = ClipboardType.Text;
         Tags.Add("TEXT");
     }
 

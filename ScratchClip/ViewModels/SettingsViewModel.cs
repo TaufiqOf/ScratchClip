@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ScratchClip.Helper;
 using ScratchClip.Manager;
+using ScratchClip.Models;
 using ScratchClip.Services;
 using SharpHook.Data;
 
@@ -23,9 +24,9 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty] private int _maximumItemsInHistory;
     [ObservableProperty] private string? _exportFilePath;
-    [ObservableProperty] private bool _willExportTextItems = true;
-    [ObservableProperty] private bool _willExportImageItems = true;
-    [ObservableProperty] private bool _willExportStorageItems = true;
+    private bool _willExportTextItems = true;
+    private bool _willExportImageItems = true;
+    private bool _willExportStorageItems = true;
 
     public SettingsViewModel(GlobalHotkeyService hotkeyService)
     {
@@ -102,16 +103,55 @@ public partial class SettingsViewModel : ObservableObject
         set => SetProperty(ref field, value);
     }
 
+    public bool WillExportTextItems
+    {
+        get => _willExportTextItems;
+        set
+        {
+            if (value == _willExportTextItems) return;
+            _willExportTextItems = value;
+            ExportFilePath = string.Empty;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool WillExportImageItems
+    {
+        get => _willExportImageItems;
+        set
+        {
+            if (value == _willExportImageItems) return;
+            _willExportImageItems = value;
+            ExportFilePath = string.Empty;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool WillExportStorageItems
+    {
+        get => _willExportStorageItems;
+        set
+        {
+            if (value == _willExportStorageItems) return;
+            _willExportStorageItems = value;
+            ExportFilePath = string.Empty;
+            OnPropertyChanged();
+        }
+    }
+
 
     [RelayCommand]
     public void Export()
     {
-        if (ExportFilePath == null)
+        if (string.IsNullOrEmpty(ExportFilePath))
         {
             return;
         }
 
-        var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot().ToList();
+        var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot()
+            .Where(q => (WillExportTextItems && q.ClipboardType == ClipboardType.Text)
+                        || (WillExportImageItems && q.ClipboardType == ClipboardType.Image)
+                        || (WillExportStorageItems && q.ClipboardType == ClipboardType.Storage)).ToList();
     }
 
     [RelayCommand]
@@ -165,63 +205,63 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
-        private void ClearHotkey()
-        {
-            PendingModifiers = EventMask.LeftAlt | EventMask.LeftShift;
-            PendingKey = KeyCode.VcK;
-            HotkeyDisplay = "Alt + Shift + K";
-        }
-
-        [RelayCommand]
-        private void ClearHotkeyMenu()
-        {
-            PendingMenuModifiers = EventMask.LeftAlt | EventMask.LeftShift;
-            PendingMenuKey = KeyCode.VcL;
-            HotkeyMenuDisplay = "Alt + Shift + L";
-        }
-
-        [RelayCommand]
-        private void Save()
-        {
-            // 1. Update active runtime hotkey configuration
-            _hotkeyService.UpdateHotkey(PendingModifiers, PendingKey);
-            _hotkeyService.UpdateMenuHotkey(PendingMenuModifiers, PendingMenuKey);
-            Application.Current?.RequestedThemeVariant = SelectedTheme?.ToLowerInvariant() switch
-            {
-                "light" => ThemeVariant.Light,
-                "dark" => ThemeVariant.Dark,
-                _ => ThemeVariant.Default // "System" or default
-            };
-            // 2. Persist to disk
-            var settings = SettingsManager.Load();
-            settings.IsSaveHistoryOnExitEnabled = IsSaveHistoryOnExitEnabled;
-
-            settings.Modifiers = PendingModifiers;
-            settings.Key = PendingKey;
-            settings.MenuModifiers = PendingMenuModifiers;
-            settings.MenuKey = PendingMenuKey;
-
-            settings.IsAutoStartEnabled = AutoStartManager.IsEnabled();
-            settings.MaxItemsInHistory = MaximumItemsInHistory;
-            settings.IsReverseOrder = IsReverseOrder;
-            settings.IsFastKeyEnabled = IsFastKeyEnabled;
-            settings.Theme = SelectedTheme;
-            ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
-            SettingsManager.Save(settings);
-        }
-
-        public void SetMenuHotkey(EventMask modifiers, KeyCode key, string display)
-        {
-            PendingMenuModifiers = modifiers;
-            PendingMenuKey = key;
-            HotkeyMenuDisplay = display;
-        }
-
-
-        public void SetHotkey(EventMask modifiers, KeyCode key, string display)
-        {
-            PendingModifiers = modifiers;
-            PendingKey = key;
-            HotkeyDisplay = display;
-        }
+    private void ClearHotkey()
+    {
+        PendingModifiers = EventMask.LeftAlt | EventMask.LeftShift;
+        PendingKey = KeyCode.VcK;
+        HotkeyDisplay = "Alt + Shift + K";
     }
+
+    [RelayCommand]
+    private void ClearHotkeyMenu()
+    {
+        PendingMenuModifiers = EventMask.LeftAlt | EventMask.LeftShift;
+        PendingMenuKey = KeyCode.VcL;
+        HotkeyMenuDisplay = "Alt + Shift + L";
+    }
+
+    [RelayCommand]
+    private void Save()
+    {
+        // 1. Update active runtime hotkey configuration
+        _hotkeyService.UpdateHotkey(PendingModifiers, PendingKey);
+        _hotkeyService.UpdateMenuHotkey(PendingMenuModifiers, PendingMenuKey);
+        Application.Current?.RequestedThemeVariant = SelectedTheme?.ToLowerInvariant() switch
+        {
+            "light" => ThemeVariant.Light,
+            "dark" => ThemeVariant.Dark,
+            _ => ThemeVariant.Default // "System" or default
+        };
+        // 2. Persist to disk
+        var settings = SettingsManager.Load();
+        settings.IsSaveHistoryOnExitEnabled = IsSaveHistoryOnExitEnabled;
+
+        settings.Modifiers = PendingModifiers;
+        settings.Key = PendingKey;
+        settings.MenuModifiers = PendingMenuModifiers;
+        settings.MenuKey = PendingMenuKey;
+
+        settings.IsAutoStartEnabled = AutoStartManager.IsEnabled();
+        settings.MaxItemsInHistory = MaximumItemsInHistory;
+        settings.IsReverseOrder = IsReverseOrder;
+        settings.IsFastKeyEnabled = IsFastKeyEnabled;
+        settings.Theme = SelectedTheme;
+        ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
+        SettingsManager.Save(settings);
+    }
+
+    public void SetMenuHotkey(EventMask modifiers, KeyCode key, string display)
+    {
+        PendingMenuModifiers = modifiers;
+        PendingMenuKey = key;
+        HotkeyMenuDisplay = display;
+    }
+
+
+    public void SetHotkey(EventMask modifiers, KeyCode key, string display)
+    {
+        PendingModifiers = modifiers;
+        PendingKey = key;
+        HotkeyDisplay = display;
+    }
+}

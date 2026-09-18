@@ -372,7 +372,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _historyItems.AddRange(ClipboardManager.ClipboardHistory);
         FilteredHistory.Clear();
         FilteredHistory.AddRange(ClipboardManager.ClipboardHistory);
-        UpdateDisplayIndexes();
+        ApplyFilter();
         RefreshTagFilterOptions();
     }
 

@@ -22,6 +22,8 @@ public abstract partial class AClipboardItem : ViewModelBase
 
     public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
     
+    public ClipboardType ClipboardType { get; set; }
+    
     [ObservableProperty]
     private bool _isEditButtonVisible = true;
 
