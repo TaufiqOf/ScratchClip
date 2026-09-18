@@ -391,6 +391,7 @@ public partial class MainWindow : Window
         Height = settings.WindowHeight;
         PositionInBottomRight();
         Activate();
+        _viewModel.WindowActivated();
         Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
     }
     

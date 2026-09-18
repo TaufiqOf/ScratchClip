@@ -190,7 +190,7 @@
                                         FontWeight="Medium" />
 
                                     <TextBlock
-                                        Text="Choose how many clipboard items ScratchClip keeps."
+                                        Text="Choose how many clipboard items ScratchClip keeps.(20 to 200)"
                                         FontSize="12"
                                         Opacity="0.65"
                                         TextWrapping="Wrap" />

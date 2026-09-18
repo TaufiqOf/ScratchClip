@@ -476,8 +476,15 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         FilteredHistory.Clear();
         foreach (var item in filteredItems.OrderByDescending(x => x.Timestamp))
             FilteredHistory.Add(item);
-
+ 
         UpdateDisplayIndexes();
+    }
+    private void ShowEditButtons()
+    {
+        foreach (var item in ClipboardManager.ClipboardHistory)
+        {
+            item.IsEditButtonVisible = true;
+        }
     }
 
     private static bool MatchesTagFilter(AClipboardItem item, IReadOnlySet<string> selectedTags)
@@ -640,6 +647,10 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 
+    public void WindowActivated()
+    {
+        ShowEditButtons();
+    }
 }
 
 public class TagFilterOption(string name) : ViewModelBase

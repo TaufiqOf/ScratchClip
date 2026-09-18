@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="ScratchClip.App"
              xmlns:scratchClip="clr-namespace:ScratchClip"
+             xmlns:converters="clr-namespace:ScratchClip.Converters"
              RequestedThemeVariant="Default">
 
     <Application.Resources>
@@ -11,7 +12,7 @@
             avares://ScratchClip/Assets/Fonts/Poppins-Regular.ttf#Poppins
         </FontFamily>
 
-        <StorageFileToReadStreamConverter x:Key="InverseBooleanConverter" />
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
     </Application.Resources>
 

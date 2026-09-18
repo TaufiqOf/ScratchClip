@@ -95,15 +95,51 @@
                         <StackPanel HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     Spacing="5">
+                            <Grid>
+                                <!-- SVG -->
+                                <Grid IsVisible="{Binding IsSvg}">
 
-                            <!-- File icon -->
-                            <!-- File / Folder icon (Handles PNG & SVG dynamically) -->
-                            <Image Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
-                                   Width="52"
-                                   Height="52"
-                                   Stretch="Uniform"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
+                                    <!-- SVG file -->
+                                    <Border IsVisible="{Binding IsFile}"
+                                            Background="White"
+                                            Width="50"
+                                            Height="62"
+                                            CornerRadius="4">
+
+                                        <Image Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
+                                               Width="40"
+                                               Height="40"
+                                               Stretch="Uniform"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                                    </Border>
+
+                                    <!-- SVG folder -->
+                                    <Border IsVisible="{Binding IsFolder}"
+                                            Background="CadetBlue"
+                                            Width="55"
+                                            Height="40"
+                                            CornerRadius="4">
+
+                                        <Image Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
+                                               Width="100"
+                                               Height="90"
+                                               Stretch="Uniform"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" />
+                                    </Border>
+                                </Grid>
+
+                                <!-- Non-SVG -->
+                                <Image IsVisible="{Binding IsSvg, Converter={StaticResource InverseBooleanConverter}}"
+                                       Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
+                                       Width="52"
+                                       Height="52"
+                                       Stretch="Uniform"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            </Grid>
+
                             <!-- Filename -->
                             <TextBlock Text="{Binding FilePath}"
                                        Width="100"

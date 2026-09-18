@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using ScratchClip.ViewModels;
 
@@ -11,14 +12,31 @@ public class StorageItem : ViewModelBase
     public string FilePath
     {
         get => _filePath;
-        set 
+        private set 
         {
             _filePath = value;
             OnPropertyChanged();
         }
     }
 
-    public string FullPath { get; init; } = string.Empty;
+    public string FullPath
+    {
+        get;
+        init
+        {
+            field = value;
+            IsSvg = true;
+            IsFolder = Directory.Exists(value);
+            IsFile = File.Exists(value);
+            FilePath = Path.GetFileName(
+                value.TrimEnd(
+                    Path.DirectorySeparatorChar,
+                    Path.AltDirectorySeparatorChar));
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsFile));
+            OnPropertyChanged(nameof(IsFolder));
+        }
+    } = string.Empty;
 
     public string? IconPath
     {
@@ -26,10 +44,20 @@ public class StorageItem : ViewModelBase
         set 
         {
             _iconPath = value;
+            IsSvg = string.Equals(
+                Path.GetExtension(value),
+                ".svg",
+                StringComparison.OrdinalIgnoreCase);
             OnPropertyChanged();
         }
     }
-    
-    public bool IsFolder => Directory.Exists(FullPath);
-    public bool IsFile => File.Exists(FullPath);
+
+    public bool IsSvg
+    {
+        get;
+        private set => SetProperty(ref field, value);
+    }
+
+    public bool IsFolder { get; init; }
+    public bool IsFile { get; init; }
 }

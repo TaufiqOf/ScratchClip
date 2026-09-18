@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ScratchClip.ViewModels;
 
@@ -20,7 +21,9 @@ public abstract partial class AClipboardItem : ViewModelBase
     public Action<AClipboardItem>? OnDoubleTapped { get; set; }
 
     public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
-
+    
+    [ObservableProperty]
+    private bool _isEditButtonVisible = true;
 
     public bool IsPinned
     {

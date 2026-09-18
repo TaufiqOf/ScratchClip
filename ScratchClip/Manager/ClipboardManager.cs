@@ -87,6 +87,21 @@ public static class ClipboardManager
     public static bool IsCheckingClipboard = false;
     public static string CheckingClipboardSignature = string.Empty;
 
+    public static void UpdateSignature(AClipboardItem item)
+    {
+        if(item is TextClipboardItem textItem)
+        {
+            _ = ClipboardServices[ClipboardDataFormat.Text].CreateSignature(textItem);
+        }
+        else if(item is ImageClipboardItem imageItem)
+        {
+            _ = ClipboardServices[ClipboardDataFormat.Image].CreateSignature(imageItem);
+        }
+        else if(item is StorageClipboardItem storageItem)
+        {
+            _ = ClipboardServices[ClipboardDataFormat.Storage].CreateSignature(storageItem);
+        }
+    }
     public static async Task CheckClipboard()
     {
         if (IsCheckingClipboard)
@@ -123,7 +138,7 @@ public static class ClipboardManager
             {
                 if (ClipboardHistory.Count >= MaxItemsInHistory)
                 {
-                    var lastItem = ClipboardHistory.Last();
+                    var lastItem = ClipboardHistory.Last(q => !q.IsPinned);
                     ClipboardHistory.Remove(lastItem);
                     OnRemoveExistingClipboardItem?.Invoke(lastItem);
                 }

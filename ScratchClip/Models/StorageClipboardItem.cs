@@ -89,10 +89,7 @@ public partial class StorageClipboardItem : AClipboardItem
                 Directory.Exists(path))
             .Select(path => new StorageItem
             {
-                FilePath = Path.GetFileName(
-                    path.TrimEnd(
-                        Path.DirectorySeparatorChar,
-                        Path.AltDirectorySeparatorChar)),
+
                 FullPath = path,
             })
             .ToList();

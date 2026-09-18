@@ -167,6 +167,15 @@ public partial class MenuWindow : Window
             .Where(item =>
                 item.Text.Contains(SearchTextBox.Text ?? string.Empty, StringComparison.OrdinalIgnoreCase)));
         UpdateDisplayIndexes();
+        HideEditButtons();
+    }
+
+    private void HideEditButtons()
+    {
+        foreach (var item in _listViewModel.FilteredHistory)
+        {
+            item.IsEditButtonVisible = false;
+        }
     }
 
 
@@ -175,7 +184,9 @@ public partial class MenuWindow : Window
         if (SettingsManager.Load().IsReverseOrder)
         {
             for (var i = 0; i < _listViewModel.FilteredHistory.Count; i++)
+            {
                 _listViewModel.FilteredHistory[i].DisplayIndex = i + 1;
+            }
             return;
         }
 

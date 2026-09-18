@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ScratchClip.Helper;
+using ScratchClip.Manager;
 using ScratchClip.Models;
 
 namespace ScratchClip.Views.Page;
@@ -140,6 +141,7 @@ public partial class EditClipboardItemPageControl : UserControl
             foreach (var tag in item.Tags)
                 storageItem.Tags.Add(tag);
         }
+        ClipboardManager.UpdateSignature(_item);
         NotificationHelper.Success(
             "Item updated",
             "The item has been successfully updated.");
