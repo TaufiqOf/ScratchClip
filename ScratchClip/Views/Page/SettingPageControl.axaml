@@ -561,12 +561,9 @@
                         Padding="16"
                         CornerRadius="8"
                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-
                         <StackPanel Spacing="14">
-
                             <!-- Header -->
                             <StackPanel Spacing="3">
-
                                 <TextBlock
                                     Text="Application password"
                                     FontWeight="Medium"
@@ -577,25 +574,20 @@
                                     FontSize="12"
                                     Opacity="0.65"
                                     TextWrapping="Wrap" />
-
                             </StackPanel>
 
 
                             <!-- Password fields -->
                             <StackPanel Spacing="8">
-
                                 <TextBox
                                     x:Name="PasswordTextBox"
                                     PasswordChar="•"
                                     PlaceholderText="Password" />
-
                                 <TextBox
                                     x:Name="ConfirmPasswordTextBox"
                                     PasswordChar="•"
                                     PlaceholderText="Confirm password" />
-
                             </StackPanel>
-
 
                             <!-- Error / status -->
                             <TextBlock
@@ -624,25 +616,67 @@
                                     Classes="accent" />
 
                             </StackPanel>
-
-
-                            <!-- Information -->
-                            <TextBlock
-                                Text="Your password is stored securely using the system credential store."
-                                FontSize="11"
-                                Opacity="0.5"
-                                TextWrapping="Wrap" />
-
+                            
                         </StackPanel>
-
                     </Border>
-
                 </StackPanel>
+                
+                <!-- Export Import -->
+                <StackPanel Spacing="12">
 
+                    <TextBlock
+                        Text="Export / Import Data"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+
+                    <Border
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                        <StackPanel Spacing="14">
+                            <!-- Header -->
+                            <StackPanel Spacing="3">
+                                <TextBlock
+                                    Text="Export"
+                                    FontWeight="Medium"
+                                    FontSize="14" />
+
+                                <TextBlock
+                                    Text="Export your clipboard history to a file."
+                                    FontSize="12"
+                                    Opacity="0.65"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock
+                                    Text="Choose the types of items to export."
+                                    FontSize="12"
+                                    Opacity="0.65"
+                                    TextWrapping="Wrap" />
+                                <ToggleSwitch IsChecked="{Binding WillExportTextItems}"> Text</ToggleSwitch>
+                                <ToggleSwitch IsChecked="{Binding WillExportImageItems}"> Images</ToggleSwitch>
+                                <ToggleSwitch IsChecked="{Binding WillExportStorageItems}"> Files </ToggleSwitch>
+                            </StackPanel>
+
+
+                            <!-- Export fields -->
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBox
+                                    x:Name="ExportPathTextBox"
+                                    Text="{Binding ExportFilePath, Mode=TwoWay}"
+                                    IsReadOnly="True" />
+                                <Button Grid.Column="1" x:Name="FileSelectButton" Command="{Binding SelectFileCommand}">
+                                    <avalonia:FluentIcon Icon="Folder"/>
+                                </Button>
+                                <Button Grid.Column="2" x:Name="ExportButton" Command="{Binding ExportCommand}">
+                                    <avalonia:FluentIcon Icon="ArrowExport"/>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
             </StackPanel>
-
         </ScrollViewer>
-
 
         <!-- Bottom actions -->
         <Border

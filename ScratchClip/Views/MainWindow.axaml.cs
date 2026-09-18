@@ -26,6 +26,7 @@ public partial class MainWindow : Window
     private bool _isClosingForReal;
     private SettingPageControl? _settingsPage;
     private bool _loaded = false;
+    private bool _doNotHide = false;
 
     private TextBox? SearchTextBoxControl =>
         _mainPage.FindControl<TextBox>("SearchTextBox");
@@ -38,6 +39,7 @@ public partial class MainWindow : Window
     
     public MainWindow(GlobalHotkeyService hotkeyService)
     {
+        ApplicationReference.MainWindow = this;
         _hotkeyService = hotkeyService;
         InitializeComponent();
         _viewModel = new MainViewModel(hotkeyService);
@@ -99,9 +101,11 @@ public partial class MainWindow : Window
             TopMostChanged(settings.IsPinned);
         }, DispatcherPriority.Background);
     }
-    
+
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
+        if(_doNotHide)
+            return;
         var settings = SettingsManager.Load();
         if (!settings.IsPinned && IsVisible)
             HideToTray();
@@ -367,6 +371,8 @@ public partial class MainWindow : Window
 
     public void HideToTray()
     {
+        if(_doNotHide)
+            return;
         ShowInTaskbar = false;
         Hide();
     }
@@ -430,17 +436,20 @@ public partial class MainWindow : Window
 
     private async void ShowMainPage()
     {
+        _doNotHide = false;
+        var settings = SettingsManager.Load();
         if (_mainPage.DataContext is MainViewModel vm)
         {
             vm.RefreshList();
         }
-
+        TopMostChanged(settings.IsPinned);
         PageHost.Content = _mainPage;
 
         if (ClipboardManager.IsLoaded)
             return;
         ClipboardManager.IsLoaded = true;
-        var settings = SettingsManager.Load();
+
+        
         var persistedItems = await ClipboardHistoryManager.Load(ApplicationKeyStore.GetSessionPassword());
         ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
         ClipboardManager.LoadClipboardHistory(persistedItems);
@@ -448,6 +457,8 @@ public partial class MainWindow : Window
 
     private void ShowSettingsPage()
     {
+        _doNotHide = true;
+        TopMostChanged(true);
         if (_settingsPage == null)
         {
             _settingsPage = new SettingPageControl();
@@ -460,6 +471,7 @@ public partial class MainWindow : Window
 
     private void OnSettingsCloseRequested(object? sender, EventArgs e)
     {
+        _doNotHide = false;
         ShowMainPage();
         Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
     }

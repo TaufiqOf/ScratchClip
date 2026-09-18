@@ -304,4 +304,5 @@ public partial class SettingPageControl : UserControl
             display);
     }
 
+
 }
