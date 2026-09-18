@@ -26,6 +26,7 @@ public partial class MainWindow : Window
     private bool _isClosingForReal;
     private SettingPageControl? _settingsPage;
     private bool _loaded = false;
+    private bool _isActivated = false;
     private bool _doNotHide = false;
 
     private TextBox? SearchTextBoxControl =>
@@ -95,10 +96,12 @@ public partial class MainWindow : Window
     {
         Dispatcher.UIThread.Post(() =>
         {
+            _isActivated = false;
             var settings = SettingsManager.Load();
             Width = settings.WindowWidth;
             Height = settings.WindowHeight;
             TopMostChanged(settings.IsPinned);
+            _isActivated = true;
         }, DispatcherPriority.Background);
     }
 
@@ -343,6 +346,17 @@ public partial class MainWindow : Window
                || !string.IsNullOrWhiteSpace(waylandDisplay);
     }
 
+    protected override void OnResized(WindowResizedEventArgs e)
+    {
+        base.OnResized(e);
+        if(!_isActivated)
+            return;
+        var settings = SettingsManager.Load();
+        settings.WindowWidth = Width;
+        settings.WindowHeight = Height;
+        SettingsManager.Save(settings);
+    }
+
     private void PositionInBottomRight()
     {
         // Wayland compositors usually ignore app-requested absolute position.
@@ -388,6 +402,7 @@ public partial class MainWindow : Window
     }
     public void ShowFromTray()
     {
+        _isActivated = false;
         //ShowMainPage();
         ShowInTaskbar = true;
         Show();
@@ -399,6 +414,8 @@ public partial class MainWindow : Window
         Activate();
         _viewModel.WindowActivated();
         Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
+        _isActivated = true;
+        
     }
     
 

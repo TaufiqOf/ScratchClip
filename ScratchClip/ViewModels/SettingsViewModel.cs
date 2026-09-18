@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
 using Avalonia.Xaml.Interactions.Core;
@@ -143,15 +147,181 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand]
     public void Export()
     {
-        if (string.IsNullOrEmpty(ExportFilePath))
+        try
         {
-            return;
+            if (string.IsNullOrEmpty(ExportFilePath))
+            {
+                return;
+            }
+
+            var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot()
+                .Where(q => (WillExportTextItems && q.ClipboardType == ClipboardType.Text)
+                            || (WillExportImageItems && q.ClipboardType == ClipboardType.Image)
+                            || (WillExportStorageItems && q.ClipboardType == ClipboardType.Storage)).ToList();
+            var finalePath = Path.GetDirectoryName(ExportFilePath);
+
+            if (finalePath == null)
+            {
+                return;
+            }
+
+            if (WillExportImageItems && WillExportStorageItems)
+            {
+                finalePath = Path.Combine(finalePath, Path.GetFileNameWithoutExtension(ExportFilePath));
+            }
+
+            if (!Directory.Exists(finalePath))
+            {
+                Directory.CreateDirectory(finalePath);
+            }
+
+            if (WillExportTextItems)
+            {
+                var textItems = clipboardHistory
+                    .Where(q => q.ClipboardType == ClipboardType.Text).Cast<TextClipboardItem>()
+                    .ToList();
+                if (textItems.Any())
+                {
+                    var i = 1;
+                    var stringBuilder = new System.Text.StringBuilder();
+                    foreach (var item in textItems)
+                    {
+                        stringBuilder.AppendLine($"Item {i}:");
+                        stringBuilder.AppendLine(item.Text);
+                        stringBuilder.AppendLine("------------------------------");
+                        i++;
+                    }
+
+                    var textFilePath = Path.Combine(finalePath, "TextItems.txt");
+                    File.WriteAllText(textFilePath, stringBuilder.ToString());
+                }
+            }
+
+            if (WillExportImageItems)
+            {
+                var imageItems = clipboardHistory
+                    .Where(q => q.ClipboardType == ClipboardType.Image).Cast<ImageClipboardItem>()
+                    .ToList();
+                if (imageItems.Any())
+                {
+                    var i = 1;
+                    foreach (var imageClipboardItem in imageItems)
+                    {
+                        // Save each image to a separate file
+                        var imageFilePath = Path.Combine(finalePath, $"ImageItem_{i}.png");
+                        imageClipboardItem.Image?.Save(imageFilePath, new PngBitmapEncoderOptions());
+                        i++;
+                    }
+                }
+            }
+
+            if (WillExportStorageItems)
+            {
+                var storageItems = clipboardHistory
+                    .Where(q => q.ClipboardType == ClipboardType.Storage).Cast<StorageClipboardItem>()
+                    .ToList();
+                if (storageItems.Any())
+                {
+                    var i = 1;
+                    foreach (var storageClipboardItem in storageItems)
+                    {
+                        // Save each storage item to a separate file
+                        foreach (var file in storageClipboardItem.Files)
+                        {
+                            var storageFilePath = Path.Combine(finalePath, $"StorageItem_{i}",
+                                $"{Path.GetFileName(file)}");
+                            if (!Directory.Exists(Path.GetDirectoryName(storageFilePath)))
+                            {
+                                Directory.CreateDirectory(Path.GetDirectoryName(storageFilePath));
+                            }
+
+                            if (File.Exists(file))
+                            {
+                                try
+                                {
+                                    File.Copy(file, storageFilePath, true);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e);
+                                }
+                            }
+                        }
+
+                        foreach (var folder in storageClipboardItem.Folders)
+                        {
+                            var folderName = new DirectoryInfo(folder).Name;
+
+                            var storageFolderPath = Path.Combine(
+                                finalePath,
+                                $"StorageItem_{i}",
+                                folderName);
+                            if (Directory.Exists(folder))
+                            {
+                                if (!Directory.Exists(storageFolderPath))
+                                {
+                                    Directory.CreateDirectory(storageFolderPath);
+                                }
+
+                                CopyDirectory(folder, storageFolderPath);
+                            }
+                        }
+
+                        i++;
+                    }
+                }
+            }
+
+            if (File.Exists(ExportFilePath))
+            {
+                File.Delete(ExportFilePath);
+            }
+
+            if (WillExportImageItems || WillExportStorageItems)
+            {
+                ZipFile.CreateFromDirectory(
+                    finalePath,
+                    ExportFilePath,
+                    CompressionLevel.Optimal,
+                    includeBaseDirectory: false);
+                Directory.Delete(finalePath, recursive: true);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    public static void CopyDirectory(
+        string sourceDir,
+        string destinationDir)
+    {
+        Directory.CreateDirectory(destinationDir);
+
+        foreach (var file in Directory.GetFiles(sourceDir))
+        {
+            var destinationFile = Path.Combine(
+                destinationDir,
+                Path.GetFileName(file));
+            try
+            {
+                File.Copy(file, destinationFile, overwrite: true);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
-        var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot()
-            .Where(q => (WillExportTextItems && q.ClipboardType == ClipboardType.Text)
-                        || (WillExportImageItems && q.ClipboardType == ClipboardType.Image)
-                        || (WillExportStorageItems && q.ClipboardType == ClipboardType.Storage)).ToList();
+        foreach (var directory in Directory.GetDirectories(sourceDir))
+        {
+            var destinationSubdirectory = Path.Combine(
+                destinationDir,
+                Path.GetFileName(directory));
+
+            CopyDirectory(directory, destinationSubdirectory);
+        }
     }
 
     [RelayCommand]
