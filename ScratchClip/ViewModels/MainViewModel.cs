@@ -476,6 +476,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         FilteredHistory.Clear();
         foreach (var item in filteredItems.OrderByDescending(x => x.Timestamp))
             FilteredHistory.Add(item);
+        if (FilteredHistory.All(q => q.Signature != SelectedItem?.Signature))
+            SelectedItem = FilteredHistory.FirstOrDefault();
 
         UpdateDisplayIndexes();
     }

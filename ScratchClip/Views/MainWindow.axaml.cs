@@ -37,7 +37,7 @@ public partial class MainWindow : Window
             .GetVisualDescendants()
             .OfType<ListBox>()
             .FirstOrDefault(x => x.Name == "ListBox");
-    
+
     public MainWindow(GlobalHotkeyService hotkeyService)
     {
         ApplicationReference.MainWindow = this;
@@ -86,12 +86,11 @@ public partial class MainWindow : Window
     }
 
 
-
     private void TopMostChanged(bool isPinned)
     {
         Topmost = isPinned;
     }
-    
+
     private void OnActivated(object? sender, EventArgs e)
     {
         Dispatcher.UIThread.Post(() =>
@@ -107,7 +106,7 @@ public partial class MainWindow : Window
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
-        if(_doNotHide)
+        if (_doNotHide)
             return;
         var settings = SettingsManager.Load();
         if (!settings.IsPinned && IsVisible)
@@ -148,6 +147,7 @@ public partial class MainWindow : Window
             {
                 _viewModel.Lock();
             }
+
             e.Handled = true;
         }
 
@@ -162,14 +162,14 @@ public partial class MainWindow : Window
             _viewModel.IsMonitoringClipboard = !_viewModel.IsMonitoringClipboard;
             e.Handled = true;
         }
-        
-        
+
+
         if ((e.Key == Key.Up || e.Key == Key.Down) && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
             SetListFocus();
             e.Handled = true;
         }
-        
+
 
         if (e.Key == Key.O && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
@@ -188,7 +188,7 @@ public partial class MainWindow : Window
             e.Handled = true;
             return;
         }
-        
+
         if (e.Key == Key.E && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             if (HistoryListBox?.SelectedItem != null)
@@ -206,7 +206,7 @@ public partial class MainWindow : Window
             e.Handled = true;
             return;
         }
-        
+
         if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             if (HistoryListBox?.SelectedItem != null)
@@ -224,7 +224,7 @@ public partial class MainWindow : Window
             e.Handled = true;
             return;
         }
-        
+
         if (e.Key == Key.P && e.KeyModifiers.HasFlag(KeyModifiers.Control))
         {
             if (HistoryListBox?.SelectedItem != null)
@@ -263,7 +263,7 @@ public partial class MainWindow : Window
                 }
             }
         }
-        
+
         if (e.Key == Key.Escape)
         {
             e.Handled = true;
@@ -300,19 +300,19 @@ public partial class MainWindow : Window
 
         if (listBox != null)
         {
-
-
             Dispatcher.UIThread.Post(() =>
             {
                 listBox.Focus();
-                if (listBox.SelectedItem == null && listBox.SelectedIndex < 0 && listBox.ItemCount > 0)
+                if (_viewModel.SelectedItem == null && listBox.SelectedItem == null && listBox.SelectedIndex < 0 &&
+                    listBox.ItemCount > 0)
                 {
                     listBox.SelectedIndex = 0;
                 }
 
-                if (listBox.SelectedItem != null)
+                if (_viewModel.SelectedItem != null)
                 {
-                    var container = listBox.ContainerFromItem(listBox.SelectedItem);
+                    var item = listBox.Items.FirstOrDefault(item => ((AClipboardItem)item).Signature == _viewModel.SelectedItem.Signature);
+                    var container = listBox.ContainerFromItem(_viewModel.SelectedItem);
 
                     container?.Focus(
                         NavigationMethod.Tab);
@@ -349,7 +349,7 @@ public partial class MainWindow : Window
     protected override void OnResized(WindowResizedEventArgs e)
     {
         base.OnResized(e);
-        if(!_isActivated)
+        if (!_isActivated)
             return;
         var settings = SettingsManager.Load();
         settings.WindowWidth = Width;
@@ -385,11 +385,12 @@ public partial class MainWindow : Window
 
     public void HideToTray()
     {
-        if(_doNotHide)
+        if (_doNotHide)
             return;
         ShowInTaskbar = false;
         Hide();
     }
+
     private void ShowLockPage()
     {
         PasswordPageControl passwordPage = new PasswordPageControl();
@@ -400,6 +401,7 @@ public partial class MainWindow : Window
             Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
         };
     }
+
     public void ShowFromTray()
     {
         _isActivated = false;
@@ -415,9 +417,8 @@ public partial class MainWindow : Window
         _viewModel.WindowActivated();
         Dispatcher.UIThread.Post(FocusControls, DispatcherPriority.Input);
         _isActivated = true;
-        
     }
-    
+
 
     private void FocusControls()
     {
@@ -431,24 +432,7 @@ public partial class MainWindow : Window
         Activate();
 
         // Give the OS window manager a frame to settle activation before setting control focus
-        Dispatcher.UIThread.Post(() =>
-        {
-            if (DataContext is MainViewModel vm && vm.FilteredHistory.Any())
-            {
-                if (listBox.SelectedIndex < 0)
-                    listBox.SelectedIndex = 0;
-
-                var container = listBox.ContainerFromIndex(listBox.SelectedIndex);
-                if (container is { } control)
-                    control.Focus();
-                else
-                    listBox.Focus();
-            }
-            else
-            {
-                listBox.Focus();
-            }
-        }, DispatcherPriority.Render);
+        SetListFocus();
     }
 
     private async void ShowMainPage()
@@ -459,6 +443,7 @@ public partial class MainWindow : Window
         {
             vm.RefreshList();
         }
+
         TopMostChanged(settings.IsPinned);
         PageHost.Content = _mainPage;
 
@@ -466,7 +451,7 @@ public partial class MainWindow : Window
             return;
         ClipboardManager.IsLoaded = true;
 
-        
+
         var persistedItems = await ClipboardHistoryManager.Load(ApplicationKeyStore.GetSessionPassword());
         ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
         ClipboardManager.LoadClipboardHistory(persistedItems);
