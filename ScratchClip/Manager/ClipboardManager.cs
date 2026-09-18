@@ -44,8 +44,12 @@ public static class ClipboardManager
         {
             if (value != null && ClipboardHistory.Contains(value) && CheckingClipboardSignature != value.Signature)
             {
-                _selectedClipboardItem = value;
                 _ = ClipboardServices[value.Format].CopyData(value);
+            }
+
+            if (value != _selectedClipboardItem)
+            {
+                _selectedClipboardItem = value;
                 OnSelectExistingClipboardItem?.Invoke(value);
             }
         }
