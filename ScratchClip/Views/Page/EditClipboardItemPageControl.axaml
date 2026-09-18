@@ -4,11 +4,88 @@
              xmlns:controls="clr-namespace:ScratchClip.Views.Controls"
              xmlns:avaloniaEdit="https://github.com/avaloniaui/avaloniaedit"
              xmlns:converters="clr-namespace:ScratchClip.Converters"
+             xmlns:storageTypeControls="clr-namespace:ScratchClip.Views.Controls.StorageTypeControls"
              x:Class="ScratchClip.Views.Page.EditClipboardItemPageControl"
-             x:DataType="models:TextClipboardItem" >
+             x:DataType="models:AClipboardItem">
+
+    <!--
+        Templates for the different clipboard item types.
+
+        Avalonia chooses the template based on the runtime type
+        of the Content passed to the ContentControl.
+    -->
+    <UserControl.DataTemplates>
+
+        <!-- ========================================================= -->
+        <!-- Text clipboard item                                      -->
+        <!-- ========================================================= -->
+
+        <DataTemplate DataType="{x:Type models:TextClipboardItem}">
+
+            <avaloniaEdit:TextEditor
+                x:Name="ContentTextBox"
+                x:CompileBindings="False"
+                ShowLineNumbers="True"
+                FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+                FontSize="12"
+                Padding="8"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollBarVisibility="Auto">
+
+                <Interaction.Behaviors>
+
+                    <converters:TextEditorBindingBehavior
+                        Text="{Binding Text, Mode=TwoWay}" />
+
+                </Interaction.Behaviors>
+
+            </avaloniaEdit:TextEditor>
+
+        </DataTemplate>
+
+
+        <!-- ========================================================= -->
+        <!-- Image clipboard item                                     -->
+        <!-- ========================================================= -->
+
+        <DataTemplate DataType="{x:Type models:ImageClipboardItem}">
+
+            <Image
+                Source="{Binding Image}"
+                Stretch="Uniform"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+
+        </DataTemplate>
+
+
+        <!-- ========================================================= -->
+        <!-- Storage clipboard item                                   -->
+        <!-- ========================================================= -->
+
+        <DataTemplate DataType="{x:Type models:StorageClipboardItem}">
+
+            <storageTypeControls:StorageItemsViewerControl
+                DataContext="{Binding}" />
+
+        </DataTemplate>
+
+    </UserControl.DataTemplates>
+
+
+    <!-- ============================================================= -->
+    <!-- Main layout                                                   -->
+    <!-- ============================================================= -->
 
     <Grid Margin="10"
           RowDefinitions="Auto,*,Auto">
+
+
+        <!-- ========================================================= -->
+        <!-- Header                                                    -->
+        <!-- ========================================================= -->
 
         <Border Grid.Row="0"
                 Margin="0,0,0,10"
@@ -18,153 +95,216 @@
 
             <StackPanel Spacing="4">
 
-                <TextBlock Text="EDIT CLIPBOARD ITEM"
-                           FontSize="26"
-                           FontWeight="SemiBold" />
+                <TextBlock
+                    Text="EDIT CLIPBOARD ITEM"
+                    FontSize="26"
+                    FontWeight="SemiBold" />
 
-                <TextBlock Text="Edit the contents and tags of this clipboard item."
-                           Opacity="0.65"
-                           FontSize="13" />
+                <TextBlock
+                    Text="Edit the contents and tags of this clipboard item."
+                    Opacity="0.65"
+                    FontSize="13" />
 
             </StackPanel>
+
         </Border>
 
+
+        <!-- ========================================================= -->
+        <!-- Main content                                              -->
+        <!-- ========================================================= -->
 
         <Grid Grid.Row="1"
               RowDefinitions="Auto,Auto,*,Auto">
 
+
+            <!-- ===================================================== -->
+            <!-- Tags                                                  -->
+            <!-- ===================================================== -->
+
             <StackPanel Grid.Row="0"
                         Spacing="12">
-                <TextBlock Text="Tags"
-                           FontSize="12"
-                           FontWeight="SemiBold" />
-                <Border Padding="16"
-                        CornerRadius="8"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                <TextBlock
+                    Text="Tags"
+                    FontSize="12"
+                    FontWeight="SemiBold" />
+
+                <Border
+                    Padding="16"
+                    CornerRadius="8"
+                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
                     <StackPanel Spacing="10">
+
                         <controls:TagEditorControl
                             x:Name="TagEditor"
                             Tags="{Binding Tags, Mode=TwoWay}" />
+
                     </StackPanel>
+
                 </Border>
+
             </StackPanel>
+
+
+            <!-- ===================================================== -->
+            <!-- Note                                                  -->
+            <!-- ===================================================== -->
+
             <StackPanel Grid.Row="1"
                         Margin="0,12"
                         Spacing="12">
-                <TextBlock Text="Note"
-                           FontSize="12"
-                           FontWeight="SemiBold" />
-                <Border Padding="16"
-                        CornerRadius="8"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-                    <TextBox Text="{Binding Note}"/>
+
+                <TextBlock
+                    Text="Note"
+                    FontSize="12"
+                    FontWeight="SemiBold" />
+
+                <Border
+                    Padding="16"
+                    CornerRadius="8"
+                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                    <TextBox
+                        Text="{Binding Note, Mode=TwoWay}" />
+
                 </Border>
+
             </StackPanel>
+
+
+            <!-- ===================================================== -->
+            <!-- Content                                               -->
+            <!-- ===================================================== -->
 
             <Grid Grid.Row="2"
                   RowDefinitions="Auto,*"
                   Margin="0,12">
 
-                <TextBlock Grid.Row="0"
-                           Text="Content"
-                           FontSize="12"
-                           FontWeight="SemiBold"
-                           Margin="0,0,0,12" />
+                <TextBlock
+                    Grid.Row="0"
+                    Text="Content"
+                    FontSize="12"
+                    FontWeight="SemiBold"
+                    Margin="0,0,0,12" />
 
-                <Border Grid.Row="1"
-                        Padding="16"
-                        CornerRadius="8"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
-                    <Grid RowDefinitions="Auto,*">
+                <Border
+                    Grid.Row="1"
+                    Padding="16"
+                    CornerRadius="8"
+                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
-                        <avaloniaEdit:TextEditor
-                            Grid.Row="1"
-                            x:Name="ContentTextBox"
-                            x:CompileBindings="False"
-                            ShowLineNumbers="True"
-                            FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-                            FontSize="12"
-                            Padding="8"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            HorizontalScrollBarVisibility="Auto"
-                            VerticalScrollBarVisibility="Auto">
+                    <!--
+                        The ContentControl receives the current
+                        AClipboardItem.
 
-                            <Interaction.Behaviors>
+                        Avalonia automatically selects one of the
+                        DataTemplates above based on the runtime type:
 
-                                <converters:TextEditorBindingBehavior
-                                    Text="{Binding Text, Mode=TwoWay}" />
+                        TextClipboardItem    -> TextEditor
+                        ImageClipboardItem   -> Image
+                        StorageClipboardItem -> StorageItemsViewerControl
+                    -->
+                    <ContentControl
+                        Content="{Binding}" />
 
-                            </Interaction.Behaviors>
-
-                        </avaloniaEdit:TextEditor>
-                    </Grid>
                 </Border>
+
             </Grid>
 
+
+            <!-- ===================================================== -->
+            <!-- Information                                           -->
+            <!-- ===================================================== -->
 
             <StackPanel Grid.Row="3"
                         Spacing="12">
 
-                <TextBlock Text="Information"
-                           FontSize="12"
-                           FontWeight="SemiBold" />
+                <TextBlock
+                    Text="Information"
+                    FontSize="12"
+                    FontWeight="SemiBold" />
 
-                <Border Padding="16"
-                        CornerRadius="8"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                <Border
+                    Padding="16"
+                    CornerRadius="8"
+                    Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
                     <StackPanel Spacing="8">
 
+
+                        <!-- Created -->
                         <Grid ColumnDefinitions="*,Auto">
 
-                            <TextBlock Text="Created"
-                                       FontWeight="Medium" />
+                            <TextBlock
+                                Text="Created"
+                                FontWeight="Medium" />
 
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding Timestamp,
-                                          StringFormat='{}{0:HH:mm:ss - MMM dd, yyyy}'}"
-                                       Opacity="0.65" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Text="{Binding Timestamp,
+                                    StringFormat='{}{0:HH:mm:ss - MMM dd, yyyy}'}"
+                                Opacity="0.65" />
 
                         </Grid>
 
+
+                        <!-- Display index -->
                         <Grid ColumnDefinitions="*,Auto">
 
-                            <TextBlock Text="Display index"
-                                       FontWeight="Medium" />
+                            <TextBlock
+                                Text="Display index"
+                                FontWeight="Medium" />
 
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding DisplayIndex}"
-                                       Opacity="0.65" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Text="{Binding DisplayIndex}"
+                                Opacity="0.65" />
 
                         </Grid>
+
                     </StackPanel>
+
                 </Border>
+
             </StackPanel>
+
         </Grid>
 
 
-        <!-- Bottom Actions -->
-        <Border Grid.Row="2"
-                Margin="0,10,0,0"
-                Padding="0,10,0,0"
-                BorderThickness="0,1,0,0"
-                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+        <!-- ========================================================= -->
+        <!-- Bottom actions                                            -->
+        <!-- ========================================================= -->
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Spacing="8">
+        <Border
+            Grid.Row="2"
+            Margin="0,10,0,0"
+            Padding="0,10,0,0"
+            BorderThickness="0,1,0,0"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
 
-                <Button Content="Cancel"
-                        Click="OnCancelClick"
-                        Width="100"
-                        IsCancel="True" />
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Spacing="8">
 
-                <Button Content="Save"
-                        Click="OnSaveClick"
-                        Width="100"
-                        Classes="accent" />
+
+                <!-- Cancel -->
+                <Button
+                    Content="Cancel"
+                    Click="OnCancelClick"
+                    Width="100"
+                    IsCancel="True" />
+
+
+                <!-- Save -->
+                <Button
+                    Content="Save"
+                    Click="OnSaveClick"
+                    Width="100"
+                    Classes="accent" />
 
             </StackPanel>
 

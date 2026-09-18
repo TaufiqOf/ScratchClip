@@ -117,7 +117,7 @@ public partial class MenuWindow : Window
     private async void DebounceTimerOnElapsed(object? sender, ElapsedEventArgs e)
     {
         _debounceTimer.Stop();
-        Application.Current.Dispatcher.InvokeAsync(() =>
+        Application.Current?.Dispatcher.InvokeAsync(() =>
         {
             if (HistoryListBoxControl == null)
                 return;
@@ -142,9 +142,16 @@ public partial class MenuWindow : Window
 
     private async void OnDoubleTappedExistingClipboardItem(AClipboardItem obj)
     {
-        await ClipboardManager.SetClipboardItemAsync(obj);
-        this.Close();
-        await _hotkeyService?.SimulatePasteAsync();
+        try
+        {
+            await ClipboardManager.SetClipboardItemAsync(obj);
+            this.Close();
+            _hotkeyService?.SimulatePasteAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
