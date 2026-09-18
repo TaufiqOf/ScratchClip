@@ -19,4 +19,5 @@ public class AppSettings
     public bool IsPinned { get; set; } = false;
     public bool IsReverseOrder { get; set; }
     public string Theme { get; set; }
+    public bool IsFastKeyEnabled { get; set; }
 }

@@ -111,11 +111,13 @@ public partial class MenuWindow : Window
         SearchTextBox.Focus();
     }
 
-    private void DebounceTimerOnElapsed(object? sender, ElapsedEventArgs e)
+    private async void DebounceTimerOnElapsed(object? sender, ElapsedEventArgs e)
     {
         _debounceTimer.Stop();
         Application.Current.Dispatcher.InvokeAsync(() =>
         {
+            if (HistoryListBoxControl == null)
+                return;
             if (_indexNumber.HasValue)
             {
                 var index = _indexNumber.Value - 1;
@@ -123,8 +125,12 @@ public partial class MenuWindow : Window
                     index = 9;
                 if (index < _listViewModel.FilteredHistory.Count)
                 {
-                    HistoryListBoxControl.SelectedItem = _listViewModel.FilteredHistory.FirstOrDefault(x => x.DisplayIndex == _indexNumber.Value);
+                    HistoryListBoxControl.SelectedItem =
+                        _listViewModel.FilteredHistory.FirstOrDefault(x => x.DisplayIndex == _indexNumber.Value);
+                    if (HistoryListBoxControl.SelectedItem is AClipboardItem item)
+                        OnDoubleTappedExistingClipboardItem(item);
                 }
+
                 _indexNumber = null;
             }
         });

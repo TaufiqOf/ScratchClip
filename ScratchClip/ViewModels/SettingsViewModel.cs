@@ -32,6 +32,7 @@ public partial class SettingsViewModel : ObservableObject
         IsAutoStartEnabled = AutoStartManager.IsEnabled();
         IsSaveHistoryOnExitEnabled = settings.IsSaveHistoryOnExitEnabled;
         MaximumItemsInHistory = settings.MaxItemsInHistory;
+        IsFastKeyEnabled = settings.IsFastKeyEnabled;
         IsReverseOrder = settings.IsReverseOrder;
         SelectedTheme = settings.Theme;
         SelectedTheme = settings.Theme switch
@@ -85,6 +86,12 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
+    public bool IsFastKeyEnabled
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+
 
     [RelayCommand]
     private void ClearHotkey()
@@ -125,6 +132,7 @@ public partial class SettingsViewModel : ObservableObject
         settings.IsAutoStartEnabled = AutoStartManager.IsEnabled();
         settings.MaxItemsInHistory = MaximumItemsInHistory;
         settings.IsReverseOrder = IsReverseOrder;
+        settings.IsFastKeyEnabled = IsFastKeyEnabled;
         settings.Theme = SelectedTheme;
         ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
         SettingsManager.Save(settings);

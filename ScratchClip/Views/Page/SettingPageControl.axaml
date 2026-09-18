@@ -127,7 +127,30 @@
                                     VerticalAlignment="Center" />
 
                             </Grid>
+                            <!-- Fast Key -->
+                            <Grid ColumnDefinitions="*,Auto">
 
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="Fast Key"
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Pressing the number of index of the item on the list will select the item, If this option is enabled it will automatically paste the item."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    IsChecked="{Binding IsFastKeyEnabled}"
+                                    VerticalAlignment="Center" />
+
+                            </Grid>
                             <!-- Save history -->
                             <Grid ColumnDefinitions="*,Auto">
 
@@ -152,7 +175,6 @@
                                     VerticalAlignment="Center" />
 
                             </Grid>
-
 
                             <!-- Maximum history -->
                             <Grid

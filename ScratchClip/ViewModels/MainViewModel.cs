@@ -629,9 +629,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
                 ClipboardManager.SelectedClipboardItem = item;
                 OnListSetFocus?.Invoke();
-                // OnHideToTray?.Invoke();
-                // await _hotkeyService.SimulatePasteAsync();
-
+                if(SettingsManager.Load().IsFastKeyEnabled)
+                {
+                    OnHideToTray?.Invoke();
+                    await _hotkeyService.SimulatePasteAsync();
+                }
+                
                 _registerNumber = string.Empty;
             }
             catch (Exception e)
