@@ -21,7 +21,7 @@ namespace ScratchClip;
 
 public class App : Application
 {
-    private const string PipeName = "XClip_IPC_Pipe";
+    private static string PipeName => $"XClip_IPC_Pipe_{Environment.UserName}";
     private const int MaxRootItems = 9;
     private const int MaxItemsPerTag = 50;
     private GlobalHotkeyService? _hotkeyService;

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using ScratchClip.Models;
@@ -233,5 +234,14 @@ public partial class StorageItemsViewerControl : UserControl
             throw new InvalidOperationException(
                 $"{command} failed with exit code " +
                 $"{process.ExitCode}: {error}");
+    }
+
+    private void OnContextRequested(object? sender, ContextRequestedEventArgs e)
+    {
+        if (sender is Border { DataContext: StorageItem item } &&
+            !item.IsValid)
+        {
+            e.Handled = true;
+        }
     }
 }

@@ -7,6 +7,7 @@
              x:Class="ScratchClip.Views.Controls.StorageTypeControls.StorageItemsViewerControl">
     <UserControl.Resources>
         <converters:PathToImageConverter x:Key="PathToImageConverter" />
+        <converters:StorageTypeToVisibilityConverter x:Key="StorageTypeToVisibilityConverter" />
     </UserControl.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                   VerticalScrollBarVisibility="Auto">
@@ -28,7 +29,10 @@
                             Height="95"
                             Padding="5"
                             CornerRadius="6"
+                            ContextRequested="OnContextRequested"
                             Background="Transparent">
+
+       
 
                         <Border.ContextFlyout>
                             <MenuFlyout>
@@ -37,54 +41,42 @@
                                 <MenuItem Header="Open"
                                           CommandParameter="{Binding}"
                                           Click="OpenFile_Click">
-
                                     <MenuItem.Icon>
                                         <avalonia:FluentIcon Icon="Open"
                                                              FontSize="18" />
                                     </MenuItem.Icon>
-
                                 </MenuItem>
-
 
                                 <!-- Copy -->
                                 <MenuItem Header="Copy"
                                           CommandParameter="{Binding}"
                                           Click="CopyFile_Click">
-
                                     <MenuItem.Icon>
                                         <avalonia:FluentIcon Icon="Copy"
                                                              FontSize="18" />
                                     </MenuItem.Icon>
-
                                 </MenuItem>
-
 
                                 <!-- Move -->
                                 <MenuItem Header="Move"
                                           CommandParameter="{Binding}"
                                           Click="MoveFile_Click">
-
                                     <MenuItem.Icon>
                                         <avalonia:FluentIcon Icon="ArrowMove"
                                                              FontSize="18" />
                                     </MenuItem.Icon>
-
                                 </MenuItem>
 
-
                                 <Separator />
-
 
                                 <!-- Delete -->
                                 <MenuItem Header="Delete"
                                           CommandParameter="{Binding}"
                                           Click="DeleteFile_Click">
-
                                     <MenuItem.Icon>
                                         <avalonia:FluentIcon Icon="Delete"
                                                              FontSize="18" />
                                     </MenuItem.Icon>
-
                                 </MenuItem>
 
                             </MenuFlyout>
@@ -101,11 +93,15 @@
                                 <Grid IsVisible="{Binding IsSvg}">
 
                                     <!-- SVG file -->
-                                    <Border IsVisible="{Binding IsFile}"
-                                            Background="White"
-                                            Width="50"
-                                            Height="62"
-                                            CornerRadius="4">
+                                    <Grid.Resources>
+                                        <converters:StorageTypeToBrushConverter x:Key="StorageTypeToBrushConverter" />
+                                    </Grid.Resources>
+                                    <Border
+                                        IsVisible="{Binding Type, Converter={StaticResource StorageTypeToVisibilityConverter}, ConverterParameter={x:Static models:StorageType.File}}"
+                                        Background="{Binding Type, Converter={StaticResource StorageTypeToBrushConverter}, ConverterParameter={x:Static Colors.White}}"
+                                        Width="50"
+                                        Height="62"
+                                        CornerRadius="4">
 
                                         <Image
                                             Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
@@ -117,11 +113,12 @@
                                     </Border>
 
                                     <!-- SVG folder -->
-                                    <Border IsVisible="{Binding IsFolder}"
-                                            Background="CadetBlue"
-                                            Width="62"
-                                            Height="50"
-                                            CornerRadius="4">
+                                    <Border
+                                        IsVisible="{Binding Type, Converter={StaticResource StorageTypeToVisibilityConverter}, ConverterParameter={x:Static models:StorageType.Folder}}"
+                                        Background="{Binding Type, Converter={StaticResource StorageTypeToBrushConverter}, ConverterParameter={x:Static Colors.Teal}}"
+                                        Width="62"
+                                        Height="50"
+                                        CornerRadius="4">
 
                                         <Image
                                             Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"

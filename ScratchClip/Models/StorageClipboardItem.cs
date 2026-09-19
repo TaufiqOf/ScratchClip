@@ -177,7 +177,7 @@ public partial class StorageClipboardItem : AClipboardItem
 
         if (Directory.Exists(storageItem)) return StorageType.Folder;
 
-        throw new FileNotFoundException($"The storage item '{storageItem}' does not exist.");
+        return StorageType.Invalid;
     }
 
     public override async Task<object?> GetData()

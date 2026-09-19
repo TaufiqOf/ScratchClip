@@ -2,10 +2,11 @@ using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Media;
+using ScratchClip.Models;
 
 namespace ScratchClip.Converters;
 
-public class FileFolderBackgroundConverter : IValueConverter
+public class StorageTypeToBrushConverter : IValueConverter
 {
     public object? Convert(
         object? value,
@@ -13,10 +14,16 @@ public class FileFolderBackgroundConverter : IValueConverter
         object? parameter,
         CultureInfo culture)
     {
-        if (value is bool isFile)
-            return isFile ? Brushes.White : Brushes.CornflowerBlue;
+        
+        if (value is StorageType storageItem)
+        {
+            if(storageItem == StorageType.Invalid)
+                return new SolidColorBrush(Colors.LightPink);
+            if (parameter is Color color)
+                return new SolidColorBrush(color);
+        }
 
-        return Brushes.Transparent;
+        return new SolidColorBrush(Colors.LightPink);
     }
 
     public object? ConvertBack(
