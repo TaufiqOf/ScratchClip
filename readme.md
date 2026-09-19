@@ -176,26 +176,26 @@ When password protection is enabled:
 
 | Dark Theme | Light Theme |
 |:---:|:---:|
-| ![ScratchClip main window](Docs/dark-1.1.png) | ![ScratchClip light theme](Docs/light-1.1.png) |
+| ![ScratchClip main window](Docs/dark-1.2.png) | ![ScratchClip light theme](Docs/light-1.2.png) |
 
 ### Views
 
 | Compact View | Menu View |
 |:---:|:---:|
-| ![ScratchClip compact view](Docs/dark-2.1.png) | ![ScratchClip menu view](Docs/dark-3.png) |
+| ![ScratchClip compact view](Docs/dark-2.2.png) | ![ScratchClip menu view](Docs/dark-3.2.png) |
 
 ### Editing & Settings
 
 | Edit | Settings |
 |:---:|:---:|
-| ![ScratchClip edit](Docs/dark-5.png) | ![ScratchClip settings](Docs/dark-4.png) |
+| ![ScratchClip edit](Docs/dark-5.2.png) | ![ScratchClip settings](Docs/dark-4.2.png) |
 
 ### Files & Folders &  Context Menu
 
 
 | File and Folder support |          Context Menu          |
 |:---:|:------------------------------:|
-| ![ScratchClip file and folder support](Docs/dark-6.png)| ![Context Menu](Docs/menu.png) |
+| ![ScratchClip file and folder support](Docs/dark-7.2.png)| ![Context Menu](Docs/dark-6.2.png) |
 
 ---
 
