@@ -1,0 +1,4 @@
+site_name: ScratchClip
+nav:
+  - Home: index.md
+  - About: about.md
