@@ -25,7 +25,8 @@
 
                     <!-- Existing tags -->
 
-                    <ItemsControl ItemsSource="{Binding Tags,
+                    <ItemsControl
+                        ItemsSource="{Binding Tags,
                                                         ElementName=TagEditor}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -92,18 +93,18 @@
                               PlaceholderText="Select or type tag..."
                               VerticalAlignment="Center"
                               VerticalContentAlignment="Center" />
-                    <Button 
-                            Command="{Binding AddTagCommand,
+                    <Button
+                        Command="{Binding AddTagCommand,
                                       ElementName=TagEditor}"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Padding="5"
-                            Width="30"
-                            Height="30"
-                            VerticalContentAlignment="Center"
-                            HorizontalContentAlignment="Center"
-                            VerticalAlignment="Center"
-                            ToolTip.Tip="Add tag">
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="5"
+                        Width="30"
+                        Height="30"
+                        VerticalContentAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalAlignment="Center"
+                        ToolTip.Tip="Add tag">
 
                         <TextBlock Text="+"
                                    FontSize="18"
@@ -118,7 +119,6 @@
 
             <!-- Add -->
 
-  
 
         </Grid>
 

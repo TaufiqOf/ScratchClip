@@ -15,17 +15,16 @@ namespace ScratchClip.Models;
 
 public abstract partial class AClipboardItem : ViewModelBase
 {
+    [ObservableProperty] private bool _isEditButtonVisible = true;
+
     public Action<AClipboardItem>? OnEdit { get; set; }
     public Action<AClipboardItem>? OnDelete { get; set; }
-    
+
     public Action<AClipboardItem>? OnDoubleTapped { get; set; }
 
-    public ObservableCollection<string> Tags { get; set; } = new ObservableCollection<string>();
-    
+    public ObservableCollection<string> Tags { get; set; } = new();
+
     public ClipboardType ClipboardType { get; set; }
-    
-    [ObservableProperty]
-    private bool _isEditButtonVisible = true;
 
     public bool IsPinned
     {
@@ -37,11 +36,7 @@ public abstract partial class AClipboardItem : ViewModelBase
         }
     } = false;
 
-    public abstract Task<object?> GetData();
-
     public abstract string SuggestedFile { get; }
-
-    public abstract Task OpenItem();
 
 
     public string Text
@@ -107,10 +102,14 @@ public abstract partial class AClipboardItem : ViewModelBase
             OnPropertyChanged();
         }
     } = DateTime.Now;
-    
+
     public string? Note { get; set; } = null;
-    
-    public List<string>? MataData { get; set; } = new List<string>();
+
+    public List<string>? MataData { get; set; } = new();
+
+    public abstract Task<object?> GetData();
+
+    public abstract Task OpenItem();
 
 
     [RelayCommand]
@@ -215,6 +214,7 @@ public abstract partial class AClipboardItem : ViewModelBase
             Console.WriteLine(e);
         }
     }
+
     [RelayCommand]
     public async Task Open()
     {

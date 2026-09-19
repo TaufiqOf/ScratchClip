@@ -7,10 +7,14 @@ namespace ScratchClip.Views.Controls.MenuItemControls;
 
 public partial class BaseMenuItemControl : UserControl
 {
-    
     public static readonly StyledProperty<Control?> ItemContentProperty =
         AvaloniaProperty.Register<BaseMenuItemControl, Control?>(
             nameof(ItemContent));
+
+    public BaseMenuItemControl()
+    {
+        InitializeComponent();
+    }
 
     public Control? ItemContent
     {
@@ -18,16 +22,9 @@ public partial class BaseMenuItemControl : UserControl
         set => SetValue(ItemContentProperty, value);
     }
 
-    public BaseMenuItemControl()
-    {
-        InitializeComponent();
-    }
     private async void OnDoubleTapped(object? sender, RoutedEventArgs e)
     {
-        if(DataContext is AClipboardItem clipboardItem)
-        {
-            await clipboardItem.OnDoubleTappedAsync();
-        }
+        if (DataContext is AClipboardItem clipboardItem) await clipboardItem.OnDoubleTappedAsync();
 
         e.Handled = true;
     }

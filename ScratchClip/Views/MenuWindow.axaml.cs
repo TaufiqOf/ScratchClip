@@ -15,36 +15,29 @@ using ScratchClip.Models.TextType;
 using ScratchClip.Services;
 using ScratchClip.ViewModels;
 
-
 namespace ScratchClip.Views;
 
 public partial class MenuWindow : Window
 {
+    private const int FuzzyThreshold = 60;
+    private readonly Timer _debounceTimer = new(600);
     private readonly GlobalHotkeyService? _hotkeyService;
     private readonly ListViewModel _listViewModel;
-    private readonly Timer _debounceTimer = new Timer(600);
     private int? _indexNumber;
-    private const int FuzzyThreshold = 60;
-
-    private ListBox? HistoryListBoxControl =>
-        this.MenuViewModeControl
-            .GetVisualDescendants()
-            .OfType<ListBox>()
-            .FirstOrDefault(x => x.Name == "ListBox");
 
     public MenuWindow(GlobalHotkeyService? hotkeyService)
     {
         _hotkeyService = hotkeyService;
         InitializeComponent();
-        this.Deactivated += OnWindowDeactivated;
+        Deactivated += OnWindowDeactivated;
         _listViewModel = new ListViewModel
         {
             FilteredHistory = new ObservableCollection<AClipboardItem>()
         };
         MenuViewModeControl.DataContext = _listViewModel;
 
-        ClipboardManager.OnClipboardItemAdded += (item) => { Search(); };
-        ClipboardManager.OnRemoveExistingClipboardItem += (item) => { Search(); };
+        ClipboardManager.OnClipboardItemAdded += item => { Search(); };
+        ClipboardManager.OnRemoveExistingClipboardItem += item => { Search(); };
         ClipboardManager.OnClearExistingClipboardItem += () => { Search(); };
 
         ClipboardManager.OnDoubleTappedExistingClipboardItem += OnDoubleTappedExistingClipboardItem;
@@ -54,6 +47,12 @@ public partial class MenuWindow : Window
         Search();
     }
 
+    private ListBox? HistoryListBoxControl =>
+        MenuViewModeControl
+            .GetVisualDescendants()
+            .OfType<ListBox>()
+            .FirstOrDefault(x => x.Name == "ListBox");
+
 
     private void OnWindowKeyDown(object? sender, KeyEventArgs e)
     {
@@ -62,7 +61,7 @@ public partial class MenuWindow : Window
             if (_listViewModel.SelectedItem != null)
             {
                 _ = ClipboardManager.SetClipboardItemAsync(_listViewModel.SelectedItem);
-                this.Close();
+                Close();
                 _ = _hotkeyService?.SimulatePasteAsync();
             }
         }
@@ -75,9 +74,7 @@ public partial class MenuWindow : Window
             {
                 listBox.Focus();
                 if (listBox.SelectedItem == null && listBox.SelectedIndex < 0 && listBox.ItemCount > 0)
-                {
                     listBox.SelectedIndex = 0;
-                }
 
                 if (listBox.SelectedItem != null)
                 {
@@ -90,7 +87,7 @@ public partial class MenuWindow : Window
         }
         else if (e.Key == Key.Escape)
         {
-            this.Close();
+            Close();
         }
         else
         {
@@ -145,7 +142,7 @@ public partial class MenuWindow : Window
         try
         {
             await ClipboardManager.SetClipboardItemAsync(obj);
-            this.Close();
+            Close();
             _hotkeyService?.SimulatePasteAsync();
         }
         catch (Exception e)
@@ -156,7 +153,7 @@ public partial class MenuWindow : Window
 
     private void OnWindowDeactivated(object? sender, EventArgs e)
     {
-        this.Close();
+        Close();
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)
@@ -219,10 +216,7 @@ public partial class MenuWindow : Window
 
     private void HideEditButtons()
     {
-        foreach (var item in _listViewModel.FilteredHistory)
-        {
-            item.IsEditButtonVisible = false;
-        }
+        foreach (var item in _listViewModel.FilteredHistory) item.IsEditButtonVisible = false;
     }
 
 
@@ -231,9 +225,7 @@ public partial class MenuWindow : Window
         if (SettingsManager.Load().IsReverseOrder)
         {
             for (var i = 0; i < _listViewModel.FilteredHistory.Count; i++)
-            {
                 _listViewModel.FilteredHistory[i].DisplayIndex = i + 1;
-            }
 
             return;
         }

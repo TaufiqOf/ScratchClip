@@ -15,6 +15,16 @@ namespace ScratchClip.Models.TextType;
 
 public partial class WebsiteTextType : ATextType
 {
+    private static readonly HttpClient MetadataClient = new()
+    {
+        Timeout = TimeSpan.FromSeconds(4)
+    };
+
+
+    static WebsiteTextType()
+    {
+        MetadataClient.DefaultRequestHeaders.UserAgent.ParseAdd("ScratchClip/1.0 (+https://localhost)");
+    }
 
     public WebsiteTextType(string text, ObservableCollection<string> tags, List<string>? _) : base(text, tags)
     {
@@ -23,32 +33,6 @@ public partial class WebsiteTextType : ATextType
 
     public override string DisplayName => "WEBSITE";
     public override string SuggestedExtension => ".html";
-
-
-    static WebsiteTextType()
-    {
-        MetadataClient.DefaultRequestHeaders.UserAgent.ParseAdd("ScratchClip/1.0 (+https://localhost)");
-    }
-
-    private static readonly HttpClient MetadataClient = new()
-    {
-        Timeout = TimeSpan.FromSeconds(4)
-    };
-
-    public override bool IsMatch(string text)
-    {
-        return TryGetWebsiteUri(text, out _);
-    }
-
-    public override async Task PopulateMetadataAsync(string text)
-    {
-        await PopulateWebsiteMetadataAsync();
-    }
-
-    public override Task UpdateTagsAsync(string text)
-    {
-        return Task.CompletedTask;
-    }
 
     public Bitmap? WebsiteIcon
     {
@@ -73,9 +57,6 @@ public partial class WebsiteTextType : ATextType
                 WebsiteTitle = string.Empty;
                 WebsiteDescription = string.Empty;
                 WebsiteHost = string.Empty;
-            }
-            else
-            {
             }
 
             OnPropertyChanged();
@@ -114,6 +95,21 @@ public partial class WebsiteTextType : ATextType
             OnPropertyChanged();
         }
     } = string.Empty;
+
+    public override bool IsMatch(string text)
+    {
+        return TryGetWebsiteUri(text, out _);
+    }
+
+    public override async Task PopulateMetadataAsync(string text)
+    {
+        await PopulateWebsiteMetadataAsync();
+    }
+
+    public override Task UpdateTagsAsync(string text)
+    {
+        return Task.CompletedTask;
+    }
 
     [RelayCommand]
     private void OpenWebsite()
@@ -174,15 +170,12 @@ public partial class WebsiteTextType : ATextType
         var candidates = new List<Uri>();
 
         foreach (var href in ExtractIconHrefs(html))
-        {
             if (TryBuildUri(baseUri, href, out var iconUri))
                 candidates.Add(iconUri);
-        }
 
         candidates.Add(new Uri(baseUri, "/favicon.ico"));
 
         foreach (var iconUri in candidates)
-        {
             try
             {
                 var bytes = await MetadataClient.GetByteArrayAsync(iconUri);
@@ -197,7 +190,6 @@ public partial class WebsiteTextType : ATextType
             {
                 // Try next candidate.
             }
-        }
 
         WebsiteIcon = null;
     }
@@ -247,9 +239,7 @@ public partial class WebsiteTextType : ATextType
             if (rel.Contains("icon", StringComparison.OrdinalIgnoreCase) ||
                 rel.Contains("apple-touch-icon", StringComparison.OrdinalIgnoreCase) ||
                 rel.Contains("shortcut icon", StringComparison.OrdinalIgnoreCase))
-            {
                 yield return href;
-            }
         }
     }
 

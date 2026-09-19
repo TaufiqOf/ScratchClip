@@ -15,8 +15,8 @@ public class StorageToTextConverter : IValueConverter
     {
         if (value is ICollection<string> values)
         {
-            int count = values.Count;
-            string type = parameter?.ToString() ?? "Items";
+            var count = values.Count;
+            var type = parameter?.ToString() ?? "Items";
 
             return $"({count} {type})";
         }

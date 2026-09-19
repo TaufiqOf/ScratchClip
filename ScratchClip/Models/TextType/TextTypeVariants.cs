@@ -241,7 +241,7 @@ public class CodeTextType : ATextType
 
         // General code heuristics.
         var words = trimmed.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
-        
+
         var keywordMatches = Regex.Matches(
             trimmed,
             @"\b(class|interface|struct|enum|namespace|public|private|protected|internal|using|return|function|def|let|const|var|import|export|async|await|new|void|static|fn|func|package|impl|trait)\b",
@@ -286,7 +286,7 @@ public class CodeTextType : ATextType
     {
         // 1. Check for standard sentence structure ending with punctuation
         var sentenceCount = Regex.Matches(text, @"\b[A-Z][^.!?]*[.!?]").Count;
-        
+
         // 2. High space-to-symbol ratio (prose has mostly letters and spaces, few syntax characters)
         var letterOrSpaceCount = text.Count(c => char.IsLetter(c) || char.IsWhiteSpace(c));
         var symbolCount = text.Count(c => !char.IsLetterOrDigit(c) && !char.IsWhiteSpace(c));
@@ -343,10 +343,7 @@ public class CodeTextType : ATextType
 
     public override Task UpdateTagsAsync(string text)
     {
-        if (!string.IsNullOrEmpty(DetectedLanguage))
-        {
-            Tags.Add(DetectedLanguage);
-        }
+        if (!string.IsNullOrEmpty(DetectedLanguage)) Tags.Add(DetectedLanguage);
         return Task.CompletedTask;
     }
 
@@ -355,7 +352,6 @@ public class CodeTextType : ATextType
         var candidates = new List<DetectionResult>();
 
         foreach (var definition in Languages)
-        {
             try
             {
                 var result = DetectLanguageWithParser(source, definition);
@@ -371,7 +367,6 @@ public class CodeTextType : ATextType
                     $"Tree-sitter failed for {definition.Name}: {ex.Message}"
                 );
             }
-        }
 
         return candidates
             .OrderByDescending(x => x.Confidence)
@@ -389,7 +384,7 @@ public class CodeTextType : ATextType
 
         using var parser = new Parser(language);
         using var tree = parser.Parse(source);
-        if(tree == null)
+        if (tree == null)
             return null;
         var root = tree.RootNode;
 
@@ -448,8 +443,8 @@ public class CodeTextType : ATextType
 
         var score =
             1.0 -
-            (errorRatio * 1.5) -
-            (missingRatio * 0.75);
+            errorRatio * 1.5 -
+            missingRatio * 0.75;
 
         return Math.Clamp(score, 0, 1);
     }
@@ -469,14 +464,12 @@ public class CodeTextType : ATextType
             missingNodes++;
 
         for (var i = 0; i < node.Children.Count; i++)
-        {
             CountSyntaxNodes(
                 node.Children[i],
                 ref totalNodes,
                 ref errorNodes,
                 ref missingNodes
             );
-        }
     }
 
     private static double CalculateFingerprintScore(
@@ -499,14 +492,11 @@ public class CodeTextType : ATextType
 
             // Plain identifier/keyword
             if (Regex.IsMatch(trimmed, @"^\w+$"))
-            {
                 matched = Regex.IsMatch(
                     source,
                     $@"\b{Regex.Escape(trimmed)}\b",
                     RegexOptions.IgnoreCase);
-            }
             else
-            {
                 // Literal code fragment such as:
                 // "using "
                 // "Console."
@@ -515,7 +505,6 @@ public class CodeTextType : ATextType
                 matched = source.Contains(
                     trimmed,
                     StringComparison.OrdinalIgnoreCase);
-            }
 
             if (matched)
                 matches++;

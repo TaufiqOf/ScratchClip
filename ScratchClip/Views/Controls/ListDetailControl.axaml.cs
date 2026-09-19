@@ -8,5 +8,4 @@ public partial class ListDetailControl : UserControl
     {
         InitializeComponent();
     }
-    
 }

@@ -11,13 +11,13 @@ public class TextEditorBindingBehavior : Behavior<TextEditor>
         AvaloniaProperty.Register<TextEditorBindingBehavior, string?>(
             nameof(Text));
 
+    private bool _updating;
+
     public string? Text
     {
         get => GetValue(TextProperty);
         set => SetValue(TextProperty, value);
     }
-
-    private bool _updating;
 
     protected override void OnAttached()
     {
@@ -65,9 +65,7 @@ public class TextEditorBindingBehavior : Behavior<TextEditor>
         if (change.Property != TextProperty ||
             AssociatedObject == null ||
             _updating)
-        {
             return;
-        }
 
         _updating = true;
 

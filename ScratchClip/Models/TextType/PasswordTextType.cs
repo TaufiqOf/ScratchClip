@@ -25,25 +25,25 @@ public class PasswordTextType : ATextType
 
     public override bool IsMatch(string text)
     {
-        if(text.Contains(" "))
+        if (text.Contains(" "))
             return false;
         if (string.IsNullOrWhiteSpace(text))
             return false;
         var trimmed = text.Trim();
-        
+
         // Passwords almost never contain internal whitespace
         if (trimmed.Any(char.IsWhiteSpace))
             return false;
-        
+
         // Reject standard code syntax immediately
         if (LooksLikeCodeSnippet(trimmed))
             return false;
-        
+
         var confidence = CalculatePasswordProbability(trimmed);
-        
+
         if (confidence < MinimumConfidence)
             return false;
-        
+
         DetectionConfidence = confidence;
         return true;
     }
@@ -69,7 +69,9 @@ public class PasswordTextType : ATextType
             return true;
 
         // 3. Common programming keywords / PascalCase / CamelCase code structures
-        if (Regex.IsMatch(input, @"\b(public|private|protected|internal|class|void|string|int|bool|return|using|namespace|import|function|def|let|const|var|if|else|for|while)\b", RegexOptions.IgnoreCase))
+        if (Regex.IsMatch(input,
+                @"\b(public|private|protected|internal|class|void|string|int|bool|return|using|namespace|import|function|def|let|const|var|if|else|for|while)\b",
+                RegexOptions.IgnoreCase))
             return true;
 
         // 4. Typical dot-notation code identifier (e.g., Tags.Add, CalculateFingerprintScore)
@@ -111,10 +113,8 @@ public class PasswordTextType : ATextType
         // 4. Character Switch Transitions
         var transitions = 0;
         for (var i = 0; i < length - 1; i++)
-        {
             if (GetCharCategory(input[i]) != GetCharCategory(input[i + 1]))
                 transitions++;
-        }
         var transitionRatio = (double)transitions / (length - 1);
 
         // 5. Pattern Penalties
@@ -145,10 +145,10 @@ public class PasswordTextType : ATextType
         if (nonAlphaRatio >= 0.30)
             bonus += 0.15;
 
-        var baseScore = (normalizedEntropy * 0.30) + 
-                        (diversityScore * 0.35) + 
-                        (transitionRatio * 0.25) + 
-                        (nonAlphaRatio * 0.10);
+        var baseScore = normalizedEntropy * 0.30 +
+                        diversityScore * 0.35 +
+                        transitionRatio * 0.25 +
+                        nonAlphaRatio * 0.10;
 
         var finalScore = baseScore - penalty + bonus;
 

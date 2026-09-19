@@ -9,13 +9,10 @@ public class StorageItem : ViewModelBase
     private string _filePath = string.Empty;
     private string? _iconPath;
 
-    public StorageItem()
-    {
-    }
     public string FilePath
     {
         get => _filePath;
-        private set 
+        private set
         {
             _filePath = value;
             OnPropertyChanged();
@@ -44,7 +41,7 @@ public class StorageItem : ViewModelBase
     public string? IconPath
     {
         get => _iconPath;
-        set 
+        set
         {
             _iconPath = value;
             IsSvg = string.Equals(

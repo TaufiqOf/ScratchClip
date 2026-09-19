@@ -28,7 +28,7 @@ internal class ImageClipboardService : AClipboardService
             Format = ClipboardDataFormat.Image,
             Timestamp = DateTime.Now,
             DisplayText = "Image",
-            MataData= clipboardData?.Formats.Select(f => f.Identifier).ToList()?? new List<string>(),
+            MataData = clipboardData?.Formats.Select(f => f.Identifier).ToList() ?? new List<string>(),
             Image = bitmap
         };
     }
@@ -78,6 +78,7 @@ internal class ImageClipboardService : AClipboardService
             return false;
         return await BitmapsAreEqual(imageItem.Image, imageData);
     }
+
     private static async Task<bool> BitmapsAreEqual(Bitmap a, Bitmap b)
     {
         if (a.PixelSize != b.PixelSize)

@@ -25,13 +25,13 @@ public class ImageClipboardItem : AClipboardItem
         }
     }
 
+    public override string SuggestedFile { get; } = "image.png";
+
 
     public override Task<object?> GetData()
     {
         return Task.FromResult<object?>(Image);
     }
-
-    public override string SuggestedFile { get; } = "image.png";
 
     public override void Delete()
     {

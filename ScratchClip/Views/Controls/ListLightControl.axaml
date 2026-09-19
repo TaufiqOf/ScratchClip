@@ -7,7 +7,6 @@
              x:Class="ScratchClip.Views.Controls.ListLightControl">
 
 
-
     <UserControl.Styles>
         <!-- Flat Reveal Button Styling -->
         <Style Selector="ToggleButton.listRevealBtn">
@@ -27,8 +26,8 @@
     </UserControl.Styles>
 
     <!-- Clipboard List -->
-    <Grid >
-         <ListBox x:Name="ListBox"
+    <Grid>
+        <ListBox x:Name="ListBox"
                  ItemsSource="{Binding FilteredHistory}"
                  SelectionMode="Single"
                  SelectedItem="{Binding SelectedItem, Mode=TwoWay}">

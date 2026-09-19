@@ -8,5 +8,4 @@ public partial class StorageItemsControl : UserControl
     {
         InitializeComponent();
     }
-
 }

@@ -12,23 +12,18 @@ namespace ScratchClip.Views.Page;
 
 public partial class SettingPageControl : UserControl
 {
-    public event EventHandler? CloseRequested;
-
     public SettingPageControl()
     {
         InitializeComponent();
         UpdatePasswordControls();
         AddHandler(KeyDownEvent, InputElementOnKeyDown, RoutingStrategies.Tunnel);
-
     }
+
+    public event EventHandler? CloseRequested;
 
     private void InputElementOnKeyDown(object? sender, KeyEventArgs e)
     {
-        if(e.Key== Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
-        {
-            OnSaveClick(sender, new RoutedEventArgs());
-
-        }
+        if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control)) OnSaveClick(sender, new RoutedEventArgs());
     }
 
 
@@ -41,9 +36,7 @@ public partial class SettingPageControl : UserControl
                 $"Vc{key}",
                 true,
                 out keyCode))
-        {
             return true;
-        }
 
         // Avalonia D0-D9 -> SharpHook Vc0-Vc9.
         if (key >= Key.D0 && key <= Key.D9)
@@ -131,13 +124,14 @@ public partial class SettingPageControl : UserControl
 
         PasswordStatusText.IsVisible = false;
     }
-    
+
     private void ShowPasswordStatus(string message)
     {
         NotificationHelper.Success(
             "Password status",
             message);
     }
+
     private void SetPasswordButtonOnClick(
         object? sender,
         RoutedEventArgs e)
@@ -188,6 +182,7 @@ public partial class SettingPageControl : UserControl
                 "Unable to save the password.");
         }
     }
+
     private void DeletePasswordButtonOnClick(
         object? sender,
         RoutedEventArgs e)
@@ -198,7 +193,7 @@ public partial class SettingPageControl : UserControl
         ConfirmPasswordTextBox.Clear();
 
         UpdatePasswordControls();
-        
+
         var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot();
         ClipboardHistoryManager.Save(clipboardHistory, ApplicationKeyStore.GetSessionPassword());
         ShowPasswordStatus("Password removed.");
@@ -221,9 +216,7 @@ public partial class SettingPageControl : UserControl
             Key.RightShift or
             Key.LWin or
             Key.RWin)
-        {
             return;
-        }
 
         var mask = EventMask.None;
 
@@ -253,7 +246,6 @@ public partial class SettingPageControl : UserControl
     }
 
 
-    
     private void HotkeyTextBox_OnKeyDown(
         object? sender,
         KeyEventArgs e)
@@ -273,9 +265,7 @@ public partial class SettingPageControl : UserControl
             Key.RightShift or
             Key.LWin or
             Key.RWin)
-        {
             return;
-        }
 
         var mask = EventMask.None;
 
@@ -303,6 +293,4 @@ public partial class SettingPageControl : UserControl
             keyCode,
             display);
     }
-
-
 }

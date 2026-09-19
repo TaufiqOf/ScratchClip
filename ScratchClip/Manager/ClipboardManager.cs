@@ -24,8 +24,9 @@ public static class ClipboardManager
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
 
     private static AClipboardItem? _selectedClipboardItem;
-    public static bool IsLoaded { get; set; } = false;
-    public static int MaxItemsInHistory { get; set; } = 20;
+
+    public static bool IsCheckingClipboard;
+    public static string CheckingClipboardSignature = string.Empty;
 
     static ClipboardManager()
     {
@@ -35,6 +36,9 @@ public static class ClipboardManager
         ClipboardServices[ClipboardDataFormat.Storage] = new StorageClipboardService();
     }
 
+    public static bool IsLoaded { get; set; } = false;
+    public static int MaxItemsInHistory { get; set; } = 20;
+
     public static List<AClipboardItem> ClipboardHistory { get; } = new();
 
     public static AClipboardItem? SelectedClipboardItem
@@ -43,9 +47,7 @@ public static class ClipboardManager
         set
         {
             if (value != null && ClipboardHistory.Contains(value) && CheckingClipboardSignature != value.Signature)
-            {
                 _ = ClipboardServices[value.Format].CopyData(value);
-            }
 
             if (value != _selectedClipboardItem)
             {
@@ -84,24 +86,16 @@ public static class ClipboardManager
         return null;
     }
 
-    public static bool IsCheckingClipboard = false;
-    public static string CheckingClipboardSignature = string.Empty;
-
     public static void UpdateSignature(AClipboardItem item)
     {
-        if(item is TextClipboardItem textItem)
-        {
+        if (item is TextClipboardItem textItem)
             _ = ClipboardServices[ClipboardDataFormat.Text].CreateSignature(textItem);
-        }
-        else if(item is ImageClipboardItem imageItem)
-        {
+        else if (item is ImageClipboardItem imageItem)
             _ = ClipboardServices[ClipboardDataFormat.Image].CreateSignature(imageItem);
-        }
-        else if(item is StorageClipboardItem storageItem)
-        {
+        else if (item is StorageClipboardItem storageItem)
             _ = ClipboardServices[ClipboardDataFormat.Storage].CreateSignature(storageItem);
-        }
     }
+
     public static async Task CheckClipboard()
     {
         if (IsCheckingClipboard)

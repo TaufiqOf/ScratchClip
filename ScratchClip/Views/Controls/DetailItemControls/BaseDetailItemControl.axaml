@@ -11,7 +11,7 @@
         <converters:PinIconConverter x:Key="PinIconConverter" />
     </UserControl.Resources>
 
-    <Grid RowDefinitions="*,Auto" 
+    <Grid RowDefinitions="*,Auto"
           Background="Transparent"
           DoubleTapped="OnDoubleTapped">
 
@@ -68,11 +68,12 @@
                             Margin="8,0"
                             VerticalAlignment="Center">
 
-                    <TextBlock Text="{Binding Timestamp,
+                    <TextBlock
+                        Text="{Binding Timestamp,
                                               StringFormat='{}{0:HH:mm:ss - MMM dd}'}"
-                               FontSize="11"
-                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                               VerticalAlignment="Center" />
+                        FontSize="11"
+                        Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                        VerticalAlignment="Center" />
 
 
                     <ItemsControl ItemsSource="{Binding Tags}">
@@ -103,16 +104,16 @@
                 <!-- Pin -->
                 <!-- ================================= -->
                 <ToggleButton Grid.Column="2"
-                        IsChecked="{Binding IsPinned, Mode=TwoWay}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        CornerRadius="3"
-                        Padding="5"
-                        Width="26"
-                        Height="26"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        ToolTip.Tip="Toggle Pinned(Ctrl+P)">
+                              IsChecked="{Binding IsPinned, Mode=TwoWay}"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              CornerRadius="3"
+                              Padding="5"
+                              Width="26"
+                              Height="26"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center"
+                              ToolTip.Tip="Toggle Pinned(Ctrl+P)">
 
                     <avalonia:FluentIcon
                         Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
@@ -199,7 +200,7 @@
                                          FontSize="14" />
 
                 </Button>
-           
+
             </Grid>
         </Border>
     </Grid>

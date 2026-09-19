@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -27,32 +28,32 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 {
     private const int FuzzyThreshold = 60;
 
-    private readonly GlobalHotkeyService _hotkeyService;
-    private readonly Timer _searchDebounceTimer;
-    private readonly Timer _timer;
-    private readonly Timer _monitorTimer;
-
-    private CancellationToken _token;
+    private readonly SemaphoreSlim _clipboardCheckLock = new(1, 1);
 
     private readonly List<AClipboardItem> _historyItems = new();
 
+    private readonly GlobalHotkeyService _hotkeyService;
+    private readonly ListViewModel _listViewModel;
+    private readonly Timer _monitorTimer;
+    private readonly Timer _searchDebounceTimer;
+    private readonly Timer _timer;
+
     public Action? OnHideToTray;
-    public Action? OnOpenSettings;
-    public Action? OnShowLockPage;
-    public Action<AClipboardItem>? OnShowEditPage;
     public Action? OnListSetFocus;
+    public Action? OnOpenSettings;
+    public Action<AClipboardItem>? OnShowEditPage;
+    public Action? OnShowLockPage;
 
     public Action<bool>? OnTopMostChanged;
     private bool _isUpdatingTagOptions;
     private CancellationTokenSource? _monitorCts;
     private string _registerNumber = string.Empty;
-    private readonly ListViewModel _listViewModel;
 
-    private readonly SemaphoreSlim _clipboardCheckLock = new(1, 1);
+    private CancellationToken _token;
 
     public MainViewModel(GlobalHotkeyService hotkeyService)
     {
-        _listViewModel = new ListViewModel()
+        _listViewModel = new ListViewModel
         {
             FilteredHistory = FilteredHistory,
             SelectedItem = SelectedItem
@@ -85,19 +86,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _monitorTimer.Elapsed += MonitorTimerCallback;
         _monitorTimer.Stop();
         StartMonitoringClipboard();
-    }
-
-    private async void OnDoubleTappedExistingClipboardItem(AClipboardItem obj)
-    {
-        OnHideToTray?.Invoke();
-        await CopyAsync(obj);
-        await _hotkeyService.SimulatePasteAsync();
-    }
-
-
-    private void OnSettingsUpdated(AppSettings obj)
-    {
-        UpdateDisplayIndexes();
     }
 
 
@@ -218,29 +206,36 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         StopMonitoringClipboard();
     }
 
+    private async void OnDoubleTappedExistingClipboardItem(AClipboardItem obj)
+    {
+        OnHideToTray?.Invoke();
+        await CopyAsync(obj);
+        await _hotkeyService.SimulatePasteAsync();
+    }
+
+
+    private void OnSettingsUpdated(AppSettings obj)
+    {
+        UpdateDisplayIndexes();
+    }
+
     private void SetListContentControl(ListViewModel listViewModel, ViewMode mode)
     {
         if (mode == ViewMode.Detailed)
-        {
-            ListContent = new ListDetailControl()
+            ListContent = new ListDetailControl
             {
                 DataContext = listViewModel
             };
-        }
         else if (mode == ViewMode.Compact)
-        {
-            ListContent = new ListLightControl()
+            ListContent = new ListLightControl
             {
                 DataContext = listViewModel
             };
-        }
         else
-        {
-            ListContent = new MenuViewModeControl()
+            ListContent = new MenuViewModeControl
             {
                 DataContext = listViewModel
             };
-        }
     }
 
     private void OnItemSelected(AClipboardItem obj)
@@ -330,11 +325,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         _monitorCts?.Dispose();
         _monitorCts = null;
         if (showNotification)
-        {
             NotificationHelper.Info(
                 "Monitoring Stopped",
                 "The clipboard monitoring has been successfully stopped.");
-        }
     }
 
     private void OnClipboardItemAdded(AClipboardItem clipboardItem)
@@ -484,10 +477,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private void ShowEditButtons()
     {
-        foreach (var item in ClipboardManager.ClipboardHistory)
-        {
-            item.IsEditButtonVisible = true;
-        }
+        foreach (var item in ClipboardManager.ClipboardHistory) item.IsEditButtonVisible = true;
     }
 
     private static bool MatchesTagFilter(AClipboardItem item, IReadOnlySet<string> selectedTags)
@@ -532,7 +522,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         OnPropertyChanged(nameof(SelectedTagsSummary));
     }
 
-    private void OnTagOptionPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void OnTagOptionPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(TagFilterOption.IsSelected) || _isUpdatingTagOptions)
             return;
@@ -544,16 +534,12 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void OnTagFilterOptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.OldItems != null)
-        {
             foreach (TagFilterOption option in e.OldItems)
                 option.PropertyChanged -= OnTagOptionPropertyChanged;
-        }
 
         if (e.NewItems != null)
-        {
             foreach (TagFilterOption option in e.NewItems)
                 option.PropertyChanged += OnTagOptionPropertyChanged;
-        }
     }
 
     private static int GetFuzzyScore(string query, AClipboardItem item)
@@ -622,7 +608,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private async Task FastKeyExecute()
     {
         if (!string.IsNullOrEmpty(_registerNumber))
-        {
             try
             {
                 var item = FilteredHistory.FirstOrDefault(q => q.DisplayIndex == int.Parse(_registerNumber));
@@ -647,7 +632,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
                 Console.WriteLine(e);
                 _registerNumber = string.Empty;
             }
-        }
     }
 
     public void WindowActivated()

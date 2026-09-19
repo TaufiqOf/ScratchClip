@@ -38,7 +38,7 @@ public static class LinuxFileIconService
         if (!File.Exists(filePath) && !Directory.Exists(filePath))
             return null;
 
-        bool isDir = Directory.Exists(filePath);
+        var isDir = Directory.Exists(filePath);
         var cacheKey = isDir ? "inode/directory" : Path.GetExtension(filePath).ToLowerInvariant();
 
         if (CachedIcons.TryGetValue(cacheKey, out var cachedPath))
@@ -47,7 +47,8 @@ public static class LinuxFileIconService
         var resolvedPath = ResolveIconPathInternal(filePath, isDir);
         CachedIcons[cacheKey] = resolvedPath;
 
-        Console.WriteLine($"[LinuxFileIconService] Input: '{rawFilePath}' -> Sanitized: '{filePath}' | Resolved Icon: '{resolvedPath}'");
+        Console.WriteLine(
+            $"[LinuxFileIconService] Input: '{rawFilePath}' -> Sanitized: '{filePath}' | Resolved Icon: '{resolvedPath}'");
 
         return resolvedPath;
     }
@@ -55,7 +56,6 @@ public static class LinuxFileIconService
     private static string SanitizeFilePath(string path)
     {
         if (path.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
-        {
             try
             {
                 return Uri.UnescapeDataString(new Uri(path).AbsolutePath);
@@ -64,7 +64,7 @@ public static class LinuxFileIconService
             {
                 return path.Replace("file://", string.Empty);
             }
-        }
+
         return path;
     }
 
@@ -138,30 +138,28 @@ public static class LinuxFileIconService
         var extensions = new[] { ".svg", ".png", ".xpm" };
 
         foreach (var candidate in candidates)
+        foreach (var basePath in IconSearchPaths)
         {
-            foreach (var basePath in IconSearchPaths)
-            {
-                if (!Directory.Exists(basePath)) continue;
+            if (!Directory.Exists(basePath)) continue;
 
-                try
+            try
+            {
+                // Recursively scan icon theme paths for matching icon names
+                foreach (var file in Directory.EnumerateFiles(basePath, "*.*", SearchOption.AllDirectories))
                 {
-                    // Recursively scan icon theme paths for matching icon names
-                    foreach (var file in Directory.EnumerateFiles(basePath, "*.*", SearchOption.AllDirectories))
+                    var fileNameWithoutExt = Path.GetFileNameWithoutExtension(file);
+
+                    if (string.Equals(fileNameWithoutExt, candidate, StringComparison.OrdinalIgnoreCase))
                     {
-                        var fileNameWithoutExt = Path.GetFileNameWithoutExtension(file);
-                        
-                        if (string.Equals(fileNameWithoutExt, candidate, StringComparison.OrdinalIgnoreCase))
-                        {
-                            var ext = Path.GetExtension(file).ToLowerInvariant();
-                            if (Array.Exists(extensions, e => e == ext))
-                                return file;
-                        }
+                        var ext = Path.GetExtension(file).ToLowerInvariant();
+                        if (Array.Exists(extensions, e => e == ext))
+                            return file;
                     }
                 }
-                catch
-                {
-                    // Ignore directory permission issues
-                }
+            }
+            catch
+            {
+                // Ignore directory permission issues
             }
         }
 

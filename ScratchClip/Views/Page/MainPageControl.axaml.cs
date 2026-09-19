@@ -18,10 +18,9 @@ public partial class MainPageControl : UserControl
         OnThemeChanged(ApplicationTheme.Theme!);
         OnPasswordChanged();
         SearchTextBox.KeyUp += SearchTextBoxOnKeyUp;
-        ApplicationKeyStore.OnPasswordChanged+= OnPasswordChanged;
+        ApplicationKeyStore.OnPasswordChanged += OnPasswordChanged;
         ApplicationTheme.OnThemeChanged += OnThemeChanged;
     }
-
 
 
     private void OnPasswordChanged()
@@ -32,7 +31,7 @@ public partial class MainPageControl : UserControl
 
     private void OnThemeChanged(ThemeVariant obj)
     {
-        var uri = new Uri(ApplicationTheme.GetIcon(obj,"png"));
+        var uri = new Uri(ApplicationTheme.GetIcon(obj, "png"));
 
         using var trayStream = AssetLoader.Open(uri);
 
@@ -46,28 +45,18 @@ public partial class MainPageControl : UserControl
 
     private void SearchTextBoxOnGotFocus(object? sender, FocusChangedEventArgs e)
     {
-        if(DataContext is MainViewModel viewModel)
-        {
-            viewModel.IsSearchFocused = true;
-        }
+        if (DataContext is MainViewModel viewModel) viewModel.IsSearchFocused = true;
     }
 
     private void SearchTextBoxOnLostFocus(object? sender, FocusChangedEventArgs e)
     {
-        if(DataContext is MainViewModel viewModel)
-        {
-            viewModel.IsSearchFocused = false;
-        }
+        if (DataContext is MainViewModel viewModel) viewModel.IsSearchFocused = false;
     }
-    
+
     private void SearchTextBoxOnKeyUp(object? sender, KeyEventArgs e)
     {
-        if(e.Key == Key.Down)
-        {
-            if(DataContext is MainViewModel viewModel)
-            {
+        if (e.Key == Key.Down)
+            if (DataContext is MainViewModel viewModel)
                 viewModel.OnListSetFocus?.Invoke();
-            }
-        }
     }
 }

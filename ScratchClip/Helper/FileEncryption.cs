@@ -41,14 +41,14 @@ public static class FileEncryption
                 tag);
 
             /*
-                 * File format:
-                 *
-                 * [version: 1]
-                 * [salt: 16]
-                 * [nonce: 12]
-                 * [tag: 16]
-                 * [ciphertext: N]
-                 */
+             * File format:
+             *
+             * [version: 1]
+             * [salt: 16]
+             * [nonce: 12]
+             * [tag: 16]
+             * [ciphertext: N]
+             */
 
             var result = new byte[
                 1 +
@@ -117,20 +117,16 @@ public static class FileEncryption
             TagSize;
 
         if (encrypted.Length < HeaderSize)
-        {
             throw new CryptographicException(
                 "Invalid encrypted file.");
-        }
 
         var offset = 0;
 
         var version = encrypted[offset++];
 
         if (version != Version)
-        {
             throw new CryptographicException(
                 "Unsupported encryption version.");
-        }
 
         var salt = encrypted.AsSpan(
             offset,

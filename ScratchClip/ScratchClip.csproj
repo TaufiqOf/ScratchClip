@@ -11,79 +11,79 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AvaloniaResource Include="Assets\**" />
+        <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoLaunch" Version="1.0.1" />
-        <PackageReference Include="Avalonia" Version="12.1.2" />
-        <PackageReference Include="Avalonia.Desktop" Version="12.1.2" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.2" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.2" />
+        <PackageReference Include="AutoLaunch" Version="1.0.1"/>
+        <PackageReference Include="Avalonia" Version="12.1.2"/>
+        <PackageReference Include="Avalonia.Desktop" Version="12.1.2"/>
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.2"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.2"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-        <PackageReference Include="FluentIcons.Avalonia" Version="2.1.341" />
-        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.1.341" />
-        <PackageReference Include="FuzzySharp" Version="2.0.2" />
-        <PackageReference Include="KeySharp" Version="1.0.5" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-        <PackageReference Include="SharpHook" Version="8.0.0" />
-        <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.15" />
-        <PackageReference Include="Tmds.DBus" Version="0.95.1" />
-        <PackageReference Include="TreeSitter.DotNet" Version="1.3.0" />
-        <PackageReference Include="Xaml.Behaviors.Avalonia" Version="12.0.7" />
-        <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
-        <PackageReference Include="AvaloniaEdit.TextMate" Version="12.0.0" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
+        <PackageReference Include="FluentIcons.Avalonia" Version="2.1.341"/>
+        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.1.341"/>
+        <PackageReference Include="FuzzySharp" Version="2.0.2"/>
+        <PackageReference Include="KeySharp" Version="1.0.5"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
+        <PackageReference Include="SharpHook" Version="8.0.0"/>
+        <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.15"/>
+        <PackageReference Include="Tmds.DBus" Version="0.95.1"/>
+        <PackageReference Include="TreeSitter.DotNet" Version="1.3.0"/>
+        <PackageReference Include="Xaml.Behaviors.Avalonia" Version="12.0.7"/>
+        <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0"/>
+        <PackageReference Include="AvaloniaEdit.TextMate" Version="12.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="ViewModels\MainViewModelCopy.cs" />
+        <Compile Remove="ViewModels\MainViewModelCopy.cs"/>
         <Compile Update="Views\Page\SettingPageControl.axaml.cs">
             <DependentUpon>SettingPageControl.axaml</DependentUpon>
         </Compile>
         <Compile Update="Views\Controls\TextTypeControls\PlainTextTypeControl.axaml.cs">
-          <DependentUpon>PlainTextTypeControl.axaml</DependentUpon>
+            <DependentUpon>PlainTextTypeControl.axaml</DependentUpon>
         </Compile>
         <Compile Update="Views\Controls\TextTypeControls\TextTypeInfoControl.axaml.cs">
-          <DependentUpon>TextTypeInfoControl.axaml</DependentUpon>
+            <DependentUpon>TextTypeInfoControl.axaml</DependentUpon>
         </Compile>
         <Compile Update="Views\Controls\TypeControls\ImageItemControl.axaml.cs">
-          <DependentUpon>ImageItemControl.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>ImageItemControl.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Controls\TypeControls\StorageItemsControl.axaml.cs">
-          <DependentUpon>StorageItemsControl.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>StorageItemsControl.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Controls\TypeControls\TextItemControl.axaml.cs">
-          <DependentUpon>TextItemControl.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>TextItemControl.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Controls\ListLightControl.axaml.cs">
-          <DependentUpon>ListLightControl.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>ListLightControl.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Controls\TextTypeControls\PasswordTypeControl.axaml.cs">
-          <DependentUpon>PasswordTypeControl.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>PasswordTypeControl.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Controls\MenuItemControls\ImageMenuItemControl.axaml.cs">
-          <SubType>Code</SubType>
-          <DependentUpon>ImageMenuItemControl.axaml</DependentUpon>
+            <SubType>Code</SubType>
+            <DependentUpon>ImageMenuItemControl.axaml</DependentUpon>
         </Compile>
         <Compile Update="Views\Controls\MenuItemControls\StorageMenuItemControl.axaml.cs">
-          <DependentUpon>StorageMenuItemControl.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>StorageMenuItemControl.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Page\EditClipboardItemPageControl.axaml.cs">
-          <DependentUpon>Edit1ClipboardItemPageControl.axaml</DependentUpon>
+            <DependentUpon>Edit1ClipboardItemPageControl.axaml</DependentUpon>
         </Compile>
         <Compile Update="Views\MenuWindow.axaml.cs">
-          <DependentUpon>MenuWindow.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>MenuWindow.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
 </Project>

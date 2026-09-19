@@ -21,22 +21,13 @@ namespace ScratchClip.Views;
 public partial class MainWindow : Window
 {
     private readonly GlobalHotkeyService _hotkeyService;
+    private readonly bool _loaded = false;
     private readonly MainPageControl _mainPage;
     private readonly MainViewModel _viewModel;
+    private bool _doNotHide;
+    private bool _isActivated;
     private bool _isClosingForReal;
     private SettingPageControl? _settingsPage;
-    private bool _loaded = false;
-    private bool _isActivated = false;
-    private bool _doNotHide = false;
-
-    private TextBox? SearchTextBoxControl =>
-        _mainPage.FindControl<TextBox>("SearchTextBox");
-
-    private ListBox? HistoryListBox =>
-        _mainPage
-            .GetVisualDescendants()
-            .OfType<ListBox>()
-            .FirstOrDefault(x => x.Name == "ListBox");
 
     public MainWindow(GlobalHotkeyService hotkeyService)
     {
@@ -57,13 +48,9 @@ public partial class MainWindow : Window
         };
 
         if (ApplicationKeyStore.HasPassword())
-        {
             ShowLockPage();
-        }
         else
-        {
             ShowMainPage();
-        }
 
         Opened += OnOpened;
         Closed += OnClosed;
@@ -74,9 +61,18 @@ public partial class MainWindow : Window
         NotificationHelper.Initialize(this);
     }
 
+    private TextBox? SearchTextBoxControl =>
+        _mainPage.FindControl<TextBox>("SearchTextBox");
+
+    private ListBox? HistoryListBox =>
+        _mainPage
+            .GetVisualDescendants()
+            .OfType<ListBox>()
+            .FirstOrDefault(x => x.Name == "ListBox");
+
     private void OnShowEditPage(AClipboardItem obj)
     {
-        EditClipboardItemPageControl editPage = new EditClipboardItemPageControl(obj);
+        var editPage = new EditClipboardItemPageControl(obj);
         PageHost.Content = editPage;
         editPage.OnClose += _ =>
         {
@@ -143,10 +139,7 @@ public partial class MainWindow : Window
 
         if (e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
         {
-            if (ApplicationKeyStore.HasPassword())
-            {
-                _viewModel.Lock();
-            }
+            if (ApplicationKeyStore.HasPassword()) _viewModel.Lock();
 
             e.Handled = true;
         }
@@ -177,12 +170,8 @@ public partial class MainWindow : Window
             {
                 var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
                 if (container?.IsFocused == true)
-                {
                     if (_viewModel.SelectedItem != null)
-                    {
                         _viewModel.SelectedItem.Open();
-                    }
-                }
             }
 
             e.Handled = true;
@@ -195,12 +184,8 @@ public partial class MainWindow : Window
             {
                 var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
                 if (container?.IsFocused == true)
-                {
                     if (_viewModel.SelectedItem != null)
-                    {
                         _viewModel.SelectedItem.Edit();
-                    }
-                }
             }
 
             e.Handled = true;
@@ -213,12 +198,8 @@ public partial class MainWindow : Window
             {
                 var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
                 if (container?.IsFocused == true)
-                {
                     if (_viewModel.SelectedItem != null)
-                    {
                         await _viewModel.SelectedItem.SaveAs();
-                    }
-                }
             }
 
             e.Handled = true;
@@ -231,12 +212,8 @@ public partial class MainWindow : Window
             {
                 var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
                 if (container?.IsFocused == true)
-                {
                     if (_viewModel.SelectedItem != null)
-                    {
                         _viewModel.SelectedItem.Pin();
-                    }
-                }
             }
 
             e.Handled = true;
@@ -254,14 +231,12 @@ public partial class MainWindow : Window
 
             var container = HistoryListBox?.ContainerFromItem(HistoryListBox.SelectedItem);
             if (container?.IsFocused == true)
-            {
                 if (_viewModel.SelectedItem != null)
                 {
                     e.Handled = true;
                     _ = ActivateSelectedItemAsync();
                     return;
                 }
-            }
         }
 
         if (e.Key == Key.Escape)
@@ -271,12 +246,10 @@ public partial class MainWindow : Window
         }
 
         if (e.Key == Key.Delete)
-        {
             if (HistoryListBox?.SelectedItem != null)
             {
                 var container = HistoryListBox.ContainerFromItem(HistoryListBox.SelectedItem);
                 if (container?.IsFocused == true)
-                {
                     if (_viewModel.SelectedItem != null)
                     {
                         var index = _viewModel.FilteredHistory.IndexOf(_viewModel.SelectedItem);
@@ -287,9 +260,7 @@ public partial class MainWindow : Window
                         SetListFocus();
                         e.Handled = true;
                     }
-                }
             }
-        }
 
         _viewModel.OnWindowKeyDown(e);
     }
@@ -299,26 +270,23 @@ public partial class MainWindow : Window
         var listBox = HistoryListBox;
 
         if (listBox != null)
-        {
             Dispatcher.UIThread.Post(() =>
             {
                 listBox.Focus();
                 if (_viewModel.SelectedItem == null && listBox.SelectedItem == null && listBox.SelectedIndex < 0 &&
                     listBox.ItemCount > 0)
-                {
                     listBox.SelectedIndex = 0;
-                }
 
                 if (_viewModel.SelectedItem != null)
                 {
-                    var item = listBox.Items.FirstOrDefault(item => ((AClipboardItem)item).Signature == _viewModel.SelectedItem.Signature);
+                    var item = listBox.Items.FirstOrDefault(item =>
+                        ((AClipboardItem)item).Signature == _viewModel.SelectedItem.Signature);
                     var container = listBox.ContainerFromItem(_viewModel.SelectedItem);
 
                     container?.Focus(
                         NavigationMethod.Tab);
                 }
             });
-        }
     }
 
     public async Task ActivateSelectedItemAsync()
@@ -393,7 +361,7 @@ public partial class MainWindow : Window
 
     private void ShowLockPage()
     {
-        PasswordPageControl passwordPage = new PasswordPageControl();
+        var passwordPage = new PasswordPageControl();
         PageHost.Content = passwordPage;
         passwordPage.OnLogin += async () =>
         {
@@ -439,10 +407,7 @@ public partial class MainWindow : Window
     {
         _doNotHide = false;
         var settings = SettingsManager.Load();
-        if (_mainPage.DataContext is MainViewModel vm)
-        {
-            vm.RefreshList();
-        }
+        if (_mainPage.DataContext is MainViewModel vm) vm.RefreshList();
 
         TopMostChanged(settings.IsPinned);
         PageHost.Content = _mainPage;

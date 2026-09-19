@@ -105,10 +105,7 @@ public class GlobalHotkeyService : IDisposable
         var menuKeyMatches =
             keyCode == MenuTargetKey;
 
-        if (menuModifiersMatch && menuKeyMatches)
-        {
-            Dispatcher.UIThread.Post(_onMenuHotKeyPressed);
-        }
+        if (menuModifiersMatch && menuKeyMatches) Dispatcher.UIThread.Post(_onMenuHotKeyPressed);
     }
 
 
@@ -159,7 +156,6 @@ public class GlobalHotkeyService : IDisposable
         var processName = string.Empty;
 
         if (pid.HasValue)
-        {
             try
             {
                 var process = Process.GetProcessById(pid.Value);
@@ -172,7 +168,6 @@ public class GlobalHotkeyService : IDisposable
             {
                 return;
             }
-        }
 
         var isMac =
             RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
@@ -311,9 +306,7 @@ public class GlobalHotkeyService : IDisposable
                 sessionType,
                 "wayland",
                 StringComparison.OrdinalIgnoreCase))
-        {
             return true;
-        }
 
         return !string.IsNullOrWhiteSpace(
             Environment.GetEnvironmentVariable(

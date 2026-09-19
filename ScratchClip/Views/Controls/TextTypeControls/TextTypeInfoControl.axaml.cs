@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Controls;
 using AvaloniaEdit;
 using AvaloniaEdit.Highlighting;
@@ -8,7 +9,7 @@ namespace ScratchClip.Views.Controls.TextTypeControls;
 
 public partial class TextTypeInfoControl : UserControl
 {
-    private TextEditor? _previewEditor;
+    private readonly TextEditor? _previewEditor;
 
     public TextTypeInfoControl()
     {
@@ -18,7 +19,7 @@ public partial class TextTypeInfoControl : UserControl
         UpdatePreviewText();
     }
 
-    private void OnDataContextChanged(object? sender, System.EventArgs e)
+    private void OnDataContextChanged(object? sender, EventArgs e)
     {
         UpdatePreviewText();
     }
@@ -49,8 +50,5 @@ public partial class TextTypeInfoControl : UserControl
         _previewEditor.SyntaxHighlighting = string.IsNullOrEmpty(definitionName)
             ? null
             : HighlightingManager.Instance.GetDefinition(definitionName);
-
-
     }
 }
-

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Styling;
-using Avalonia.Xaml.Interactions.Core;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ScratchClip.Helper;
@@ -22,15 +22,15 @@ namespace ScratchClip.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly GlobalHotkeyService _hotkeyService;
+    [ObservableProperty] private string? _exportFilePath;
 
     [ObservableProperty] private string _hotkeyDisplay;
     [ObservableProperty] private string _hotkeyMenuDisplay;
 
     [ObservableProperty] private int _maximumItemsInHistory;
-    [ObservableProperty] private string? _exportFilePath;
-    private bool _willExportTextItems = true;
     private bool _willExportImageItems = true;
     private bool _willExportStorageItems = true;
+    private bool _willExportTextItems = true;
 
     public SettingsViewModel(GlobalHotkeyService hotkeyService)
     {
@@ -149,10 +149,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         try
         {
-            if (string.IsNullOrEmpty(ExportFilePath))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(ExportFilePath)) return;
 
             var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot()
                 .Where(q => (WillExportTextItems && q.ClipboardType == ClipboardType.Text)
@@ -160,20 +157,12 @@ public partial class SettingsViewModel : ObservableObject
                             || (WillExportStorageItems && q.ClipboardType == ClipboardType.Storage)).ToList();
             var finalePath = Path.GetDirectoryName(ExportFilePath);
 
-            if (finalePath == null)
-            {
-                return;
-            }
+            if (finalePath == null) return;
 
             if (WillExportImageItems && WillExportStorageItems)
-            {
                 finalePath = Path.Combine(finalePath, Path.GetFileNameWithoutExtension(ExportFilePath));
-            }
 
-            if (!Directory.Exists(finalePath))
-            {
-                Directory.CreateDirectory(finalePath);
-            }
+            if (!Directory.Exists(finalePath)) Directory.CreateDirectory(finalePath);
 
             if (WillExportTextItems)
             {
@@ -183,7 +172,7 @@ public partial class SettingsViewModel : ObservableObject
                 if (textItems.Any())
                 {
                     var i = 1;
-                    var stringBuilder = new System.Text.StringBuilder();
+                    var stringBuilder = new StringBuilder();
                     foreach (var item in textItems)
                     {
                         stringBuilder.AppendLine($"Item {i}:");
@@ -231,12 +220,9 @@ public partial class SettingsViewModel : ObservableObject
                             var storageFilePath = Path.Combine(finalePath, $"StorageItem_{i}",
                                 $"{Path.GetFileName(file)}");
                             if (!Directory.Exists(Path.GetDirectoryName(storageFilePath)))
-                            {
                                 Directory.CreateDirectory(Path.GetDirectoryName(storageFilePath));
-                            }
 
                             if (File.Exists(file))
-                            {
                                 try
                                 {
                                     File.Copy(file, storageFilePath, true);
@@ -245,7 +231,6 @@ public partial class SettingsViewModel : ObservableObject
                                 {
                                     Console.WriteLine(e);
                                 }
-                            }
                         }
 
                         foreach (var folder in storageClipboardItem.Folders)
@@ -258,10 +243,7 @@ public partial class SettingsViewModel : ObservableObject
                                 folderName);
                             if (Directory.Exists(folder))
                             {
-                                if (!Directory.Exists(storageFolderPath))
-                                {
-                                    Directory.CreateDirectory(storageFolderPath);
-                                }
+                                if (!Directory.Exists(storageFolderPath)) Directory.CreateDirectory(storageFolderPath);
 
                                 CopyDirectory(folder, storageFolderPath);
                             }
@@ -272,10 +254,7 @@ public partial class SettingsViewModel : ObservableObject
                 }
             }
 
-            if (File.Exists(ExportFilePath))
-            {
-                File.Delete(ExportFilePath);
-            }
+            if (File.Exists(ExportFilePath)) File.Delete(ExportFilePath);
 
             if (WillExportImageItems || WillExportStorageItems)
             {
@@ -283,8 +262,8 @@ public partial class SettingsViewModel : ObservableObject
                     finalePath,
                     ExportFilePath,
                     CompressionLevel.Optimal,
-                    includeBaseDirectory: false);
-                Directory.Delete(finalePath, recursive: true);
+                    false);
+                Directory.Delete(finalePath, true);
             }
         }
         catch (Exception e)
@@ -306,7 +285,7 @@ public partial class SettingsViewModel : ObservableObject
                 Path.GetFileName(file));
             try
             {
-                File.Copy(file, destinationFile, overwrite: true);
+                File.Copy(file, destinationFile, true);
             }
             catch (Exception e)
             {
@@ -328,10 +307,7 @@ public partial class SettingsViewModel : ObservableObject
     public async Task SelectFile()
     {
         var storageProvider = ApplicationReference.MainWindow?.StorageProvider;
-        if (storageProvider == null)
-        {
-            return;
-        }
+        if (storageProvider == null) return;
 
         var filePickerTypes = new List<FilePickerFileType>();
         if (WillExportImageItems || WillExportStorageItems)
@@ -359,7 +335,7 @@ public partial class SettingsViewModel : ObservableObject
             });
         }
 
-        var files = await storageProvider.SaveFilePickerWithResultAsync(new FilePickerSaveOptions()
+        var files = await storageProvider.SaveFilePickerWithResultAsync(new FilePickerSaveOptions
         {
             Title = "Select a file",
             FileTypeChoices = filePickerTypes
@@ -367,10 +343,7 @@ public partial class SettingsViewModel : ObservableObject
         if (files.File?.Path != null)
         {
             var file = files.File.Path;
-            if (file != null)
-            {
-                ExportFilePath = file.AbsolutePath;
-            }
+            if (file != null) ExportFilePath = file.AbsolutePath;
         }
     }
 

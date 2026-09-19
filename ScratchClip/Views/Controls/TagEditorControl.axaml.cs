@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -14,17 +15,35 @@ public partial class TagEditorControl : UserControl
             nameof(Tags),
             new ObservableCollection<string>());
 
-    public ObservableCollection<string> Tags
-    {
-        get => GetValue(TagsProperty);
-        set => SetValue(TagsProperty, value);
-    }
-
 
     public static readonly StyledProperty<ObservableCollection<string>> AvailableTagsProperty =
         AvaloniaProperty.Register<TagEditorControl, ObservableCollection<string>>(
             nameof(AvailableTags),
             new ObservableCollection<string>());
+
+
+    public static readonly StyledProperty<string?> TagTextProperty =
+        AvaloniaProperty.Register<TagEditorControl, string?>(
+            nameof(TagText));
+
+
+    public static readonly StyledProperty<string?> SelectedTagProperty =
+        AvaloniaProperty.Register<TagEditorControl, string?>(
+            nameof(SelectedTag));
+
+
+    public TagEditorControl()
+    {
+        AddTagCommand = new RelayCommand(AddTag);
+        RemoveTagCommand = new RelayCommand<string>(RemoveTag);
+        InitializeComponent();
+    }
+
+    public ObservableCollection<string> Tags
+    {
+        get => GetValue(TagsProperty);
+        set => SetValue(TagsProperty, value);
+    }
 
     public ObservableCollection<string> AvailableTags
     {
@@ -32,21 +51,11 @@ public partial class TagEditorControl : UserControl
         set => SetValue(AvailableTagsProperty, value);
     }
 
-
-    public static readonly StyledProperty<string?> TagTextProperty =
-        AvaloniaProperty.Register<TagEditorControl, string?>(
-            nameof(TagText));
-
     public string? TagText
     {
         get => GetValue(TagTextProperty);
         set => SetValue(TagTextProperty, value);
     }
-
-
-    public static readonly StyledProperty<string?> SelectedTagProperty =
-        AvaloniaProperty.Register<TagEditorControl, string?>(
-            nameof(SelectedTag));
 
     public string? SelectedTag
     {
@@ -60,15 +69,6 @@ public partial class TagEditorControl : UserControl
     public RelayCommand<string> RemoveTagCommand { get; }
 
 
-    public TagEditorControl()
-    {
-        AddTagCommand = new RelayCommand(AddTag);
-        RemoveTagCommand = new RelayCommand<string>(RemoveTag);
-        InitializeComponent();
-
-    }
-
-
     private void AddTag()
     {
         var tag = TagText?.Trim();
@@ -78,16 +78,14 @@ public partial class TagEditorControl : UserControl
 
         // Prevent duplicate tags
         foreach (var existingTag in Tags)
-        {
             if (string.Equals(existingTag, tag, StringComparison.OrdinalIgnoreCase))
             {
                 TagText = string.Empty;
                 SelectedTag = null;
                 return;
             }
-        }
 
-        Tags.Add(tag.ToUpper(System.Globalization.CultureInfo.InvariantCulture));
+        Tags.Add(tag.ToUpper(CultureInfo.InvariantCulture));
 
         TagText = string.Empty;
         SelectedTag = null;
@@ -102,18 +100,13 @@ public partial class TagEditorControl : UserControl
         // First tag cannot be deleted
         if (Tags.Count > 0 &&
             string.Equals(Tags[0], tag, StringComparison.Ordinal))
-        {
             return;
-        }
 
         Tags.Remove(tag);
     }
 
     private void TagComboBox_OnKeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
-        {
-            AddTag();
-        }
+        if (e.Key == Key.Enter) AddTag();
     }
 }

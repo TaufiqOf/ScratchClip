@@ -94,7 +94,8 @@
                         <!-- File manager item -->
                         <StackPanel HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Spacing="5">
+                                    Spacing="5"
+                                    Background="Transparent">
                             <Grid>
                                 <!-- SVG -->
                                 <Grid IsVisible="{Binding IsSvg}">
@@ -106,12 +107,13 @@
                                             Height="62"
                                             CornerRadius="4">
 
-                                        <Image Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
-                                               Width="40"
-                                               Height="40"
-                                               Stretch="Uniform"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
+                                        <Image
+                                            Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
+                                            Width="40"
+                                            Height="40"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
                                     </Border>
 
                                     <!-- SVG folder -->
@@ -121,12 +123,13 @@
                                             Height="50"
                                             CornerRadius="4">
 
-                                        <Image Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
-                                               Width="62"
-                                               Height="50"
-                                               Stretch="Uniform"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
+                                        <Image
+                                            Source="{Binding IconPath, Converter={StaticResource PathToImageConverter}}"
+                                            Width="62"
+                                            Height="50"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
                                     </Border>
                                 </Grid>
 

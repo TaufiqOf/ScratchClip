@@ -28,8 +28,8 @@ public static class ApplicationKeyStore
     }
 
     /// <summary>
-    /// Returns the user password if authenticated.
-    /// Returns null when the application is in passwordless mode.
+    ///     Returns the user password if authenticated.
+    ///     Returns null when the application is in passwordless mode.
     /// </summary>
     public static string? GetSessionPassword()
     {
@@ -40,17 +40,15 @@ public static class ApplicationKeyStore
     }
 
     /// <summary>
-    /// Gets the application's random encryption secret.
-    ///
-    /// This secret is generated once and stored in the OS keyring.
-    /// It is never stored in the encrypted file.
+    ///     Gets the application's random encryption secret.
+    ///     This secret is generated once and stored in the OS keyring.
+    ///     It is never stored in the encrypted file.
     /// </summary>
     public static byte[] GetOrCreateEncryptionSecret()
     {
         var existing = Load(EncryptionSecretKey);
 
         if (!string.IsNullOrEmpty(existing))
-        {
             try
             {
                 var secret = Convert.FromBase64String(existing);
@@ -63,7 +61,6 @@ public static class ApplicationKeyStore
                 // Invalid keyring value.
                 // Generate a new secret below.
             }
-        }
 
         var newSecret = RandomNumberGenerator.GetBytes(KeySize);
 
@@ -85,11 +82,9 @@ public static class ApplicationKeyStore
     public static void SetSessionPassword(string password)
     {
         if (string.IsNullOrEmpty(password))
-        {
             throw new ArgumentException(
                 "Password cannot be empty.",
                 nameof(password));
-        }
 
         ClearSessionPassword();
         _sessionPasswordBytes = Encoding.UTF8.GetBytes(password);
@@ -165,9 +160,7 @@ public static class ApplicationKeyStore
 
             if (salt.Length != SaltSize ||
                 expectedHash.Length != KeySize)
-            {
                 return false;
-            }
 
             var actualHash = Rfc2898DeriveBytes.Pbkdf2(
                 password,
@@ -196,17 +189,14 @@ public static class ApplicationKeyStore
     }
 
     /// <summary>
-    /// Derives the AES-256 encryption key.
-    ///
-    /// The key is derived from:
-    ///
-    ///   user password (if configured)
-    ///   +
-    ///   random keyring secret
-    ///   +
-    ///   per-file salt
-    ///
-    /// In passwordless mode the keyring secret alone is used.
+    ///     Derives the AES-256 encryption key.
+    ///     The key is derived from:
+    ///     user password (if configured)
+    ///     +
+    ///     random keyring secret
+    ///     +
+    ///     per-file salt
+    ///     In passwordless mode the keyring secret alone is used.
     /// </summary>
     public static byte[] DeriveEncryptionKey(
         string? password,
@@ -214,20 +204,16 @@ public static class ApplicationKeyStore
         ReadOnlySpan<byte> salt)
     {
         if (keyringSecret.Length != KeySize)
-        {
             throw new ArgumentException(
                 $"Keyring secret must be exactly {KeySize} bytes.",
                 nameof(keyringSecret));
-        }
 
         if (salt.Length != SaltSize)
-        {
             throw new ArgumentException(
                 $"Salt must be exactly {SaltSize} bytes.",
                 nameof(salt));
-        }
 
-        byte[] passwordBytes = string.IsNullOrEmpty(password)
+        var passwordBytes = string.IsNullOrEmpty(password)
             ? Array.Empty<byte>()
             : Encoding.UTF8.GetBytes(password);
 
@@ -276,10 +262,7 @@ public static class ApplicationKeyStore
         }
         finally
         {
-            if (passwordBytes.Length > 0)
-            {
-                CryptographicOperations.ZeroMemory(passwordBytes);
-            }
+            if (passwordBytes.Length > 0) CryptographicOperations.ZeroMemory(passwordBytes);
         }
     }
 

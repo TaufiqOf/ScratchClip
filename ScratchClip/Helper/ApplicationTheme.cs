@@ -7,6 +7,7 @@ public static class ApplicationTheme
 {
     public static Action<ThemeVariant>? OnThemeChanged;
     public static ThemeVariant? Theme { get; set; }
+
     public static string GetIcon(ThemeVariant theme, string type)
     {
         var assetUri = theme == ThemeVariant.Dark

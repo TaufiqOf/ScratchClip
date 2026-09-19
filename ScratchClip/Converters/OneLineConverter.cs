@@ -24,11 +24,11 @@ public class OneLineConverter : IValueConverter
             return string.Empty;
 
         // Keep only the first line.
-        int newlineIndex = str.IndexOfAny(['\r', '\n']);
+        var newlineIndex = str.IndexOfAny(['\r', '\n']);
 
-        bool hasMoreLines = newlineIndex >= 0;
+        var hasMoreLines = newlineIndex >= 0;
 
-        string firstLine = hasMoreLines
+        var firstLine = hasMoreLines
             ? str[..newlineIndex]
             : str;
 
@@ -42,7 +42,7 @@ public class OneLineConverter : IValueConverter
         // Add line count if there were additional lines.
         if (hasMoreLines)
         {
-            int lineCount = str.Split(
+            var lineCount = str.Split(
                 new[] { "\r\n", "\r", "\n" },
                 StringSplitOptions.None).Length;
 

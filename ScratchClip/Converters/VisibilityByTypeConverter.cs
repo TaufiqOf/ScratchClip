@@ -13,9 +13,7 @@ public class VisibilityByTypeConverter : IValueConverter
     {
         if (value is ClipboardType currentType &&
             parameter is ClipboardType expectedType)
-        {
             return currentType == expectedType;
-        }
 
         return false;
     }

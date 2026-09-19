@@ -11,16 +11,17 @@ public partial class BaseDetailItemControl : UserControl
         AvaloniaProperty.Register<BaseDetailItemControl, Control?>(
             nameof(ItemContent));
 
+    public BaseDetailItemControl()
+    {
+        InitializeComponent();
+    }
+
     public Control? ItemContent
     {
         get => GetValue(ItemContentProperty);
         set => SetValue(ItemContentProperty, value);
     }
 
-    public BaseDetailItemControl()
-    {
-        InitializeComponent();
-    }
     // private async void OnDoubleTapped(object? sender, RoutedEventArgs e)
     // {
     //     if (TopLevel.GetTopLevel(this) is MainWindow window)
@@ -30,10 +31,7 @@ public partial class BaseDetailItemControl : UserControl
     // }
     private async void OnDoubleTapped(object? sender, RoutedEventArgs e)
     {
-        if(DataContext is AClipboardItem clipboardItem)
-        {
-            await clipboardItem.OnDoubleTappedAsync();
-        }
+        if (DataContext is AClipboardItem clipboardItem) await clipboardItem.OnDoubleTappedAsync();
 
         e.Handled = true;
     }

@@ -43,14 +43,14 @@
                             Height="22"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Stretch="Uniform"/>
+                            Stretch="Uniform" />
                     </Border>
 
                     <TextBlock
                         Text="SCRATCHCLIP"
                         FontSize="15"
                         FontWeight="SemiBold"
-                        VerticalAlignment="Center"/>
+                        VerticalAlignment="Center" />
 
                 </StackPanel>
 
@@ -74,7 +74,7 @@
 
                         <avalonia:FluentIcon
                             Icon="ClipboardChatEmpty"
-                            FontSize="16"/>
+                            FontSize="16" />
 
                     </Button>
 
@@ -88,7 +88,7 @@
 
                         <avalonia:FluentIcon
                             Icon="Delete"
-                            FontSize="16"/>
+                            FontSize="16" />
 
                     </Button>
 
@@ -103,7 +103,7 @@
 
                         <avalonia:FluentIcon
                             Icon="LockClosed"
-                            FontSize="16"/>
+                            FontSize="16" />
 
                     </Button>
 
@@ -113,7 +113,7 @@
                         Width="1"
                         Height="22"
                         Margin="6,0"
-                        Background="{DynamicResource SystemControlForegroundBaseLowBrush}"/>
+                        Background="{DynamicResource SystemControlForegroundBaseLowBrush}" />
 
 
                     <!-- Clipboard monitoring -->
@@ -126,10 +126,10 @@
                             Orientation="Horizontal">
                             <avalonia:FluentIcon
                                 Icon="Eye"
-                                FontSize="16"/>
+                                FontSize="16" />
                             <TextBlock
                                 Text="Monitor"
-                                VerticalAlignment="Center"/>
+                                VerticalAlignment="Center" />
 
                         </StackPanel>
 
@@ -145,7 +145,7 @@
 
                         <avalonia:FluentIcon
                             Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
-                            FontSize="16"/>
+                            FontSize="16" />
 
                     </ToggleButton>
 
@@ -156,7 +156,7 @@
                         SelectedItem="{Binding SelectedMode}"
                         MinWidth="110"
                         Margin="6,0,0,0"
-                        VerticalAlignment="Center"/>
+                        VerticalAlignment="Center" />
 
                 </StackPanel>
 
@@ -173,7 +173,7 @@
 
                     <avalonia:FluentIcon
                         Icon="Settings"
-                        FontSize="16"/>
+                        FontSize="16" />
 
                 </Button>
 
@@ -189,7 +189,7 @@
         <Border
             Grid.Row="1"
             Height="1"
-            Background="{DynamicResource SystemControlForegroundBaseLowBrush}"/>
+            Background="{DynamicResource SystemControlForegroundBaseLowBrush}" />
 
 
         <!-- ========================================================= -->
@@ -231,7 +231,7 @@
                                                     <CheckBox
                                                         Content="{Binding Name}"
                                                         IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                        Margin="0,0"/>
+                                                        Margin="0,0" />
 
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -253,7 +253,7 @@
 
                         <avalonia:FluentIcon
                             Icon="Dismiss"
-                            FontSize="15"/>
+                            FontSize="15" />
 
                     </Button>
 
@@ -277,7 +277,7 @@
                         GotFocus="SearchTextBoxOnGotFocus"
                         LostFocus="SearchTextBoxOnLostFocus"
                         PlaceholderText="Search clipboard history..."
-                        VerticalContentAlignment="Center"/>
+                        VerticalContentAlignment="Center" />
 
                     <Button
                         Grid.Column="1"
@@ -291,7 +291,7 @@
 
                         <avalonia:FluentIcon
                             Icon="Dismiss"
-                            FontSize="14"/>
+                            FontSize="14" />
 
                     </Button>
                 </Grid>
@@ -306,8 +306,7 @@
         <Border
             Grid.Row="3"
             Height="1"
-            Background="{DynamicResource SystemControlForegroundBaseLowBrush}"/>
-
+            Background="{DynamicResource SystemControlForegroundBaseLowBrush}" />
 
 
         <!-- ========================================================= -->

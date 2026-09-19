@@ -51,9 +51,7 @@ public static class MousePositionHelper
                     out _,
                     out _,
                     out _))
-            {
                 return (rootX, rootY);
-            }
 
             return null;
         }

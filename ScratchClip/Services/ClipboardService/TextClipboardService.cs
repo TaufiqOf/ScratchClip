@@ -22,6 +22,7 @@ internal class TextClipboardService : AClipboardService
             await clipboard.ClearAsync();
             return await Task.FromResult(item);
         }
+
         var testEmpty = StripText(str);
         if (string.IsNullOrEmpty(testEmpty)) return await Task.FromResult(item);
         var displayText = DisplayText(str);
@@ -31,8 +32,7 @@ internal class TextClipboardService : AClipboardService
             Text = str,
             Timestamp = DateTime.Now,
             DisplayText = displayText,
-            MataData= clipboardData?.Formats.Select(f => f.Identifier).ToList(),
-            
+            MataData = clipboardData?.Formats.Select(f => f.Identifier).ToList()
         };
         _ = item.PopulateMetadataAsync();
 
@@ -62,7 +62,7 @@ internal class TextClipboardService : AClipboardService
 
     public override Task<bool> IsDataSame(AClipboardItem existingItem, object data)
     {
-         var textData = data as string;
+        var textData = data as string;
         if (textData == null)
             return Task.FromResult(false);
         return Task.FromResult(existingItem.Text == textData);

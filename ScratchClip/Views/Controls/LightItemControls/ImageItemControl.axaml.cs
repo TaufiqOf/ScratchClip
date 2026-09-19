@@ -8,5 +8,4 @@ public partial class ImageItemControl : UserControl
     {
         InitializeComponent();
     }
-    
 }

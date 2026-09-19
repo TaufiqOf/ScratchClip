@@ -9,12 +9,12 @@ namespace ScratchClip.Views.Page;
 
 public partial class PasswordPageControl : UserControl
 {
-    public Action? OnLogin { get; set; }
-
     public PasswordPageControl()
     {
         InitializeComponent();
     }
+
+    public Action? OnLogin { get; set; }
 
     protected override void OnInitialized()
     {
@@ -36,10 +36,7 @@ public partial class PasswordPageControl : UserControl
         object? sender,
         KeyEventArgs e)
     {
-        if (e.Key == Key.Enter)
-        {
-            TryLogin();
-        }
+        if (e.Key == Key.Enter) TryLogin();
     }
 
     private void TryLogin()
@@ -56,7 +53,7 @@ public partial class PasswordPageControl : UserControl
         }
         else
         {
-           NotificationHelper.Error("Login failed", "Incorrect password. Please try again.");
+            NotificationHelper.Error("Login failed", "Incorrect password. Please try again.");
         }
     }
 

@@ -7,14 +7,15 @@ namespace ScratchClip.Models;
 
 public abstract class ATextType : ViewModelBase
 {
-    private ObservableCollection<string> _tags;
+    private Icon _icon;
+    private string _text = string.Empty;
 
     public ATextType(string text, ObservableCollection<string> tags)
     {
         Text = text;
-        _tags = tags;
+        Tags = tags;
     }
-    private string _text = string.Empty;
+
     public string Text
     {
         get => _text;
@@ -25,8 +26,8 @@ public abstract class ATextType : ViewModelBase
         }
     }
 
-    public ObservableCollection<string> Tags => _tags;
-    private Icon _icon;
+    public ObservableCollection<string> Tags { get; }
+
     public Icon Icon
     {
         get => _icon;
@@ -36,6 +37,7 @@ public abstract class ATextType : ViewModelBase
             OnPropertyChanged();
         }
     }
+
     public abstract string DisplayName { get; }
     public abstract string SuggestedExtension { get; }
 

@@ -30,7 +30,7 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center" />
             </Grid>
-   
+
 
         </Border>
     </Border>

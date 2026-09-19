@@ -64,9 +64,7 @@ internal class StorageClipboardService : AClipboardService
             $"StorageClipboardService.CreateSignature({item})");
         if (item is not StorageClipboardItem storageItem ||
             storageItem.Paths.Count == 0)
-        {
             return Task.CompletedTask;
-        }
 
         return Task.Run(() =>
         {
@@ -78,15 +76,11 @@ internal class StorageClipboardService : AClipboardService
                 sb.Append(path);
 
                 if (File.Exists(path))
-                {
                     sb.Append(':')
                         .Append(File.GetLastWriteTimeUtc(path).Ticks);
-                }
                 else if (Directory.Exists(path))
-                {
                     sb.Append(':')
                         .Append(Directory.GetLastWriteTimeUtc(path).Ticks);
-                }
 
                 sb.Append(';');
             }
@@ -223,9 +217,7 @@ internal class StorageClipboardService : AClipboardService
 
         if (clipboard == null ||
             storageProvider == null)
-        {
             return;
-        }
 
         var files = new List<IStorageItem>();
 
@@ -234,17 +226,13 @@ internal class StorageClipboardService : AClipboardService
             IStorageItem? item = null;
 
             if (File.Exists(path))
-            {
                 item =
                     await storageProvider
                         .TryGetFileFromPathAsync(path);
-            }
             else if (Directory.Exists(path))
-            {
                 item =
                     await storageProvider
                         .TryGetFolderFromPathAsync(path);
-            }
 
             if (item != null)
                 files.Add(item);
@@ -256,12 +244,10 @@ internal class StorageClipboardService : AClipboardService
         var transfer = new DataTransfer();
 
         foreach (var file in files)
-        {
             transfer.Add(
                 DataTransferItem.Create(
                     DataFormat.File,
                     file));
-        }
 
         await clipboard.SetDataAsync(transfer);
     }
@@ -282,10 +268,8 @@ internal class StorageClipboardService : AClipboardService
                 process.Kill();
 
                 if (!process.WaitForExit(1000))
-                {
                     Console.WriteLine(
                         "xclip did not exit within 1 second.");
-                }
             }
         }
         catch (Exception ex)
@@ -302,7 +286,7 @@ internal class StorageClipboardService : AClipboardService
     public override async Task<object?> GetClipboardData()
     {
         Console.WriteLine(
-            $"StorageClipboardService.GetClipboardData()");
+            "StorageClipboardService.GetClipboardData()");
         var clipboard = GetClipboard();
 
         if (clipboard == null)
@@ -356,10 +340,8 @@ internal class StorageClipboardService : AClipboardService
             $"Clipboard files: {items.Count}");
 
         foreach (var item in items)
-        {
             Console.WriteLine(
                 $"  {item.Path}");
-        }
 
         return items;
     }
@@ -367,19 +349,14 @@ internal class StorageClipboardService : AClipboardService
     private static List<string>? ExtractPaths(object? data)
     {
         if (data is IEnumerable<IStorageItem> storageItems)
-        {
             return storageItems
                 .Select(item =>
                     item.Path.IsAbsoluteUri
                         ? item.Path.LocalPath
                         : item.Path.ToString())
                 .ToList();
-        }
 
-        if (data is IEnumerable<string> pathStrings)
-        {
-            return pathStrings.ToList();
-        }
+        if (data is IEnumerable<string> pathStrings) return pathStrings.ToList();
 
         return null;
     }

@@ -81,14 +81,14 @@
                                                         ElementName=BaseControl}" />
                         <!-- Pin -->
                         <ToggleButton IsChecked="{Binding IsPinned, Mode=TwoWay}"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                CornerRadius="3"
-                                Padding="5"
-                                Width="26"
-                                Height="26"
-                                
-                                ToolTip.Tip="Toggle Pinned(Ctrl+P)">
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      CornerRadius="3"
+                                      Padding="5"
+                                      Width="26"
+                                      Height="26"
+
+                                      ToolTip.Tip="Toggle Pinned(Ctrl+P)">
 
                             <avalonia:FluentIcon
                                 Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"

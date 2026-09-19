@@ -214,18 +214,13 @@ public partial class StorageItemsViewerControl : UserControl
             CreateNoWindow = true
         };
 
-        foreach (var argument in arguments)
-        {
-            startInfo.ArgumentList.Add(argument);
-        }
+        foreach (var argument in arguments) startInfo.ArgumentList.Add(argument);
 
         using var process = Process.Start(startInfo);
 
         if (process == null)
-        {
             throw new InvalidOperationException(
                 $"Could not start '{command}'.");
-        }
 
         var errorTask =
             process.StandardError.ReadToEndAsync();
@@ -235,10 +230,8 @@ public partial class StorageItemsViewerControl : UserControl
         var error = await errorTask;
 
         if (process.ExitCode != 0)
-        {
             throw new InvalidOperationException(
                 $"{command} failed with exit code " +
                 $"{process.ExitCode}: {error}");
-        }
     }
 }

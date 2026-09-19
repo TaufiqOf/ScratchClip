@@ -47,6 +47,5 @@ public class JsonTextType : ATextType
     public override Task UpdateTagsAsync(string text)
     {
         return Task.CompletedTask;
-
     }
 }

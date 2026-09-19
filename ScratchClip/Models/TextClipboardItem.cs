@@ -42,6 +42,8 @@ public partial class TextClipboardItem : AClipboardItem
 
     public bool IsPassword => Type == TextClipboardItemType.Password;
 
+    public override string SuggestedFile { get; } = "text.txt";
+
     [RelayCommand]
     private void ItemClicked()
     {
@@ -69,7 +71,7 @@ public partial class TextClipboardItem : AClipboardItem
             new CodeTextType(text, Tags, MataData),
             new MarkdownTextType(text, Tags, MataData),
             new PasswordTextType(text, Tags, MataData),
-            new PlainTextType(text, Tags, MataData), //must be last, as it will match anything
+            new PlainTextType(text, Tags, MataData) //must be last, as it will match anything
         };
 
         return candidates.First(type => type.IsMatch(text));
@@ -93,8 +95,6 @@ public partial class TextClipboardItem : AClipboardItem
     {
         return Task.FromResult<object?>(Text);
     }
-
-    public override string SuggestedFile { get; } = "text.txt";
 
     public override Task OpenItem()
     {
@@ -136,9 +136,7 @@ public partial class TextClipboardItem : AClipboardItem
         if (TextType is PasswordTextType passwordTextType)
             DisplayText = new string('•', passwordTextType.Text.Length);
         else
-        {
             DisplayText = TextType.Text.Length > 600 ? TextType.Text.Substring(0, 600) : TextType.Text;
-        }
 
         await TextType.PopulateMetadataAsync(Text);
     }

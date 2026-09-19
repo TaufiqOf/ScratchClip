@@ -10,7 +10,7 @@
 
         <Image Source="{Binding Image}"
                Stretch="Uniform"
-               HorizontalAlignment="Center" >
+               HorizontalAlignment="Center">
             <ToolTip.Tip>
                 <Border Padding="5">
                     <Image Source="{Binding Image}"

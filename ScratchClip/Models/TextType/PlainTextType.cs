@@ -12,35 +12,20 @@ public partial class PlainTextType : ATextType
 {
     private readonly string _text;
     private int _maxLength = 600;
+
+    [ObservableProperty] private bool _showMore;
+
     public PlainTextType(string text, ObservableCollection<string> tags, List<string>? _) : base(text, tags)
     {
         ShowMore = false;
         _text = text;
         Icon = Icon.Note;
         if (_text.Length < _maxLength)
-        {
             ShowMore = false;
-        }
         else
-        {
             ShowMore = true;
-        }
-        Text = text.Substring(0, Math.Min(text.Length, _maxLength));  
+        Text = text.Substring(0, Math.Min(text.Length, _maxLength));
         UpdateShowMore();
-    }
-
-    [ObservableProperty]
-    private bool _showMore; 
-    private void UpdateShowMore()
-    {
-        if(_text.Length > _maxLength)
-        {
-            ShowMoreText = "more";
-        }
-        else
-        {
-            ShowMoreText = "hide";
-        }
     }
 
     public string? ShowMoreText
@@ -55,9 +40,17 @@ public partial class PlainTextType : ATextType
     }
 
     public bool IsTruncated => Text.Length < _maxLength;
-    
+
     public override string DisplayName => "Plain Text";
     public override string SuggestedExtension => ".txt";
+
+    private void UpdateShowMore()
+    {
+        if (_text.Length > _maxLength)
+            ShowMoreText = "more";
+        else
+            ShowMoreText = "hide";
+    }
 
     public override bool IsMatch(string text)
     {
@@ -77,14 +70,10 @@ public partial class PlainTextType : ATextType
     [RelayCommand]
     private void More()
     {
-        if(ShowMoreText == "hide")
-        {
+        if (ShowMoreText == "hide")
             _maxLength = 600;
-        }
         else
-        {
             _maxLength = _text.Length;
-        }
         Text = _text.Substring(0, Math.Min(_text.Length, _maxLength));
         UpdateShowMore();
     }

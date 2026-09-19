@@ -1,19 +1,14 @@
+using System.ComponentModel;
+
 namespace ScratchClip.Models;
 
 public enum TextClipboardItemType
 {
-    [System.ComponentModel.Description("PLAINTEXT")]
-    PlainText,
-    [System.ComponentModel.Description("WEBSITE")]
-    Website,
-    [System.ComponentModel.Description("CODE")]
-    Code,
-    [System.ComponentModel.Description("XML")]
-    Xml,
-    [System.ComponentModel.Description("JSON")]
-    Json,
-    [System.ComponentModel.Description("MARKDOWN")]
-    Markdown,
-    [System.ComponentModel.Description("PASSWORD")]
-    Password
+    [Description("PLAINTEXT")] PlainText,
+    [Description("WEBSITE")] Website,
+    [Description("CODE")] Code,
+    [Description("XML")] Xml,
+    [Description("JSON")] Json,
+    [Description("MARKDOWN")] Markdown,
+    [Description("PASSWORD")] Password
 }

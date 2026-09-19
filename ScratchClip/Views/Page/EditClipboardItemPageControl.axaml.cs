@@ -146,6 +146,7 @@ public partial class EditClipboardItemPageControl : UserControl
             foreach (var tag in item.Tags)
                 storageItem.Tags.Add(tag);
         }
+
         ClipboardManager.UpdateSignature(_item);
         NotificationHelper.Success(
             "Item updated",
@@ -162,9 +163,6 @@ public partial class EditClipboardItemPageControl : UserControl
 
     private void InputElementOnKeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control) && e.Key == Key.S)
-        {
-            OnSaveClick(sender, new RoutedEventArgs());
-        }
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control) && e.Key == Key.S) OnSaveClick(sender, new RoutedEventArgs());
     }
 }

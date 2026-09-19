@@ -8,7 +8,6 @@ namespace ScratchClip.Manager;
 
 public static class SettingsManager
 {
-    public static Action<AppSettings>? OnSettingsUpdated { get; set; } 
     private static readonly string FolderPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "ScratchClip");
@@ -19,6 +18,8 @@ public static class SettingsManager
     {
         if (!Directory.Exists(FolderPath)) Directory.CreateDirectory(FolderPath);
     }
+
+    public static Action<AppSettings>? OnSettingsUpdated { get; set; }
 
     public static AppSettings Load()
     {

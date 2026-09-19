@@ -110,7 +110,6 @@ public static class ClipboardHistoryManager
     private static ClipboardHistoryRecord? ToRecord(AClipboardItem item)
     {
         if (item is TextClipboardItem textItem)
-        {
             return new ClipboardHistoryRecord
             {
                 Format = ClipboardDataFormat.Text,
@@ -123,7 +122,6 @@ public static class ClipboardHistoryManager
                 IsPinned = textItem.IsPinned,
                 Note = textItem.Note
             };
-        }
 
         if (item is ImageClipboardItem imageItem && imageItem.Image != null)
         {
@@ -147,7 +145,6 @@ public static class ClipboardHistoryManager
         }
 
         if (item is StorageClipboardItem storageItem)
-        {
             return new ClipboardHistoryRecord
             {
                 Format = ClipboardDataFormat.Storage,
@@ -160,7 +157,6 @@ public static class ClipboardHistoryManager
                 IsPinned = storageItem.IsPinned,
                 Note = storageItem.Note
             };
-        }
 
         return null;
     }

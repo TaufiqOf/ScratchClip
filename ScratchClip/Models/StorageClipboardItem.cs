@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FluentIcons.Common;
@@ -16,9 +16,15 @@ namespace ScratchClip.Models;
 
 public partial class StorageClipboardItem : AClipboardItem
 {
-    Timer _lazyUpdateTimer = new Timer(800);
+    private readonly Timer _lazyUpdateTimer = new(800);
 
     [ObservableProperty] private List<StorageItem> _storageItems;
+
+    public StorageClipboardItem()
+    {
+        ClipboardType = ClipboardType.Storage;
+        _lazyUpdateTimer.Elapsed += LazyUpdateTimerOnElapsed;
+    }
 
     public string Content
     {
@@ -41,32 +47,6 @@ public partial class StorageClipboardItem : AClipboardItem
         }
     }
 
-    public StorageClipboardItem()
-    {
-        ClipboardType = ClipboardType.Storage;
-        _lazyUpdateTimer.Elapsed += LazyUpdateTimerOnElapsed;
-    }
-
-    void LazyUpdateTimerOnElapsed(object? sender, ElapsedEventArgs e)
-    {
-        _lazyUpdateTimer.Stop();
-        var list = StorageItems
-            .Where(q => !string.IsNullOrEmpty(q.FullPath))
-            .ToList();
-        foreach (var storageItem in list)
-        {
-            storageItem.IconPath = LinuxFileIconService.GetIconPath(storageItem.FullPath);
-        }
-
-        Dispatcher.UIThread.Post(async void () =>
-        {
-            foreach (var storageItem in list)
-            {
-                StorageItems[StorageItems.IndexOf(storageItem)].IconPath = storageItem.IconPath;
-            }
-        }, DispatcherPriority.Background);
-    }
-
     public List<string> Paths
     {
         get;
@@ -80,7 +60,41 @@ public partial class StorageClipboardItem : AClipboardItem
             UpdateStorageItems(value);
             OnPropertyChanged();
         }
-    } = new List<string>();
+    } = new();
+
+    public List<string> Files => Paths.Where(File.Exists).ToList();
+    public List<string> Folders => Paths.Where(Directory.Exists).ToList();
+
+    public override string SuggestedFile
+    {
+        get
+        {
+            if (Paths.Count == 1 &&
+                GetStorageType(Paths[0]) == StorageType.File)
+                return Path.GetFileName(Paths[0]);
+
+            var locations = string.Join(", ", Paths
+                .Where(File.Exists)
+                .Select(Path.GetDirectoryName)
+                .Distinct());
+            return $"{locations}.zip";
+        }
+    }
+
+    private void LazyUpdateTimerOnElapsed(object? sender, ElapsedEventArgs e)
+    {
+        _lazyUpdateTimer.Stop();
+        var list = StorageItems
+            .Where(q => !string.IsNullOrEmpty(q.FullPath))
+            .ToList();
+        foreach (var storageItem in list) storageItem.IconPath = LinuxFileIconService.GetIconPath(storageItem.FullPath);
+
+        Dispatcher.UIThread.Post(async void () =>
+        {
+            foreach (var storageItem in list)
+                StorageItems[StorageItems.IndexOf(storageItem)].IconPath = storageItem.IconPath;
+        }, DispatcherPriority.Background);
+    }
 
     private void UpdateStorageItems(List<string> value)
     {
@@ -90,20 +104,16 @@ public partial class StorageClipboardItem : AClipboardItem
                 Directory.Exists(path))
             .Select(path => new StorageItem
             {
-
-                FullPath = path,
+                FullPath = path
             })
             .ToList();
         _lazyUpdateTimer.Start();
     }
 
-    public List<string> Files => Paths.Where(File.Exists).ToList();
-    public List<string> Folders => Paths.Where(Directory.Exists).ToList();
-
 
     private void SetContent(List<string> value)
     {
-        var contentBuilder = new System.Text.StringBuilder();
+        var contentBuilder = new StringBuilder();
         var locations = string.Join(", ", value
             .Where(File.Exists)
             .Select(Path.GetDirectoryName)
@@ -112,18 +122,13 @@ public partial class StorageClipboardItem : AClipboardItem
         contentBuilder.Append($"Storage Items ({value.Count}) from {locations}:\n");
 
         foreach (var item in value)
-        {
             if (File.Exists(item))
-            {
                 contentBuilder.AppendLine(Path.GetFileName(item));
-            }
             else if (Directory.Exists(item))
-            {
                 // Path.GetFileName returns the directory's own name (e.g., "MyFolder")
                 contentBuilder.AppendLine(Path.GetFileName(item.TrimEnd(Path.DirectorySeparatorChar,
                     Path.AltDirectorySeparatorChar)));
-            }
-        }
+
         Text = contentBuilder.ToString();
         Content = contentBuilder.ToString();
     }
@@ -152,13 +157,8 @@ public partial class StorageClipboardItem : AClipboardItem
         {
             var storageItem = value[0];
             if (GetStorageType(storageItem) == StorageType.File)
-            {
                 Icon = Icon.Document;
-            }
-            else if (GetStorageType(storageItem) == StorageType.Folder)
-            {
-                Icon = Icon.Folder;
-            }
+            else if (GetStorageType(storageItem) == StorageType.Folder) Icon = Icon.Folder;
         }
         else
         {
@@ -172,16 +172,10 @@ public partial class StorageClipboardItem : AClipboardItem
 
     private StorageType GetStorageType(string storageItem)
     {
-        FileInfo fileInfo = new FileInfo(storageItem);
-        if (fileInfo.Exists)
-        {
-            return StorageType.File;
-        }
+        var fileInfo = new FileInfo(storageItem);
+        if (fileInfo.Exists) return StorageType.File;
 
-        if (Directory.Exists(storageItem))
-        {
-            return StorageType.Folder;
-        }
+        if (Directory.Exists(storageItem)) return StorageType.Folder;
 
         throw new FileNotFoundException($"The storage item '{storageItem}' does not exist.");
     }
@@ -191,15 +185,13 @@ public partial class StorageClipboardItem : AClipboardItem
         // Single file: return an async FileStream
         if (Paths.Count == 1 &&
             GetStorageType(Paths[0]) == StorageType.File)
-        {
             return new FileStream(
                 Paths[0],
                 FileMode.Open,
                 FileAccess.Read,
                 FileShare.Read,
-                bufferSize: 1024 * 64,
-                options: FileOptions.Asynchronous | FileOptions.SequentialScan);
-        }
+                1024 * 64,
+                FileOptions.Asynchronous | FileOptions.SequentialScan);
 
         // Multiple files/folders -> temporary ZIP on disk
         var tempZip = Path.Combine(
@@ -211,31 +203,25 @@ public partial class StorageClipboardItem : AClipboardItem
                          FileMode.Create,
                          FileAccess.Write,
                          FileShare.None,
-                         bufferSize: 1024 * 64,
-                         options: FileOptions.Asynchronous))
+                         1024 * 64,
+                         FileOptions.Asynchronous))
         {
             using var archive = new ZipArchive(
                 zipStream,
                 ZipArchiveMode.Create,
-                leaveOpen: false);
+                false);
 
             foreach (var path in Paths)
-            {
                 if (File.Exists(path))
-                {
                     await AddFileToZip(
                         archive,
                         path,
                         Path.GetFileName(path));
-                }
                 else if (Directory.Exists(path))
-                {
                     await AddDirectoryToZip(
                         archive,
                         path,
                         Path.GetFileName(path));
-                }
-            }
         }
 
         // Return the completed ZIP as an async FileStream
@@ -244,8 +230,8 @@ public partial class StorageClipboardItem : AClipboardItem
             FileMode.Open,
             FileAccess.Read,
             FileShare.Read,
-            bufferSize: 1024 * 64,
-            options: FileOptions.Asynchronous | FileOptions.SequentialScan);
+            1024 * 64,
+            FileOptions.Asynchronous | FileOptions.SequentialScan);
     }
 
     private static async Task AddFileToZip(
@@ -262,8 +248,8 @@ public partial class StorageClipboardItem : AClipboardItem
             FileMode.Open,
             FileAccess.Read,
             FileShare.Read,
-            bufferSize: 1024 * 64,
-            options: FileOptions.Asynchronous | FileOptions.SequentialScan);
+            1024 * 64,
+            FileOptions.Asynchronous | FileOptions.SequentialScan);
 
         await using var target = entry.Open();
 
@@ -288,34 +274,12 @@ public partial class StorageClipboardItem : AClipboardItem
         }
 
         foreach (var subDirectory in Directory.GetDirectories(directory))
-        {
             await AddDirectoryToZip(
                 archive,
                 subDirectory,
                 Path.Combine(
                     entryRoot,
                     Path.GetFileName(subDirectory)));
-        }
-    }
-
-    public override string SuggestedFile
-    {
-        get
-        {
-            if (Paths.Count == 1 &&
-                GetStorageType(Paths[0]) == StorageType.File)
-            {
-                return Path.GetFileName(Paths[0]);
-            }
-            else
-            {
-                var locations = string.Join(", ", Paths
-                    .Where(File.Exists)
-                    .Select(Path.GetDirectoryName)
-                    .Distinct());
-                return $"{locations}.zip";
-            }
-        }
     }
 
     public override void Delete()
@@ -328,17 +292,10 @@ public partial class StorageClipboardItem : AClipboardItem
         //get temporary file path
         var tempFilePath = "";
         if (Paths.Count > 0 && File.Exists(Paths[0]))
-        {
             tempFilePath = Path.GetDirectoryName(Paths[0]);
-        }
         else
-        {
             tempFilePath = Path.GetDirectoryName(Folders[0]);
-        }
-        if(string.IsNullOrEmpty(tempFilePath))
-        {
-            return Task.CompletedTask;
-        }
+        if (string.IsNullOrEmpty(tempFilePath)) return Task.CompletedTask;
         Process.Start(new ProcessStartInfo(tempFilePath)
             { UseShellExecute = true });
         return Task.CompletedTask;

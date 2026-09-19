@@ -11,16 +11,22 @@ public partial class BaseLightItemControl : UserControl
         AvaloniaProperty.Register<BaseLightItemControl, Control?>(
             nameof(ItemContent));
 
+
+    public static readonly StyledProperty<Control?> ExtraActionsProperty =
+        AvaloniaProperty.Register<BaseLightItemControl, Control?>(
+            nameof(ExtraActions));
+
+
+    public BaseLightItemControl()
+    {
+        InitializeComponent();
+    }
+
     public Control? ItemContent
     {
         get => GetValue(ItemContentProperty);
         set => SetValue(ItemContentProperty, value);
     }
-
-
-    public static readonly StyledProperty<Control?> ExtraActionsProperty =
-        AvaloniaProperty.Register<BaseLightItemControl, Control?>(
-            nameof(ExtraActions));
 
     public Control? ExtraActions
     {
@@ -28,18 +34,9 @@ public partial class BaseLightItemControl : UserControl
         set => SetValue(ExtraActionsProperty, value);
     }
 
-
-    public BaseLightItemControl()
-    {
-        InitializeComponent();
-    }
-    
     private async void OnDoubleTapped(object? sender, RoutedEventArgs e)
     {
-        if(DataContext is AClipboardItem clipboardItem)
-        {
-            await clipboardItem.OnDoubleTappedAsync();
-        }
+        if (DataContext is AClipboardItem clipboardItem) await clipboardItem.OnDoubleTappedAsync();
 
         e.Handled = true;
     }

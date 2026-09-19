@@ -71,7 +71,7 @@
                                 <ComboBox
                                     SelectedItem="{Binding SelectedTheme, Mode=TwoWay}"
                                     Grid.Column="1"
-                                    VerticalAlignment="Center" >
+                                    VerticalAlignment="Center">
                                     <x:String>Light</x:String>
                                     <x:String>Dark</x:String>
                                     <x:String>System</x:String>
@@ -380,7 +380,7 @@
                                         Grid.Column="1"
                                         Text="Toggle Clipboard Monitoring On/Off."
                                         TextWrapping="Wrap" />
-                                    
+
                                     <!-- Alt + P -->
                                     <TextBlock
                                         Grid.Row="6"
@@ -412,7 +412,7 @@
                                         Grid.Column="0"
                                         Text="Esc"
                                         FontWeight="SemiBold" />
-                                    
+
                                     <TextBlock
                                         Grid.Row="8"
                                         Grid.Column="1"
@@ -424,11 +424,11 @@
                                 <Grid Grid.Row="2"
                                       RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                                       ColumnDefinitions="200,*">
-                       
+
                                     <TextBlock Grid.Row="0"
                                                Grid.Column="0"
                                                Grid.ColumnSpan="2">
-                                        <Run >Main Screen</Run>
+                                        <Run>Main Screen</Run>
                                         <Run FontSize="10">Focused On List</Run>
                                     </TextBlock>
                                     <!-- Enter -->
@@ -468,7 +468,7 @@
                                         Grid.Column="1"
                                         Text="Edit Selected Item"
                                         TextWrapping="Wrap" />
-                                    
+
                                     <!-- Ctrl + S -->
                                     <TextBlock
                                         Grid.Row="4"
@@ -493,7 +493,7 @@
                                         Grid.Column="1"
                                         Text="Save the file in a temporary folder and open it with the default application. if its a file or folder open it with file manager"
                                         TextWrapping="Wrap" />
-                                    
+
                                     <!-- Delete -->
                                     <TextBlock
                                         Grid.Row="6"
@@ -511,11 +511,11 @@
                                 <Grid Grid.Row="4"
                                       RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
                                       ColumnDefinitions="200,*">
-                       
+
                                     <TextBlock Grid.Row="0"
                                                Grid.Column="0"
                                                Grid.ColumnSpan="2">
-                                        <Run >Edit and Preferences Screen</Run>
+                                        <Run>Edit and Preferences Screen</Run>
                                         <Run FontSize="10">General</Run>
                                     </TextBlock>
                                     <!-- Ctrl + S -->
@@ -616,11 +616,11 @@
                                     Classes="accent" />
 
                             </StackPanel>
-                            
+
                         </StackPanel>
                     </Border>
                 </StackPanel>
-                
+
                 <!-- Export Import -->
                 <StackPanel Spacing="12">
 
@@ -666,10 +666,10 @@
                                     Text="{Binding ExportFilePath, Mode=TwoWay}"
                                     IsReadOnly="True" />
                                 <Button Grid.Column="1" x:Name="FileSelectButton" Command="{Binding SelectFileCommand}">
-                                    <avalonia:FluentIcon Icon="Folder"/>
+                                    <avalonia:FluentIcon Icon="Folder" />
                                 </Button>
                                 <Button Grid.Column="2" x:Name="ExportButton" Command="{Binding ExportCommand}">
-                                    <avalonia:FluentIcon Icon="ArrowExport"/>
+                                    <avalonia:FluentIcon Icon="ArrowExport" />
                                 </Button>
                             </Grid>
                         </StackPanel>

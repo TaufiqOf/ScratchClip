@@ -26,10 +26,10 @@ public class App : Application
     private const int MaxItemsPerTag = 50;
     private GlobalHotkeyService? _hotkeyService;
     private bool _isCleanedUp;
+    private DateTime _lastMenuToggleTime;
+    private MenuWindow? _menuWindow;
 
     private TrayIcon? _trayIcon;
-    private MenuWindow? _menuWindow;
-    private DateTime _lastMenuToggleTime;
 
     public bool IsShuttingDown { get; private set; }
 
@@ -55,7 +55,7 @@ public class App : Application
 
             // --- PRIMARY INSTANCE SETUP ---
             var settings = SettingsManager.Load();
-            
+
 
             _hotkeyService = new GlobalHotkeyService(
                 ToggleMainWindow,
@@ -66,7 +66,7 @@ public class App : Application
 
                 MenuTargetModifiers = settings.MenuModifiers,
 
-                MenuTargetKey = settings.MenuKey,
+                MenuTargetKey = settings.MenuKey
             };
 
             if (_hotkeyService.IsSupported) _hotkeyService.Start();
@@ -79,16 +79,14 @@ public class App : Application
 
             // Start background IPC server listener
             _ = StartIpcListenerAsync();
-            
+
             if (Current != null)
-            {
                 Current.RequestedThemeVariant = settings.Theme switch
                 {
                     "Light" => ThemeVariant.Light,
                     "Dark" => ThemeVariant.Dark,
                     _ => ThemeVariant.Default
                 };
-            }
 
             if (isToggleRequested) Dispatcher.UIThread.Post(ToggleMainWindow);
         }
@@ -234,17 +232,18 @@ public class App : Application
                 window.ShowFromTray();
         }
     }
-    
+
     private void ToggleMenuWindow()
     {
         if (ApplicationKeyStore.HasPassword() && ApplicationKeyStore.GetSessionPassword() == null)
         {
-            NotificationHelper.Warning("Application Locked","Please unlock the application first to access the menu.");
+            NotificationHelper.Warning("Application Locked", "Please unlock the application first to access the menu.");
             return;
         }
+
         if (IsShuttingDown)
             return;
-        if(_menuWindow != null)
+        if (_menuWindow != null)
             return;
         if ((DateTime.UtcNow - _lastMenuToggleTime).TotalMilliseconds < 500)
             return;
@@ -256,10 +255,7 @@ public class App : Application
                 Topmost = true
             };
 
-            _menuWindow.Closed += (_, _) =>
-            {
-                _menuWindow = null;
-            };
+            _menuWindow.Closed += (_, _) => { _menuWindow = null; };
         }
 
         if (_menuWindow.IsVisible)
@@ -271,11 +267,9 @@ public class App : Application
         var position = MousePositionHelper.GetPosition();
 
         if (position.HasValue)
-        {
             _menuWindow.Position = new PixelPoint(
                 position.Value.X,
                 position.Value.Y);
-        }
 
         _menuWindow.Show();
         _menuWindow.Activate();
@@ -329,15 +323,13 @@ public class App : Application
                 moreItemsItem.Menu = new NativeMenu();
                 moreRootMenuItems = moreItemsItem.Menu?.Items;
                 if (moreRootMenuItems != null)
-                {
                     for (var i = currentItems; i < Math.Min(MaxRootItems + currentItems, history.Count); i++)
                     {
                         var clipboardItem = history[i];
-                        var menuItem = new NativeMenuItem(BuildItemHeader(((i - currentItems) + 1), clipboardItem));
+                        var menuItem = new NativeMenuItem(BuildItemHeader(i - currentItems + 1, clipboardItem));
                         menuItem.Click += async (_, _) => await PasteItemToFocusedWindowAsync(clipboardItem);
                         moreRootMenuItems.Add(menuItem);
                     }
-                }
 
                 currentItems += MaxRootItems;
             }
@@ -430,7 +422,7 @@ public class App : Application
 
         //return $"{index}. {label}";
     }
-    
+
     private void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
     {
         IsShuttingDown = true;
@@ -454,7 +446,7 @@ public class App : Application
         IsShuttingDown = true;
         CleanupResources();
     }
-    
+
     private void CleanupResources()
     {
         if (_isCleanedUp) return;
@@ -465,7 +457,7 @@ public class App : Application
         if (settings.IsSaveHistoryOnExitEnabled && ClipboardManager.IsLoaded)
         {
             var history = ClipboardManager.GetClipboardHistorySnapshot();
-            ClipboardHistoryManager.Save(history,ApplicationKeyStore.GetSessionPassword());
+            ClipboardHistoryManager.Save(history, ApplicationKeyStore.GetSessionPassword());
         }
 
         ActualThemeVariantChanged -= OnActualThemeVariantChanged;
@@ -474,5 +466,4 @@ public class App : Application
         _hotkeyService?.Dispose();
         _hotkeyService = null;
     }
-
 }
