@@ -81,7 +81,10 @@ public partial class SettingPageControl : UserControl
     {
         if (DataContext is SettingsViewModel vm)
         {
-            vm.SaveCommand.Execute(null);
+            if (!vm.Save())
+            {
+                return;
+            }
             NotificationHelper.Success(
                 "Preferences saved",
                 "Your preferences have been successfully saved.");

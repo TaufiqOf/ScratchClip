@@ -31,6 +31,9 @@ public partial class SettingsViewModel : ObservableObject
     private bool _willExportImageItems = true;
     private bool _willExportStorageItems = true;
     private bool _willExportTextItems = true;
+    private bool _willCaptureImageItems; 
+    private bool _willCaptureTextItems;
+    private bool _willCaptureStorageItems;
 
     public SettingsViewModel(GlobalHotkeyService hotkeyService)
     {
@@ -50,6 +53,9 @@ public partial class SettingsViewModel : ObservableObject
         IsFastKeyEnabled = settings.IsFastKeyEnabled;
         IsReverseOrder = settings.IsReverseOrder;
         SelectedTheme = settings.Theme;
+        WillCaptureImageItems = settings.WillCaptureImageItems;
+        WillCaptureTextItems = settings.WillCaptureTextItems;
+        WillCaptureStorageItems = settings.WillCaptureStorageItems;
         SelectedTheme = settings.Theme switch
         {
             "Light" => "Light",
@@ -142,6 +148,25 @@ public partial class SettingsViewModel : ObservableObject
             OnPropertyChanged();
         }
     }
+
+    public bool WillCaptureTextItems
+    {
+        get => _willCaptureTextItems;
+        set { SetProperty(ref _willCaptureTextItems, value); }
+    }
+
+    public bool WillCaptureImageItems
+    {
+        get => _willCaptureImageItems;
+        set { SetProperty(ref _willCaptureImageItems, value); }
+    }
+
+    public bool WillCaptureStorageItems
+    {
+        get => _willCaptureStorageItems;
+        set { SetProperty(ref _willCaptureStorageItems, value); }
+    }
+
 
 
     [RelayCommand]
@@ -363,9 +388,14 @@ public partial class SettingsViewModel : ObservableObject
         HotkeyMenuDisplay = "Alt + Shift + L";
     }
 
-    [RelayCommand]
-    private void Save()
+    public bool Save()
     {
+        if (!WillCaptureImageItems && !WillCaptureTextItems && !WillCaptureStorageItems)
+        {
+            NotificationHelper.Error("Settings Error","At least one clipboard type must be enabled for capture.");
+            return false;
+        }
+
         // 1. Update active runtime hotkey configuration
         _hotkeyService.UpdateHotkey(PendingModifiers, PendingKey);
         _hotkeyService.UpdateMenuHotkey(PendingMenuModifiers, PendingMenuKey);
@@ -388,9 +418,13 @@ public partial class SettingsViewModel : ObservableObject
         settings.MaxItemsInHistory = MaximumItemsInHistory;
         settings.IsReverseOrder = IsReverseOrder;
         settings.IsFastKeyEnabled = IsFastKeyEnabled;
+        settings.WillCaptureImageItems = WillCaptureImageItems;
+        settings.WillCaptureTextItems = WillCaptureTextItems;
+        settings.WillCaptureStorageItems = WillCaptureStorageItems;
         settings.Theme = SelectedTheme;
         ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
         SettingsManager.Save(settings);
+        return true;
     }
 
     public void SetMenuHotkey(EventMask modifiers, KeyCode key, string display)

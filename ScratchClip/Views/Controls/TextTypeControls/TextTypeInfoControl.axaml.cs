@@ -17,6 +17,23 @@ public partial class TextTypeInfoControl : UserControl
         _previewEditor = this.FindControl<TextEditor>("PreviewEditor");
         DataContextChanged += OnDataContextChanged;
         UpdatePreviewText();
+        PreviewEditor.TextChanged += AdjustEditorHeight;
+        PreviewEditor.SizeChanged += (s, e) => AdjustEditorHeight(s, EventArgs.Empty);
+    }
+
+    private void AdjustEditorHeight(object? sender, EventArgs e)
+    {
+        if (PreviewEditor.Document == null) return;
+
+        // Estimate height based on line count, font size, padding, and line spacing
+        double lineHeight = PreviewEditor.FontSize * 1.35; // Standard font line-height ratio
+        double padding = PreviewEditor.Padding.Top + PreviewEditor.Padding.Bottom;
+
+        // Total height needed by actual text content
+        double contentHeight = (PreviewEditor.Document.LineCount * lineHeight) + padding + 30; // Additional buffer for scrollbar and margins
+
+        // Cap height between content fit and max limit (400)
+        PreviewEditor.Height = Math.Min(contentHeight, 400);
     }
 
     private void OnDataContextChanged(object? sender, EventArgs e)

@@ -20,4 +20,7 @@ public class AppSettings
     public bool IsReverseOrder { get; set; }
     public string Theme { get; set; }
     public bool IsFastKeyEnabled { get; set; }
+    public bool WillCaptureImageItems { get; set; } = true;
+    public bool WillCaptureTextItems { get; set; } = true;
+    public bool WillCaptureStorageItems { get; set; } = true;
 }

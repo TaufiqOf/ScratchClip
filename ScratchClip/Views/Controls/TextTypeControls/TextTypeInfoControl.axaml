@@ -28,24 +28,25 @@
             <!-- Code Preview -->
             <Border Grid.Column="1"
                     CornerRadius="6"
-                    ClipToBounds="True">
+                    ClipToBounds="True"
+                    MaxHeight="400">
 
-                <StackPanel Spacing="2">
 
-                    <avaloniaEdit:TextEditor
-                        x:Name="PreviewEditor"
-                        x:CompileBindings="False"
-                        IsReadOnly="True"
-                        ShowLineNumbers="True"
-                        FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
-                        FontSize="12"
-                        Padding="8"
-                        MinHeight="40"
-                        MaxHeight="220"
-                        HorizontalScrollBarVisibility="Auto"
-                        VerticalScrollBarVisibility="Auto" />
-
-                </StackPanel>
+                <avaloniaEdit:TextEditor
+                    x:Name="PreviewEditor"
+                    x:CompileBindings="False"
+                    IsReadOnly="True"
+                    ShowLineNumbers="True"
+                    FontFamily="Cascadia Code,Consolas,Menlo,Monospace"
+                    FontSize="12"
+                    Padding="8"
+        
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Auto" >
+                    <avaloniaEdit:TextEditor.Options>
+                        <avaloniaEdit:TextEditorOptions AllowScrollBelowDocument="False" />
+                    </avaloniaEdit:TextEditor.Options>
+                </avaloniaEdit:TextEditor>
 
             </Border>
 

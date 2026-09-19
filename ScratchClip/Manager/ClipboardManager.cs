@@ -153,11 +153,12 @@ public static class ClipboardManager
 
     public static async Task<ClipboardDataFormat?> GetDataTypeAsync(IClipboard clipboard)
     {
+        var settings = SettingsManager.Load();
         var data = await clipboard.TryGetDataAsync();
         if (data == null) return null;
-        if (data.Formats.Any(q => q == DataFormat.File)) return ClipboardDataFormat.Storage;
-        if (data.Formats.Any(q => q == DataFormat.Bitmap)) return ClipboardDataFormat.Image;
-        if (data.Formats.Any(q => q == DataFormat.Text)) return ClipboardDataFormat.Text;
+        if (data.Formats.Any(q => q == DataFormat.File) && settings.WillCaptureStorageItems) return ClipboardDataFormat.Storage;
+        if (data.Formats.Any(q => q == DataFormat.Bitmap) && settings.WillCaptureImageItems) return ClipboardDataFormat.Image;
+        if (data.Formats.Any(q => q == DataFormat.Text) && settings.WillCaptureTextItems) return ClipboardDataFormat.Text;
         return null;
     }
 

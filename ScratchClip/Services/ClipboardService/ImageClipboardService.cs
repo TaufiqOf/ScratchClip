@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Input.Platform;
@@ -73,38 +74,58 @@ internal class ImageClipboardService : AClipboardService
 
     public override async Task<bool> IsDataSame(AClipboardItem existingItem, object data)
     {
-        var imageData = data as Bitmap;
-        if (imageData == null || existingItem is not ImageClipboardItem imageItem || imageItem.Image == null)
+        if (data is not Bitmap imageData || existingItem is not ImageClipboardItem imageItem || imageItem.Image == null)
             return false;
-        return await BitmapsAreEqual(imageItem.Image, imageData);
+
+        return await Task.Run(() => BitmapsAreEqual(imageItem.Image, imageData));
     }
 
-    private static async Task<bool> BitmapsAreEqual(Bitmap a, Bitmap b)
+    private static bool BitmapsAreEqual(Bitmap a, Bitmap b)
     {
-        if (a.PixelSize != b.PixelSize)
-            return false;
-
-        if (a.Dpi != b.Dpi)
-            return false;
-
-        var bytesA = await Task.Run(() =>
+        try
         {
-            using var stream = new MemoryStream();
-            a.Save(
-                stream,
-                PngBitmapEncoderOptions.Default);
-            return stream.ToArray();
-        });
+            // 1. Quick structural checks
+            if (a.PixelSize != b.PixelSize)
+                return false;
 
-        var bytesB = await Task.Run(() =>
+            if (a.Dpi != b.Dpi)
+                return false;
+
+            if (a.Format != b.Format)
+                return false;
+
+            // 2. Calculate buffer dimensions
+            int width = a.PixelSize.Width;
+            int height = a.PixelSize.Height;
+            int bytesPerPixel = 4; // Standard 32-bit pixel depth (BGRA/RGBA)
+            int stride = width * bytesPerPixel;
+            int bufferSize = stride * height;
+
+            byte[] bytesA = new byte[bufferSize];
+            byte[] bytesB = new byte[bufferSize];
+
+            // 3. Pin arrays and copy pixels directly
+            GCHandle handleA = GCHandle.Alloc(bytesA, GCHandleType.Pinned);
+            GCHandle handleB = GCHandle.Alloc(bytesB, GCHandleType.Pinned);
+
+            try
+            {
+                a.CopyPixels(default, handleA.AddrOfPinnedObject(), bufferSize, stride);
+                b.CopyPixels(default, handleB.AddrOfPinnedObject(), bufferSize, stride);
+            }
+            finally
+            {
+                handleA.Free();
+                handleB.Free();
+            }
+
+            // 4. Fast byte sequence equality check
+            return bytesA.AsSpan().SequenceEqual(bytesB);
+        }
+        catch (Exception e)
         {
-            using var stream = new MemoryStream();
-            b.Save(
-                stream,
-                PngBitmapEncoderOptions.Default);
-            return stream.ToArray();
-        });
-
-        return bytesA.AsSpan().SequenceEqual(bytesB);
+            Console.WriteLine(e);
+            return false;
+        }
     }
 }

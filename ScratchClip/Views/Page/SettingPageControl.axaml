@@ -50,7 +50,7 @@
                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
                         <StackPanel Spacing="16">
-                            <!-- Auto start -->
+                            <!-- Theme -->
                             <Grid ColumnDefinitions="*,Auto">
 
                                 <StackPanel
@@ -213,7 +213,96 @@
 
                 </StackPanel>
 
+                <!-- Monitor -->
+                <StackPanel Spacing="12">
 
+                    <TextBlock
+                        Text="Monitor"
+                        FontSize="16"
+                        FontWeight="SemiBold" />
+
+                    <Border
+                        Padding="16"
+                        CornerRadius="8"
+                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+
+                        <StackPanel Spacing="16">
+                            <!-- Text -->
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="Text"
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Capture text copied to the clipboard."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    IsChecked="{Binding WillCaptureTextItems}"
+                                    VerticalAlignment="Center" />
+
+                            </Grid>
+                            <!-- Images -->
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="Images"
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Capture images copied to the clipboard."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    IsChecked="{Binding WillCaptureImageItems}"
+                                    VerticalAlignment="Center" />
+
+                            </Grid>
+                            <!-- File System -->
+                            <Grid ColumnDefinitions="*,Auto">
+
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Spacing="2">
+
+                                    <TextBlock
+                                        Text="File System "
+                                        FontWeight="Medium" />
+
+                                    <TextBlock
+                                        Text="Capture files and folders copied to the clipboard."
+                                        FontSize="12"
+                                        Opacity="0.65"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    IsChecked="{Binding WillCaptureStorageItems}"
+                                    VerticalAlignment="Center" />
+
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
                 <!-- Shortcuts -->
                 <StackPanel Spacing="12">
 

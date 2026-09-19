@@ -20,12 +20,11 @@ public partial class PlainTextType : ATextType
         ShowMore = false;
         _text = text;
         Icon = Icon.Note;
-        if (_text.Length < _maxLength)
-            ShowMore = false;
-        else
-            ShowMore = true;
-        Text = text.Substring(0, Math.Min(text.Length, _maxLength));
-        UpdateShowMore();
+        // if (_text.Length < _maxLength)
+        //     ShowMore = false;
+        // else
+        //     ShowMore = true;
+        // Text = text.Substring(0, Math.Min(text.Length, _maxLength));
     }
 
     public string? ShowMoreText
