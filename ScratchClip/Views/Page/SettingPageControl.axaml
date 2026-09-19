@@ -714,7 +714,7 @@
                 <StackPanel Spacing="12">
 
                     <TextBlock
-                        Text="Export / Import Data"
+                        Text="Export"
                         FontSize="16"
                         FontWeight="SemiBold" />
 
