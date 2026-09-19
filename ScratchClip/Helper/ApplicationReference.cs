@@ -5,4 +5,6 @@ namespace ScratchClip.Helper;
 public static class ApplicationReference
 {
     public static MainWindow MainWindow { get; set; }
+    
+    public static string LastPath { get; set; }
 }

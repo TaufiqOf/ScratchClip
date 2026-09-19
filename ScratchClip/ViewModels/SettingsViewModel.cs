@@ -31,7 +31,7 @@ public partial class SettingsViewModel : ObservableObject
     private bool _willExportImageItems = true;
     private bool _willExportStorageItems = true;
     private bool _willExportTextItems = true;
-    private bool _willCaptureImageItems; 
+    private bool _willCaptureImageItems;
     private bool _willCaptureTextItems;
     private bool _willCaptureStorageItems;
 
@@ -168,13 +168,16 @@ public partial class SettingsViewModel : ObservableObject
     }
 
 
-
     [RelayCommand]
     public void Export()
     {
         try
         {
-            if (string.IsNullOrEmpty(ExportFilePath)) return;
+            if (string.IsNullOrEmpty(ExportFilePath))
+            {
+                NotificationHelper.Error("Export Error", "Please select a valid export file path.");
+                return;
+            }
 
             var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot()
                 .Where(q => (WillExportTextItems && q.ClipboardType == ClipboardType.Text)
@@ -290,9 +293,12 @@ public partial class SettingsViewModel : ObservableObject
                     false);
                 Directory.Delete(finalePath, true);
             }
+
+            NotificationHelper.Success("Export Success", "Export completed successfully.");
         }
         catch (Exception e)
         {
+            NotificationHelper.Success("Export Failed", e.Message);
             Console.WriteLine(e);
         }
     }
@@ -301,7 +307,7 @@ public partial class SettingsViewModel : ObservableObject
         string sourceDir,
         string destinationDir)
     {
-        if(!Directory.Exists(sourceDir)) return;
+        if (!Directory.Exists(sourceDir)) return;
         Directory.CreateDirectory(destinationDir);
 
         foreach (var file in Directory.GetFiles(sourceDir))
@@ -311,7 +317,7 @@ public partial class SettingsViewModel : ObservableObject
                 Path.GetFileName(file));
             try
             {
-                if(!File.Exists(file)) continue;
+                if (!File.Exists(file)) continue;
                 File.Copy(file, destinationFile, true);
             }
             catch (Exception e)
@@ -362,13 +368,20 @@ public partial class SettingsViewModel : ObservableObject
             });
         }
 
+        var startPath =
+            ApplicationReference.LastPath != null &&
+            Directory.Exists(ApplicationReference.LastPath)
+                ? ApplicationReference.LastPath
+                : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var files = await storageProvider.SaveFilePickerWithResultAsync(new FilePickerSaveOptions
         {
             Title = "Select a file",
-            FileTypeChoices = filePickerTypes
+            FileTypeChoices = filePickerTypes,
+            SuggestedStartLocation = await storageProvider.TryGetFolderFromPathAsync(startPath),
         });
         if (files.File?.Path != null)
         {
+            ApplicationReference.LastPath = Path.GetDirectoryName(files.File.Path.LocalPath) ?? startPath;
             var file = files.File.Path;
             if (file != null) ExportFilePath = file.AbsolutePath;
         }
@@ -394,7 +407,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         if (!WillCaptureImageItems && !WillCaptureTextItems && !WillCaptureStorageItems)
         {
-            NotificationHelper.Error("Settings Error","At least one clipboard type must be enabled for capture.");
+            NotificationHelper.Error("Settings Error", "At least one clipboard type must be enabled for capture.");
             return false;
         }
 

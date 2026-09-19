@@ -141,16 +141,25 @@ public abstract partial class AClipboardItem : ViewModelBase
 
             if (window == null)
                 return;
+            var startPath =
+                ApplicationReference.LastPath != null &&
+                Directory.Exists(ApplicationReference.LastPath)
+                    ? ApplicationReference.LastPath
+                    : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
+            var startFolder = await window.StorageProvider.TryGetFolderFromPathAsync(startPath);
             var file = await window.StorageProvider.SaveFilePickerAsync(
                 new FilePickerSaveOptions
                 {
+
                     Title = "Save Clipboard Item",
-                    SuggestedFileName = SuggestedFile
+                    SuggestedFileName = SuggestedFile,
+                    SuggestedStartLocation = startFolder,
                 });
 
             if (file == null)
                 return;
+            ApplicationReference.LastPath = Path.GetDirectoryName(file.Path.LocalPath) ?? startPath;
             var data = await GetData();
             if(data == null)
             {
