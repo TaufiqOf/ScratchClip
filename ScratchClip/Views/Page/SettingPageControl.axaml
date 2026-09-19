@@ -7,7 +7,6 @@
     x:DataType="viewModels:SettingsViewModel">
 
     <UserControl.Styles>
-        <!-- Consistent hierarchy -->
         <Style Selector="TextBlock.sectionTitle">
             <Setter Property="FontSize" Value="16" />
             <Setter Property="FontWeight" Value="SemiBold" />
@@ -18,763 +17,403 @@
         </Style>
         <Style Selector="TextBlock.description">
             <Setter Property="FontSize" Value="12" />
-            <Setter Property="Opacity" Value="0.65" />
+            <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
         <Style Selector="Border.settingsCard">
-            <Setter Property="Padding" Value="20" />
+            <Setter Property="Padding" Value="16" />
             <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
         </Style>
         <Style Selector="Button.actionButton">
-            <Setter Property="MinHeight" Value="38" />
-            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="MinHeight" Value="36" />
+            <Setter Property="Padding" Value="14,8" />
+        </Style>
+
+        <!-- Keycap Chip Style for Keyboard Shortcuts -->
+        <Style Selector="Border.keyBadge">
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="6,2" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Border.keyBadge TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontFamily" Value="Cascadia Code, Consolas, Monospace" />
         </Style>
     </UserControl.Styles>
 
-    <Grid Margin="16" RowDefinitions="Auto,*,Auto">
-        <Border
-            Margin="0,0,0,12"
-            Padding="0,0,0,12"
-            BorderThickness="0,0,0,1"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
-            <!-- Header -->
+    <Grid Margin="20" RowDefinitions="Auto,*,Auto">
+        <!-- Header -->
+        <Border Margin="0,0,0,16"
+                Padding="0,0,0,12"
+                BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
             <StackPanel Spacing="4">
-                <TextBlock
-                    Text="SETTINGS"
-                    FontSize="24"
-                    FontWeight="SemiBold" />
-
-                <TextBlock
-                    Text="Configure how ScratchClip behaves."
-                    Opacity="0.65"
-                    FontSize="13" />
+                <TextBlock Text="Settings"
+                           FontSize="24"
+                           FontWeight="Bold" />
+                <TextBlock Text="Configure how ScratchClip behaves."
+                           Classes="description"
+                           FontSize="13" />
             </StackPanel>
         </Border>
 
-        <!-- Settings content -->
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto">
-
-            <StackPanel
-                MaxWidth="700"
-                HorizontalAlignment="Stretch"
-                Spacing="20">
-
+        <!-- Settings Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel MaxWidth="720"
+                        HorizontalAlignment="Stretch"
+                        Spacing="24"
+                        Margin="0,0,12,0">
 
                 <!-- General -->
                 <StackPanel Spacing="10">
+                    <TextBlock Text="General" Classes="sectionTitle" />
 
-                    <TextBlock
-                        Text="General"
-                        Classes="sectionTitle" />
+                    <Border Classes="settingsCard">
+                        <StackPanel Spacing="16">
 
-                    <Border
-                        Padding="16"
-                        CornerRadius="10"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-
-                        <StackPanel Spacing="14">
                             <!-- Theme -->
                             <Grid ColumnDefinitions="*,Auto">
-
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="Theme"
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Select the theme for ScratchClip."
-                                     Classes="description" />
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Theme" Classes="settingTitle" />
+                                    <TextBlock Text="Select the visual theme for ScratchClip." Classes="description" />
                                 </StackPanel>
-
-                                <ComboBox
-                                    SelectedItem="{Binding SelectedTheme, Mode=TwoWay}"
-                                    Grid.Column="1"
-                                    VerticalAlignment="Center">
+                                <ComboBox Grid.Column="1"
+                                          SelectedItem="{Binding SelectedTheme, Mode=TwoWay}"
+                                          Width="140"
+                                          VerticalAlignment="Center">
                                     <x:String>Light</x:String>
                                     <x:String>Dark</x:String>
                                     <x:String>System</x:String>
                                 </ComboBox>
-
                             </Grid>
-                            <!-- Auto start -->
+
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                            <!-- Auto Start -->
                             <Grid ColumnDefinitions="*,Auto">
-
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="Start on system startup"
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Automatically start ScratchClip when you sign in."
-                                     Classes="description" />
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Start on system startup" Classes="settingTitle" />
+                                    <TextBlock Text="Automatically start ScratchClip when you sign in." Classes="description" />
                                 </StackPanel>
-
-                                <ToggleSwitch
-                                    Grid.Column="1"
-                                    IsChecked="{Binding IsAutoStartEnabled}"
-                                    VerticalAlignment="Center" />
-
+                                <ToggleSwitch Grid.Column="1"
+                                              IsChecked="{Binding IsAutoStartEnabled}"
+                                              OffContent="" OnContent=""
+                                              VerticalAlignment="Center" />
                             </Grid>
 
-                            <!-- Reverse order -->
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                            <!-- Reverse Order -->
                             <Grid ColumnDefinitions="*,Auto">
-
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="Reverse order"
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Index of the most recent clipboard items is 1, and the oldest is the number of items."
-                                     Classes="description" />
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Reverse item ordering" Classes="settingTitle" />
+                                    <TextBlock Text="Display recent items starting at index 1 and increment towards the oldest." Classes="description" />
                                 </StackPanel>
-
-                                <ToggleSwitch
-                                    Grid.Column="1"
-                                    IsChecked="{Binding IsReverseOrder}"
-                                    VerticalAlignment="Center" />
-
+                                <ToggleSwitch Grid.Column="1"
+                                              IsChecked="{Binding IsReverseOrder}"
+                                              OffContent="" OnContent=""
+                                              VerticalAlignment="Center" />
                             </Grid>
+
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
                             <!-- Fast Key -->
                             <Grid ColumnDefinitions="*,Auto">
-
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="Fast Key"
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Pressing the number of index of the item on the list will select the item, If this option is enabled it will automatically paste the item."
-                                     Classes="description" />
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Fast Key auto-paste" Classes="settingTitle" />
+                                    <TextBlock Text="Pressing the index number of an item automatically selects and pastes it." Classes="description" />
                                 </StackPanel>
-
-                                <ToggleSwitch
-                                    Grid.Column="1"
-                                    IsChecked="{Binding IsFastKeyEnabled}"
-                                    VerticalAlignment="Center" />
-
+                                <ToggleSwitch Grid.Column="1"
+                                              IsChecked="{Binding IsFastKeyEnabled}"
+                                              OffContent="" OnContent=""
+                                              VerticalAlignment="Center" />
                             </Grid>
-                            <!-- Save history -->
+
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                            <!-- Save History -->
                             <Grid ColumnDefinitions="*,Auto">
-
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="Save clipboard history on exit"
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Keep your clipboard history when ScratchClip closes."
-                                     Classes="description" />
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Save history on exit" Classes="settingTitle" />
+                                    <TextBlock Text="Persist your clipboard history when closing ScratchClip." Classes="description" />
                                 </StackPanel>
-
-                                <ToggleSwitch
-                                    Grid.Column="1"
-                                    IsChecked="{Binding IsSaveHistoryOnExitEnabled}"
-                                    VerticalAlignment="Center" />
-
+                                <ToggleSwitch Grid.Column="1"
+                                              IsChecked="{Binding IsSaveHistoryOnExitEnabled}"
+                                              OffContent="" OnContent=""
+                                              VerticalAlignment="Center" />
                             </Grid>
 
-                            <!-- Maximum history -->
-                            <Grid
-                                ColumnDefinitions="*,Auto"
-                                Margin="0">
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
 
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="Maximum history items"
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Choose how many clipboard items ScratchClip keeps.(20 to 200)"
-                                     Classes="description" />
+                            <!-- Maximum History -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Maximum history items" Classes="settingTitle" />
+                                    <TextBlock Text="Number of items to retain in history (20 to 200)." Classes="description" />
                                 </StackPanel>
-
-                                <NumericUpDown
-                                    Grid.Column="1"
-                                    Width="140"
-                                    x:Name="MaxItemsInHistory"
-                                    Increment="1"
-                                    Value="{Binding MaximumItemsInHistory, Mode=TwoWay}"
-                                    Maximum="300"
-                                    Minimum="20"
-                                    VerticalAlignment="Center" />
-
+                                <NumericUpDown Grid.Column="1"
+                                               Width="140"
+                                               Value="{Binding MaximumItemsInHistory, Mode=TwoWay}"
+                                               Maximum="300"
+                                               Minimum="20"
+                                               Increment="1"
+                                               VerticalAlignment="Center" />
                             </Grid>
 
                         </StackPanel>
                     </Border>
-
                 </StackPanel>
 
                 <!-- Monitor -->
                 <StackPanel Spacing="10">
+                    <TextBlock Text="Monitor" Classes="sectionTitle" />
 
-                    <TextBlock
-                        Text="Monitor"
-                        Classes="sectionTitle" />
+                    <Border Classes="settingsCard">
+                        <StackPanel Spacing="16">
 
-                    <Border
-                        Padding="16"
-                        CornerRadius="10"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-
-                        <StackPanel Spacing="14">
                             <!-- Text -->
                             <Grid ColumnDefinitions="*,Auto">
-
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="Text"
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Capture text copied to the clipboard."
-                                     Classes="description" />
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Text items" Classes="settingTitle" />
+                                    <TextBlock Text="Capture text copied to the system clipboard." Classes="description" />
                                 </StackPanel>
-
-                                <ToggleSwitch
-                                    Grid.Column="1"
-                                    IsChecked="{Binding WillCaptureTextItems}"
-                                    VerticalAlignment="Center" />
-
+                                <ToggleSwitch Grid.Column="1"
+                                              IsChecked="{Binding WillCaptureTextItems}"
+                                              OffContent="" OnContent=""
+                                              VerticalAlignment="Center" />
                             </Grid>
+
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
                             <!-- Images -->
                             <Grid ColumnDefinitions="*,Auto">
-
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="Images"
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Capture images copied to the clipboard."
-                                     Classes="description" />
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Image items" Classes="settingTitle" />
+                                    <TextBlock Text="Capture images copied to the system clipboard." Classes="description" />
                                 </StackPanel>
-
-                                <ToggleSwitch
-                                    Grid.Column="1"
-                                    IsChecked="{Binding WillCaptureImageItems}"
-                                    VerticalAlignment="Center" />
-
+                                <ToggleSwitch Grid.Column="1"
+                                              IsChecked="{Binding WillCaptureImageItems}"
+                                              OffContent="" OnContent=""
+                                              VerticalAlignment="Center" />
                             </Grid>
+
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
                             <!-- File System -->
                             <Grid ColumnDefinitions="*,Auto">
-
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Spacing="2">
-
-                                    <TextBlock
-                                        Text="File System "
-                                        FontWeight="Medium" />
-
-                                    <TextBlock
-                                        Text="Capture files and folders copied to the clipboard."
-                                     Classes="description" />
+                                <StackPanel Grid.Column="0" Spacing="2">
+                                    <TextBlock Text="Files &amp; storage items" Classes="settingTitle" />
+                                    <TextBlock Text="Capture files and folders copied to the system clipboard." Classes="description" />
                                 </StackPanel>
-
-                                <ToggleSwitch
-                                    Grid.Column="1"
-                                    IsChecked="{Binding WillCaptureStorageItems}"
-                                    VerticalAlignment="Center" />
-
+                                <ToggleSwitch Grid.Column="1"
+                                              IsChecked="{Binding WillCaptureStorageItems}"
+                                              OffContent="" OnContent=""
+                                              VerticalAlignment="Center" />
                             </Grid>
+
                         </StackPanel>
                     </Border>
-
                 </StackPanel>
+
                 <!-- Shortcuts -->
                 <StackPanel Spacing="10">
+                    <TextBlock Text="Keyboard Shortcuts" Classes="sectionTitle" />
 
-                    <TextBlock
-                        Text="Keyboard shortcuts"
-                        Classes="sectionTitle" />
+                    <Border Classes="settingsCard">
+                        <StackPanel Spacing="16">
 
-                    <Border
-                        Padding="16"
-                        CornerRadius="10"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                            <!-- Hotkey 1 -->
+                            <StackPanel Spacing="8">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="Global activation shortcut" Classes="settingTitle" />
+                                    <TextBlock Text="Press a key combination to show the main ScratchClip window." Classes="description" />
+                                </StackPanel>
 
-                        <StackPanel Spacing="10">
-
-                            <TextBlock
-                                Text="Global shortcut"
-                                FontWeight="Medium" />
-
-                            <TextBlock
-                                Text="Press a key combination to show the ScratchClip window."
-                                     Classes="description" />
-
-                            <Grid
-                                Margin="0,8,0,0"
-                                ColumnDefinitions="*,Auto">
-
-                                <TextBox
-                                    x:Name="HotkeyTextBox"
-                                    Grid.Column="0"
-                                    VerticalContentAlignment="Center"
-                                    IsReadOnly="True"
-                                    Text="{Binding HotkeyDisplay, Mode=OneWay}"
-                                    PlaceholderText="Click here and press a shortcut..."
-                                    KeyDown="HotkeyTextBox_OnKeyDown" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="38"
-                                    Height="38"
-                                    Margin="8,0,0,0"
-                                    Command="{Binding ClearHotkeyCommand}"
-                                    ToolTip.Tip="Reset shortcut">
-
-                                    <avalonia:FluentIcon
-                                        Icon="Dismiss"
-                                        Width="16"
-                                        Height="16" />
-
-                                </Button>
-
-                            </Grid>
-                            <Grid
-                                Margin="0,8,0,0"
-                                ColumnDefinitions="*,Auto">
-
-                                <TextBox
-                                    x:Name="HotkeyMenuTextBox"
-                                    Grid.Column="0"
-                                    VerticalContentAlignment="Center"
-                                    IsReadOnly="True"
-                                    Text="{Binding HotkeyMenuDisplay, Mode=OneWay}"
-                                    PlaceholderText="Click here and press a shortcut..."
-                                    KeyDown="HotkeyMenuTextBox_OnKeyDown" />
-
-                                <Button
-                                    Grid.Column="1"
-                                    Width="38"
-                                    Height="38"
-                                    Margin="8,0,0,0"
-                                    Command="{Binding ClearHotkeyMenuCommand}"
-                                    ToolTip.Tip="Reset shortcut">
-
-                                    <avalonia:FluentIcon
-                                        Icon="Dismiss"
-                                        Width="16"
-                                        Height="16" />
-
-                                </Button>
-
-                            </Grid>
-                            <Separator Margin="0,4" />
-
-                            <TextBlock
-                                Text="Available shortcuts"
-                                FontWeight="Medium" />
-
-                            <Grid
-                                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                                RowSpacing="8"
-                                ColumnSpacing="20">
-                                <!--Main Screen General-->
-                                <Grid Grid.Row="0"
-                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                                      ColumnDefinitions="180,*">
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        Grid.ColumnSpan="2">
-                                        <Run>Main Screen</Run>
-                                        <Run FontSize="10">General Navigation</Run>
-                                    </TextBlock>
-                                    <!-- Alt + S -->
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        Text="Alt + S"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Text="Focus the search input field"
-                                        TextWrapping="Wrap" />
-
-                                    <!-- Alt + Up Or Down -->
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="0"
-                                        Text="Alt + Up Or Down"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="1"
-                                        Text="Focus the Item List"
-                                        TextWrapping="Wrap" />
-                                    <!-- Alt + L -->
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="0"
-                                        Text="Alt + L"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="1"
-                                        Text="Lock the application, if the password is set."
-                                        TextWrapping="Wrap" />
-
-                                    <!-- Alt + Q -->
-                                    <TextBlock
-                                        Grid.Row="4"
-                                        Grid.Column="0"
-                                        Text="Alt + Q"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="4"
-                                        Grid.Column="1"
-                                        Text="Pin/Unpin main screen to the top of the screen."
-                                        TextWrapping="Wrap" />
-                                    <!-- Alt + M -->
-                                    <TextBlock
-                                        Grid.Row="5"
-                                        Grid.Column="0"
-                                        Text="Alt + M"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="5"
-                                        Grid.Column="1"
-                                        Text="Toggle Clipboard Monitoring On/Off."
-                                        TextWrapping="Wrap" />
-
-                                    <!-- Alt + P -->
-                                    <TextBlock
-                                        Grid.Row="6"
-                                        Grid.Column="0"
-                                        Text="Alt + P"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="6"
-                                        Grid.Column="1"
-                                        Text="Show Preferences Screen"
-                                        TextWrapping="Wrap" />
-                                    <!-- 1 - 200 -->
-                                    <TextBlock
-                                        Grid.Row="7"
-                                        Grid.Column="0"
-                                        Text="1 – 200"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="7"
-                                        Grid.Column="1"
-                                        Text="Instantly choose the corresponding item in the visible list and paste it"
-                                        TextWrapping="Wrap" />
-
-                                    <!-- Escape -->
-                                    <TextBlock
-                                        Grid.Row="8"
-                                        Grid.Column="0"
-                                        Text="Esc"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="8"
-                                        Grid.Column="1"
-                                        Text="Hide the window to the system tray, if in the Preference or edit screen, go back to the main screen"
-                                        TextWrapping="Wrap" />
-
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <TextBox x:Name="HotkeyTextBox"
+                                             IsReadOnly="True"
+                                             Text="{Binding HotkeyDisplay, Mode=OneWay}"
+                                             Watermark="Click here and press a shortcut..."
+                                             KeyDown="HotkeyTextBox_OnKeyDown"
+                                             VerticalContentAlignment="Center" />
+                                    <Button Grid.Column="1"
+                                            Command="{Binding ClearHotkeyCommand}"
+                                            ToolTip.Tip="Reset shortcut"
+                                            Padding="10,8">
+                                        <avalonia:FluentIcon Icon="Dismiss" Width="16" Height="16" />
+                                    </Button>
                                 </Grid>
-                                <Separator Grid.Row="1" Margin="0,4" />
-                                <Grid Grid.Row="2"
-                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                                      ColumnDefinitions="180,*">
+                            </StackPanel>
 
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Grid.ColumnSpan="2">
-                                        <Run>Main Screen</Run>
-                                        <Run FontSize="10">Focused On List</Run>
-                                    </TextBlock>
-                                    <!-- Enter -->
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        Text="Enter"
-                                        FontWeight="SemiBold" />
+                            <!-- Hotkey 2 -->
+                            <StackPanel Spacing="8">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Text="Global menu shortcut" Classes="settingTitle" />
+                                    <TextBlock Text="Press a key combination to open the quick tray menu." Classes="description" />
+                                </StackPanel>
 
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Text="Copy the selected item and paste it into the previously focused application. If focus is on the Search Input, focus the Item List."
-                                        TextWrapping="Wrap" />
-
-                                    <!-- Double Click -->
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="0"
-                                        Text="Double Click"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="1"
-                                        Text="Copy the selected item and paste it into the previously focused application"
-                                        TextWrapping="Wrap" />
-                                    <!-- Ctrl + E -->
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="0"
-                                        Text="Ctrl + E"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="3"
-                                        Grid.Column="1"
-                                        Text="Edit Selected Item"
-                                        TextWrapping="Wrap" />
-
-                                    <!-- Ctrl + S -->
-                                    <TextBlock
-                                        Grid.Row="4"
-                                        Grid.Column="0"
-                                        Text="Ctrl + S"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="4"
-                                        Grid.Column="1"
-                                        Text="Save the focused item to a file."
-                                        TextWrapping="Wrap" />
-                                    <!-- Ctrl + 0 -->
-                                    <TextBlock
-                                        Grid.Row="5"
-                                        Grid.Column="0"
-                                        Text="Ctrl + 0"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="5"
-                                        Grid.Column="1"
-                                        Text="Save the file in a temporary folder and open it with the default application. if its a file or folder open it with file manager"
-                                        TextWrapping="Wrap" />
-
-                                    <!-- Delete -->
-                                    <TextBlock
-                                        Grid.Row="6"
-                                        Grid.Column="0"
-                                        Text="Delete"
-                                        FontWeight="SemiBold" />
-
-                                    <TextBlock
-                                        Grid.Row="6"
-                                        Grid.Column="1"
-                                        Text="Delete Selected Item"
-                                        TextWrapping="Wrap" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <TextBox x:Name="HotkeyMenuTextBox"
+                                             IsReadOnly="True"
+                                             Text="{Binding HotkeyMenuDisplay, Mode=OneWay}"
+                                             Watermark="Click here and press a shortcut..."
+                                             KeyDown="HotkeyMenuTextBox_OnKeyDown"
+                                             VerticalContentAlignment="Center" />
+                                    <Button Grid.Column="1"
+                                            Command="{Binding ClearHotkeyMenuCommand}"
+                                            ToolTip.Tip="Reset shortcut"
+                                            Padding="10,8">
+                                        <avalonia:FluentIcon Icon="Dismiss" Width="16" Height="16" />
+                                    </Button>
                                 </Grid>
-                                <Separator Grid.Row="3" Margin="0,4" />
-                                <Grid Grid.Row="4"
-                                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                                      ColumnDefinitions="180,*">
+                            </StackPanel>
 
-                                    <TextBlock Grid.Row="0"
-                                               Grid.Column="0"
-                                               Grid.ColumnSpan="2">
-                                        <Run>Edit and Preferences Screen</Run>
-                                        <Run FontSize="10">General</Run>
-                                    </TextBlock>
-                                    <!-- Ctrl + S -->
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        Text="Ctrl + S"
-                                        FontWeight="SemiBold" />
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
 
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                                        Text="Save and return to main screen"
-                                        TextWrapping="Wrap" />
-                                    <!-- Escape -->
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="0"
-                                        Text="Esc"
-                                        FontWeight="SemiBold" />
+                            <!-- Reference Table -->
+                            <TextBlock Text="Available Built-in Shortcuts" Classes="settingTitle" />
 
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        Grid.Column="1"
-                                        Text="Return to main screen"
-                                        TextWrapping="Wrap" />
+                            <StackPanel Spacing="12">
+                                <!-- Main Screen Section -->
+                                <TextBlock Text="Main Screen — Navigation" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="140,*" RowSpacing="8">
+                                    <Border Grid.Row="0" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Alt + S" /></Border>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Focus the search input field" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="1" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Alt + Up / Down" /></Border>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Focus the Item List" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="2" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Alt + L" /></Border>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Lock application (if password is set)" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="3" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Alt + Q" /></Border>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="Pin/Unpin main window to top" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="4" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Alt + M" /></Border>
+                                    <TextBlock Grid.Row="4" Grid.Column="1" Text="Toggle Clipboard Monitoring On/Off" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="5" Grid.Column="0" Classes="keyBadge"><TextBlock Text="1 – 200" /></Border>
+                                    <TextBlock Grid.Row="5" Grid.Column="1" Text="Select and paste the item corresponding to index" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="6" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Esc" /></Border>
+                                    <TextBlock Grid.Row="6" Grid.Column="1" Text="Hide window to system tray or return to main view" VerticalAlignment="Center" FontSize="12" />
                                 </Grid>
-                            </Grid>
+
+                                <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                                <!-- Main Screen Focused -->
+                                <TextBlock Text="Main Screen — Item Actions" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+
+                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnDefinitions="140,*" RowSpacing="8">
+                                    <Border Grid.Row="0" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Enter" /></Border>
+                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Paste selected item into target application" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="1" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Ctrl + E" /></Border>
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Edit selected item" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="2" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Ctrl + S" /></Border>
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="Save selected item to a file" VerticalAlignment="Center" FontSize="12" />
+
+                                    <Border Grid.Row="3" Grid.Column="0" Classes="keyBadge"><TextBlock Text="Delete" /></Border>
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="Delete selected item" VerticalAlignment="Center" FontSize="12" />
+                                </Grid>
+                            </StackPanel>
+
                         </StackPanel>
                     </Border>
                 </StackPanel>
-
 
                 <!-- Security -->
                 <StackPanel Spacing="10">
+                    <TextBlock Text="Security" Classes="sectionTitle" />
 
-                    <TextBlock
-                        Text="Security"
-                        Classes="sectionTitle" />
-
-                    <Border
-                        Padding="16"
-                        CornerRadius="10"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                    <Border Classes="settingsCard">
                         <StackPanel Spacing="14">
-                            <!-- Header -->
-                            <StackPanel Spacing="3">
-                                <TextBlock
-                                    Text="Application password"
-                                    FontWeight="Medium"
-                                    FontSize="14" />
-
-                                <TextBlock
-                                    Text="Protect your clipboard history with a password."
-                                     Classes="description" />
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="Application Password" Classes="settingTitle" />
+                                <TextBlock Text="Protect your clipboard history from unauthorized access with a master password." Classes="description" />
                             </StackPanel>
 
-
-                            <!-- Password fields -->
                             <StackPanel Spacing="8">
-                                <TextBox
-                                    x:Name="PasswordTextBox"
-                                    PasswordChar="•"
-                                    PlaceholderText="Password" />
-                                <TextBox
-                                    x:Name="ConfirmPasswordTextBox"
-                                    PasswordChar="•"
-                                    PlaceholderText="Confirm password" />
+                                <TextBox x:Name="PasswordTextBox"
+                                         PasswordChar="•"
+                                         Watermark="Password" />
+                                <TextBox x:Name="ConfirmPasswordTextBox"
+                                         PasswordChar="•"
+                                         Watermark="Confirm password" />
                             </StackPanel>
 
-                            <!-- Error / status -->
-                            <TextBlock
-                                x:Name="PasswordStatusText"
-                                FontSize="12"
-                                IsVisible="False"
-                                TextWrapping="Wrap" />
+                            <TextBlock x:Name="PasswordStatusText"
+                                       FontSize="12"
+                                       Foreground="Red"
+                                       IsVisible="False"
+                                       TextWrapping="Wrap" />
 
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                                <Button x:Name="DeletePasswordButton"
+                                        Classes="actionButton"
+                                        Click="DeletePasswordButtonOnClick"
+                                        IsVisible="False">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <avalonia:FluentIcon Icon="Delete" />
+                                        <TextBlock Text="Delete password" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
 
-                            <!-- Actions -->
-                            <StackPanel
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Right"
-                                Spacing="8">
-
-                                <Button
-                                    x:Name="DeletePasswordButton"
-                                    Content="Delete password"
-                                    Padding="16,8"
-                                    Click="DeletePasswordButtonOnClick"
-                                    IsVisible="False" />
-
-                                <Button
-                                    x:Name="SetPasswordButton"
-                                    Content="Set password"
-                                    Padding="16,8"
-                                    Click="SetPasswordButtonOnClick"
-                                    Classes="accent" />
-
+                                <Button x:Name="SetPasswordButton"
+                                        Classes="actionButton accent"
+                                        Click="SetPasswordButtonOnClick">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <avalonia:FluentIcon Icon="LockClosed" />
+                                        <TextBlock Text="Set password" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
                             </StackPanel>
-
                         </StackPanel>
                     </Border>
                 </StackPanel>
 
-                <!-- Export Import -->
-                <StackPanel Spacing="14">
+                <!-- Export Data -->
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Export Data" Classes="sectionTitle" />
 
-                    <!-- Section Title -->
-                    <TextBlock Text="Export Data"
-                               Classes="sectionTitle" />
-
-                    <Border Padding="16"
-                            CornerRadius="10"
-                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
-                        <StackPanel Spacing="14">
-
-                            <!-- Header Description -->
-                            <StackPanel Spacing="4">
-                                <TextBlock Text="Export History"
-                                           FontWeight="SemiBold"
-                                           FontSize="14" />
-                                <TextBlock Text="Export your clipboard history items into a external backup file."
-                                           FontSize="12"
-                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
-                                           TextWrapping="Wrap" />
+                    <Border Classes="settingsCard">
+                        <StackPanel Spacing="16">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="Export History" Classes="settingTitle" />
+                                <TextBlock Text="Export your clipboard history items into an external backup file." Classes="description" />
                             </StackPanel>
 
-                            <Separator Height="1"
-                                       Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
 
-                            <!-- Item Type Selectors -->
+                            <!-- Item Selectors -->
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Included Item Types"
-                                           FontSize="12"
-                                           FontWeight="Medium"
-                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                                <TextBlock Text="Included Item Types" FontSize="12" FontWeight="Medium" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
 
                                 <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="6">
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Text Items"
-                                               VerticalAlignment="Center" FontSize="13" />
-                                    <ToggleSwitch Grid.Row="0" Grid.Column="1"
-                                                  IsChecked="{Binding WillExportTextItems}" OffContent="" OnContent=""
-                                                  HorizontalAlignment="Right" />
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Text Items" VerticalAlignment="Center" FontSize="13" />
+                                    <ToggleSwitch Grid.Row="0" Grid.Column="1" IsChecked="{Binding WillExportTextItems}" OffContent="" OnContent="" HorizontalAlignment="Right" />
 
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Image Items"
-                                               VerticalAlignment="Center" FontSize="13" />
-                                    <ToggleSwitch Grid.Row="1" Grid.Column="1"
-                                                  IsChecked="{Binding WillExportImageItems}" OffContent="" OnContent=""
-                                                  HorizontalAlignment="Right" />
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Image Items" VerticalAlignment="Center" FontSize="13" />
+                                    <ToggleSwitch Grid.Row="1" Grid.Column="1" IsChecked="{Binding WillExportImageItems}" OffContent="" OnContent="" HorizontalAlignment="Right" />
 
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="File &amp; Storage Items"
-                                               VerticalAlignment="Center" FontSize="13" />
-                                    <ToggleSwitch Grid.Row="2" Grid.Column="1"
-                                                  IsChecked="{Binding WillExportStorageItems}" OffContent=""
-                                                  OnContent="" HorizontalAlignment="Right" />
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="File &amp; Storage Items" VerticalAlignment="Center" FontSize="13" />
+                                    <ToggleSwitch Grid.Row="2" Grid.Column="1" IsChecked="{Binding WillExportStorageItems}" OffContent="" OnContent="" HorizontalAlignment="Right" />
                                 </Grid>
                             </StackPanel>
 
-                            <Separator Height="1"
-                                       Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+                            <Separator Height="1" Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
 
                             <!-- Destination File Selection -->
                             <StackPanel Spacing="8">
-                                <TextBlock Text="Destination Path"
-                                           FontSize="12"
-                                           FontWeight="Medium"
-                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                                <TextBlock Text="Destination Path" FontSize="12" FontWeight="Medium" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
 
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <TextBox x:Name="ExportPathTextBox"
@@ -787,8 +426,8 @@
                                             x:Name="FileSelectButton"
                                             Command="{Binding SelectFileCommand}"
                                             ToolTip.Tip="Browse destination path"
-                                            Padding="16,8">
-                                        <StackPanel Orientation="Horizontal" >
+                                            Padding="12,8">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
                                             <avalonia:FluentIcon Icon="Folder" />
                                             <TextBlock Text="Browse" VerticalAlignment="Center" />
                                         </StackPanel>
@@ -801,48 +440,46 @@
                                     Command="{Binding ExportCommand}"
                                     Classes="actionButton accent"
                                     HorizontalAlignment="Right">
-                                <StackPanel Orientation="Horizontal" >
+                                <StackPanel Orientation="Horizontal" Spacing="8">
                                     <avalonia:FluentIcon Icon="ArrowExport" />
                                     <TextBlock Text="Export History" FontWeight="SemiBold" VerticalAlignment="Center" />
                                 </StackPanel>
                             </Button>
+
                         </StackPanel>
                     </Border>
                 </StackPanel>
+
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Bottom actions -->
-        <Border
-            Grid.Row="2"
-            Margin="0,5,0,0"
-            Padding="0,5,0,0"
-            BorderThickness="0,1,0,0"
-            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+        <!-- Bottom Actions Footer -->
+        <Border Grid.Row="2"
+                Margin="0,12,0,0"
+                Padding="0,12,0,0"
+                BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                <Button Click="OnCancelClick"
+                        Classes="actionButton"
+                        MinWidth="100"
+                        IsCancel="True">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <avalonia:FluentIcon Icon="Dismiss" />
+                        <TextBlock Text="Cancel" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
 
-            <StackPanel
-                Orientation="Horizontal"
-                HorizontalAlignment="Right"
-                Spacing="8">
-
-                <Button
-                    Content="Cancel"
-                    Click="OnCancelClick"
-                    Classes="actionButton"
-                    Width="96"
-                    IsCancel="True" />
-
-                <Button
-                    Content="Save"
-                    Click="OnSaveClick"
-                    IsDefault="True"
-                    Width="96"
-                    Classes="actionButton accent" />
-
+                <Button Click="OnSaveClick"
+                        IsDefault="True"
+                        MinWidth="100"
+                        Classes="actionButton accent">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <avalonia:FluentIcon Icon="Checkmark" />
+                        <TextBlock Text="Save" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
-
         </Border>
-
     </Grid>
-
 </UserControl>
