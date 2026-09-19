@@ -99,9 +99,6 @@ public partial class StorageClipboardItem : AClipboardItem
     private void UpdateStorageItems(List<string> value)
     {
         StorageItems = Paths
-            .Where(path =>
-                File.Exists(path) ||
-                Directory.Exists(path))
             .Select(path => new StorageItem
             {
                 FullPath = path
@@ -182,6 +179,8 @@ public partial class StorageClipboardItem : AClipboardItem
 
     public override async Task<object?> GetData()
     {
+        if(Files.Count == 0 && Folders.Count == 0)
+            return null;
         // Single file: return an async FileStream
         if (Paths.Count == 1 &&
             GetStorageType(Paths[0]) == StorageType.File)
@@ -293,8 +292,13 @@ public partial class StorageClipboardItem : AClipboardItem
         var tempFilePath = "";
         if (Paths.Count > 0 && File.Exists(Paths[0]))
             tempFilePath = Path.GetDirectoryName(Paths[0]);
-        else
+        else if (Folders.Count > 0 && Directory.Exists(Folders[0]))
             tempFilePath = Path.GetDirectoryName(Folders[0]);
+        else
+        {
+            NotificationHelper.Error("Cannot open item", "The item does not exist.");
+            return Task.CompletedTask;
+        }
         if (string.IsNullOrEmpty(tempFilePath)) return Task.CompletedTask;
         Process.Start(new ProcessStartInfo(tempFilePath)
             { UseShellExecute = true });

@@ -35,8 +35,7 @@ public static class LinuxFileIconService
 
         var filePath = SanitizeFilePath(rawFilePath);
 
-        if (!File.Exists(filePath) && !Directory.Exists(filePath))
-            return null;
+
 
         var isDir = Directory.Exists(filePath);
         var cacheKey = isDir ? "inode/directory" : Path.GetExtension(filePath).ToLowerInvariant();

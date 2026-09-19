@@ -9,6 +9,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ScratchClip.Helper;
 using ScratchClip.ViewModels;
 
 namespace ScratchClip.Models;
@@ -151,6 +152,11 @@ public abstract partial class AClipboardItem : ViewModelBase
             if (file == null)
                 return;
             var data = await GetData();
+            if(data == null)
+            {
+                NotificationHelper.Error("Failed","Failed to retrieve clipboard data for saving.");
+                return;
+            }
             switch (data)
             {
                 case string text:

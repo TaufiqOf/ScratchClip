@@ -20,7 +20,7 @@ public class StorageItem : ViewModelBase, IDisposable
                 value.TrimEnd(
                     Path.DirectorySeparatorChar,
                     Path.AltDirectorySeparatorChar));
-
+            IsSvg = true;
             Type = GetStorageType(value);
 
             InitializeWatcher();
@@ -55,7 +55,7 @@ public class StorageItem : ViewModelBase, IDisposable
         }
     }
 
-    public bool IsSvg
+    public bool IsSvg 
     {
         get;
         private set => SetProperty(ref field, value);
