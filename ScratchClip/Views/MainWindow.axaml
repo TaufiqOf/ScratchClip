@@ -6,7 +6,6 @@
         x:Class="ScratchClip.Views.MainWindow"
         Width="450" Height="600"
         WindowStartupLocation="Manual"
-        Icon="avares://ScratchClip/Assets/icon-dark.ico"
         MinWidth="650" MinHeight="650"
         WindowDecorations="Full"
         Title="ScratchClip">

@@ -86,14 +86,14 @@ public static class ClipboardManager
         return null;
     }
 
-    public static void UpdateSignature(AClipboardItem item)
+    public static async Task UpdateSignature(AClipboardItem item)
     {
         if (item is TextClipboardItem textItem)
-            _ = ClipboardServices[ClipboardDataFormat.Text].CreateSignature(textItem);
+            await ClipboardServices[ClipboardDataFormat.Text].CreateSignature(textItem);
         else if (item is ImageClipboardItem imageItem)
-            _ = ClipboardServices[ClipboardDataFormat.Image].CreateSignature(imageItem);
+            await ClipboardServices[ClipboardDataFormat.Image].CreateSignature(imageItem);
         else if (item is StorageClipboardItem storageItem)
-            _ = ClipboardServices[ClipboardDataFormat.Storage].CreateSignature(storageItem);
+            await ClipboardServices[ClipboardDataFormat.Storage].CreateSignature(storageItem);
     }
 
     public static async Task CheckClipboard()

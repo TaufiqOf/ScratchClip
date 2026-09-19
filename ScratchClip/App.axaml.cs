@@ -166,22 +166,24 @@ public class App : Application
 
     private void UpdateIcons(ThemeVariant theme)
     {
-        var assetUri = ApplicationTheme.GetIcon(theme, "ico");
-
-        var uri = new Uri(assetUri);
-
         Dispatcher.UIThread.Post(() =>
         {
+            var uri = new Uri(ApplicationTheme.GetIcon(theme, "ico"));
+
             if (_trayIcon != null)
             {
-                using var trayStream = AssetLoader.Open(uri);
-                _trayIcon.Icon = new WindowIcon(trayStream);
+                using var stream = AssetLoader.Open(uri);
+                _trayIcon.Icon = new WindowIcon(stream);
             }
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop && desktop.MainWindow != null)
             {
-                using var windowStream = AssetLoader.Open(uri);
-                desktop.MainWindow.Icon = new WindowIcon(windowStream);
+                using var stream = AssetLoader.Open(uri);
+                var newIcon = new WindowIcon(stream);
+            
+                // Force property change notification
+                desktop.MainWindow.Icon = null; 
+                desktop.MainWindow.Icon = newIcon;
             }
         });
     }

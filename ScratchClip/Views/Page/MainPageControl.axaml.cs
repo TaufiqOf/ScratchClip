@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Styling;
@@ -15,13 +16,18 @@ public partial class MainPageControl : UserControl
     public MainPageControl()
     {
         InitializeComponent();
-        OnThemeChanged(ApplicationTheme.Theme!);
+
         OnPasswordChanged();
         SearchTextBox.KeyUp += SearchTextBoxOnKeyUp;
         ApplicationKeyStore.OnPasswordChanged += OnPasswordChanged;
         ApplicationTheme.OnThemeChanged += OnThemeChanged;
     }
 
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        OnThemeChanged(ApplicationReference.MainWindow.ActualThemeVariant);
+    }
 
     private void OnPasswordChanged()
     {
@@ -31,7 +37,7 @@ public partial class MainPageControl : UserControl
 
     private void OnThemeChanged(ThemeVariant obj)
     {
-        var uri = new Uri(ApplicationTheme.GetIcon(obj, "png"));
+        var uri = new Uri(ApplicationTheme.GetIcon(obj, "png","32x32"));
 
         using var trayStream = AssetLoader.Open(uri);
 

@@ -147,7 +147,7 @@ public partial class EditClipboardItemPageControl : UserControl
                 storageItem.Tags.Add(tag);
         }
 
-        ClipboardManager.UpdateSignature(_item);
+        await ClipboardManager.UpdateSignature(_item);
         NotificationHelper.Success(
             "Item updated",
             "The item has been successfully updated.");

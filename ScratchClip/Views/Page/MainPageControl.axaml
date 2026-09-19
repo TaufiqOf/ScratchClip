@@ -38,9 +38,6 @@
 
                         <Image
                             x:Name="LogoImage"
-                            Source="avares://ScratchClip/Assets/icon-dark.ico"
-                            Width="22"
-                            Height="22"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Stretch="Uniform" />
