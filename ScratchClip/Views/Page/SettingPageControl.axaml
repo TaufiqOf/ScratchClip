@@ -6,17 +6,43 @@
     x:Class="ScratchClip.Views.Page.SettingPageControl"
     x:DataType="viewModels:SettingsViewModel">
 
-    <Grid Margin="10" RowDefinitions="Auto,*,Auto">
+    <UserControl.Styles>
+        <!-- Consistent hierarchy -->
+        <Style Selector="TextBlock.sectionTitle">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="TextBlock.settingTitle">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style Selector="TextBlock.description">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Opacity" Value="0.65" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="Border.settingsCard">
+            <Setter Property="Padding" Value="20" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+        </Style>
+        <Style Selector="Button.actionButton">
+            <Setter Property="MinHeight" Value="38" />
+            <Setter Property="Padding" Value="16,8" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Margin="16" RowDefinitions="Auto,*,Auto">
         <Border
-            Margin="0,0,0,5"
-            Padding="0,0,0,5"
+            Margin="0,0,0,12"
+            Padding="0,0,0,12"
             BorderThickness="0,0,0,1"
             BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
             <!-- Header -->
             <StackPanel Spacing="4">
                 <TextBlock
                     Text="SETTINGS"
-                    FontSize="26"
+                    FontSize="24"
                     FontWeight="SemiBold" />
 
                 <TextBlock
@@ -33,23 +59,22 @@
             <StackPanel
                 MaxWidth="700"
                 HorizontalAlignment="Stretch"
-                Spacing="24">
+                Spacing="20">
 
 
                 <!-- General -->
-                <StackPanel Spacing="12">
+                <StackPanel Spacing="10">
 
                     <TextBlock
                         Text="General"
-                        FontSize="16"
-                        FontWeight="SemiBold" />
+                        Classes="sectionTitle" />
 
                     <Border
                         Padding="16"
-                        CornerRadius="8"
+                        CornerRadius="10"
                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
-                        <StackPanel Spacing="16">
+                        <StackPanel Spacing="14">
                             <!-- Theme -->
                             <Grid ColumnDefinitions="*,Auto">
 
@@ -63,9 +88,7 @@
 
                                     <TextBlock
                                         Text="Select the theme for ScratchClip."
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <ComboBox
@@ -91,9 +114,7 @@
 
                                     <TextBlock
                                         Text="Automatically start ScratchClip when you sign in."
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <ToggleSwitch
@@ -116,9 +137,7 @@
 
                                     <TextBlock
                                         Text="Index of the most recent clipboard items is 1, and the oldest is the number of items."
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <ToggleSwitch
@@ -140,9 +159,7 @@
 
                                     <TextBlock
                                         Text="Pressing the number of index of the item on the list will select the item, If this option is enabled it will automatically paste the item."
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <ToggleSwitch
@@ -164,9 +181,7 @@
 
                                     <TextBlock
                                         Text="Keep your clipboard history when ScratchClip closes."
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <ToggleSwitch
@@ -179,7 +194,7 @@
                             <!-- Maximum history -->
                             <Grid
                                 ColumnDefinitions="*,Auto"
-                                Margin="0,4,0,0">
+                                Margin="0">
 
                                 <StackPanel
                                     Grid.Column="0"
@@ -191,14 +206,12 @@
 
                                     <TextBlock
                                         Text="Choose how many clipboard items ScratchClip keeps.(20 to 200)"
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <NumericUpDown
                                     Grid.Column="1"
-                                    Width="150"
+                                    Width="140"
                                     x:Name="MaxItemsInHistory"
                                     Increment="1"
                                     Value="{Binding MaximumItemsInHistory, Mode=TwoWay}"
@@ -214,19 +227,18 @@
                 </StackPanel>
 
                 <!-- Monitor -->
-                <StackPanel Spacing="12">
+                <StackPanel Spacing="10">
 
                     <TextBlock
                         Text="Monitor"
-                        FontSize="16"
-                        FontWeight="SemiBold" />
+                        Classes="sectionTitle" />
 
                     <Border
                         Padding="16"
-                        CornerRadius="8"
+                        CornerRadius="10"
                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
-                        <StackPanel Spacing="16">
+                        <StackPanel Spacing="14">
                             <!-- Text -->
                             <Grid ColumnDefinitions="*,Auto">
 
@@ -240,9 +252,7 @@
 
                                     <TextBlock
                                         Text="Capture text copied to the clipboard."
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <ToggleSwitch
@@ -264,9 +274,7 @@
 
                                     <TextBlock
                                         Text="Capture images copied to the clipboard."
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <ToggleSwitch
@@ -288,9 +296,7 @@
 
                                     <TextBlock
                                         Text="Capture files and folders copied to the clipboard."
-                                        FontSize="12"
-                                        Opacity="0.65"
-                                        TextWrapping="Wrap" />
+                                     Classes="description" />
                                 </StackPanel>
 
                                 <ToggleSwitch
@@ -304,19 +310,18 @@
 
                 </StackPanel>
                 <!-- Shortcuts -->
-                <StackPanel Spacing="12">
+                <StackPanel Spacing="10">
 
                     <TextBlock
                         Text="Keyboard shortcuts"
-                        FontSize="16"
-                        FontWeight="SemiBold" />
+                        Classes="sectionTitle" />
 
                     <Border
                         Padding="16"
-                        CornerRadius="8"
+                        CornerRadius="10"
                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
 
-                        <StackPanel Spacing="12">
+                        <StackPanel Spacing="10">
 
                             <TextBlock
                                 Text="Global shortcut"
@@ -324,9 +329,7 @@
 
                             <TextBlock
                                 Text="Press a key combination to show the ScratchClip window."
-                                FontSize="12"
-                                Opacity="0.65"
-                                TextWrapping="Wrap" />
+                                     Classes="description" />
 
                             <Grid
                                 Margin="0,8,0,0"
@@ -399,7 +402,7 @@
                                 <!--Main Screen General-->
                                 <Grid Grid.Row="0"
                                       RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                                      ColumnDefinitions="200,*">
+                                      ColumnDefinitions="180,*">
                                     <TextBlock
                                         Grid.Row="0"
                                         Grid.Column="0"
@@ -512,7 +515,7 @@
                                 <Separator Grid.Row="1" Margin="0,4" />
                                 <Grid Grid.Row="2"
                                       RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                                      ColumnDefinitions="200,*">
+                                      ColumnDefinitions="180,*">
 
                                     <TextBlock Grid.Row="0"
                                                Grid.Column="0"
@@ -599,7 +602,7 @@
                                 <Separator Grid.Row="3" Margin="0,4" />
                                 <Grid Grid.Row="4"
                                       RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
-                                      ColumnDefinitions="200,*">
+                                      ColumnDefinitions="180,*">
 
                                     <TextBlock Grid.Row="0"
                                                Grid.Column="0"
@@ -639,16 +642,15 @@
 
 
                 <!-- Security -->
-                <StackPanel Spacing="12">
+                <StackPanel Spacing="10">
 
                     <TextBlock
                         Text="Security"
-                        FontSize="16"
-                        FontWeight="SemiBold" />
+                        Classes="sectionTitle" />
 
                     <Border
                         Padding="16"
-                        CornerRadius="8"
+                        CornerRadius="10"
                         Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
                         <StackPanel Spacing="14">
                             <!-- Header -->
@@ -660,9 +662,7 @@
 
                                 <TextBlock
                                     Text="Protect your clipboard history with a password."
-                                    FontSize="12"
-                                    Opacity="0.65"
-                                    TextWrapping="Wrap" />
+                                     Classes="description" />
                             </StackPanel>
 
 
@@ -695,12 +695,14 @@
                                 <Button
                                     x:Name="DeletePasswordButton"
                                     Content="Delete password"
+                                    Padding="16,8"
                                     Click="DeletePasswordButtonOnClick"
                                     IsVisible="False" />
 
                                 <Button
                                     x:Name="SetPasswordButton"
                                     Content="Set password"
+                                    Padding="16,8"
                                     Click="SetPasswordButtonOnClick"
                                     Classes="accent" />
 
@@ -711,56 +713,99 @@
                 </StackPanel>
 
                 <!-- Export Import -->
-                <StackPanel Spacing="12">
+                <StackPanel Spacing="14">
 
-                    <TextBlock
-                        Text="Export"
-                        FontSize="16"
-                        FontWeight="SemiBold" />
+                    <!-- Section Title -->
+                    <TextBlock Text="Export Data"
+                               Classes="sectionTitle" />
 
-                    <Border
-                        Padding="16"
-                        CornerRadius="8"
-                        Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
+                    <Border Padding="16"
+                            CornerRadius="10"
+                            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}">
                         <StackPanel Spacing="14">
-                            <!-- Header -->
-                            <StackPanel Spacing="3">
-                                <TextBlock
-                                    Text="Export"
-                                    FontWeight="Medium"
-                                    FontSize="14" />
 
-                                <TextBlock
-                                    Text="Export your clipboard history to a file."
-                                    FontSize="12"
-                                    Opacity="0.65"
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock
-                                    Text="Choose the types of items to export."
-                                    FontSize="12"
-                                    Opacity="0.65"
-                                    TextWrapping="Wrap" />
-                                <ToggleSwitch IsChecked="{Binding WillExportTextItems}"> Text</ToggleSwitch>
-                                <ToggleSwitch IsChecked="{Binding WillExportImageItems}"> Images</ToggleSwitch>
-                                <ToggleSwitch IsChecked="{Binding WillExportStorageItems}"> Files </ToggleSwitch>
+                            <!-- Header Description -->
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="Export History"
+                                           FontWeight="SemiBold"
+                                           FontSize="14" />
+                                <TextBlock Text="Export your clipboard history items into a external backup file."
+                                           FontSize="12"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                                           TextWrapping="Wrap" />
                             </StackPanel>
 
+                            <Separator Height="1"
+                                       Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
 
-                            <!-- Export fields -->
-                            <Grid ColumnDefinitions="*,Auto,Auto">
-                                <TextBox
-                                    x:Name="ExportPathTextBox"
-                                    Text="{Binding ExportFilePath, Mode=TwoWay}"
-                                    IsReadOnly="True" />
-                                <Button Grid.Column="1" x:Name="FileSelectButton" Command="{Binding SelectFileCommand}">
-                                    <avalonia:FluentIcon Icon="Folder" />
-                                </Button>
-                                <Button Grid.Column="2" x:Name="ExportButton" Command="{Binding ExportCommand}">
+                            <!-- Item Type Selectors -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Included Item Types"
+                                           FontSize="12"
+                                           FontWeight="Medium"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+
+                                <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto" RowSpacing="6">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Text Items"
+                                               VerticalAlignment="Center" FontSize="13" />
+                                    <ToggleSwitch Grid.Row="0" Grid.Column="1"
+                                                  IsChecked="{Binding WillExportTextItems}" OffContent="" OnContent=""
+                                                  HorizontalAlignment="Right" />
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Image Items"
+                                               VerticalAlignment="Center" FontSize="13" />
+                                    <ToggleSwitch Grid.Row="1" Grid.Column="1"
+                                                  IsChecked="{Binding WillExportImageItems}" OffContent="" OnContent=""
+                                                  HorizontalAlignment="Right" />
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="File &amp; Storage Items"
+                                               VerticalAlignment="Center" FontSize="13" />
+                                    <ToggleSwitch Grid.Row="2" Grid.Column="1"
+                                                  IsChecked="{Binding WillExportStorageItems}" OffContent=""
+                                                  OnContent="" HorizontalAlignment="Right" />
+                                </Grid>
+                            </StackPanel>
+
+                            <Separator Height="1"
+                                       Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                            <!-- Destination File Selection -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Destination Path"
+                                           FontSize="12"
+                                           FontWeight="Medium"
+                                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <TextBox x:Name="ExportPathTextBox"
+                                             Text="{Binding ExportFilePath, Mode=TwoWay}"
+                                             Watermark="Select destination file..."
+                                             IsReadOnly="True"
+                                             VerticalContentAlignment="Center" />
+
+                                    <Button Grid.Column="1"
+                                            x:Name="FileSelectButton"
+                                            Command="{Binding SelectFileCommand}"
+                                            ToolTip.Tip="Browse destination path"
+                                            Padding="16,8">
+                                        <StackPanel Orientation="Horizontal" >
+                                            <avalonia:FluentIcon Icon="Folder" />
+                                            <TextBlock Text="Browse" VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Export Action Button -->
+                            <Button x:Name="ExportButton"
+                                    Command="{Binding ExportCommand}"
+                                    Classes="actionButton accent"
+                                    HorizontalAlignment="Right">
+                                <StackPanel Orientation="Horizontal" >
                                     <avalonia:FluentIcon Icon="ArrowExport" />
-                                </Button>
-                            </Grid>
+                                    <TextBlock Text="Export History" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -783,15 +828,16 @@
                 <Button
                     Content="Cancel"
                     Click="OnCancelClick"
-                    Width="100"
+                    Classes="actionButton"
+                    Width="96"
                     IsCancel="True" />
 
                 <Button
                     Content="Save"
                     Click="OnSaveClick"
                     IsDefault="True"
-                    Width="100"
-                    Classes="accent" />
+                    Width="96"
+                    Classes="actionButton accent" />
 
             </StackPanel>
 
