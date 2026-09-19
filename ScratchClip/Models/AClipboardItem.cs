@@ -224,7 +224,16 @@ public abstract partial class AClipboardItem : ViewModelBase
     [RelayCommand]
     public async Task Open()
     {
-        await OpenItem();
+        try
+        {
+            await OpenItem();
+        }
+        catch (Exception e)
+        {
+            NotificationHelper.Error("Failed to open item", e.Message);
+            Console.WriteLine(e);
+            return;
+        }
     }
 
     public async Task OnDoubleTappedAsync()

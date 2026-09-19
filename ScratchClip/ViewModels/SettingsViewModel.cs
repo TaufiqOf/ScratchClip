@@ -301,6 +301,7 @@ public partial class SettingsViewModel : ObservableObject
         string sourceDir,
         string destinationDir)
     {
+        if(!Directory.Exists(sourceDir)) return;
         Directory.CreateDirectory(destinationDir);
 
         foreach (var file in Directory.GetFiles(sourceDir))
@@ -310,6 +311,7 @@ public partial class SettingsViewModel : ObservableObject
                 Path.GetFileName(file));
             try
             {
+                if(!File.Exists(file)) continue;
                 File.Copy(file, destinationFile, true);
             }
             catch (Exception e)
