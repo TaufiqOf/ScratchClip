@@ -155,7 +155,7 @@
                     <!-- Export Data -->
                     <StackPanel x:Name="ExportSection" Spacing="10">
                         <StackPanel Orientation="Horizontal" Spacing="4">
-                            <avalonia:FluentIcon Icon="Key"></avalonia:FluentIcon>
+                            <avalonia:FluentIcon Icon="ArrowExport"></avalonia:FluentIcon>
                             <TextBlock Text="Export Data" Classes="sectionTitle" />
                         </StackPanel>
                         <settingsControls:ExportSettingsControl DataContext="{Binding }"></settingsControls:ExportSettingsControl>
