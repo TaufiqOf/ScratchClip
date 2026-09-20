@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ScratchClip.Views.Controls.SettingsControls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
+             x:DataType="viewModels:SettingsViewModel"
+             x:Class="ScratchClip.Views.Controls.SettingsControls.GeneralSettingsControl">
+
+
+        <Border Classes="settingsCard">
+            <StackPanel Spacing="16">
+                <!-- Theme -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Theme" Classes="settingTitle" />
+                        <TextBlock Text="Select the visual theme for ScratchClip."
+                                   Classes="description" />
+                    </StackPanel>
+                    <ComboBox Grid.Column="1"
+                              SelectedItem="{Binding SelectedTheme, Mode=TwoWay}"
+                              Width="140"
+                              VerticalAlignment="Center">
+                        <x:String>Light</x:String>
+                        <x:String>Dark</x:String>
+                        <x:String>System</x:String>
+                    </ComboBox>
+                </Grid>
+
+                <Separator Height="1"
+                           Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                <!-- Auto Start -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Start on system startup" Classes="settingTitle" />
+                        <TextBlock Text="Automatically start ScratchClip when you sign in."
+                                   Classes="description" />
+                    </StackPanel>
+                    <ToggleSwitch Grid.Column="1"
+                                  IsChecked="{Binding IsAutoStartEnabled}"
+                                  OffContent="" OnContent=""
+                                  VerticalAlignment="Center" />
+                </Grid>
+
+                <Separator Height="1"
+                           Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                <!-- Reverse Order -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Reverse item ordering" Classes="settingTitle" />
+                        <TextBlock
+                            Text="Display recent items starting at index 1 and increment towards the oldest."
+                            Classes="description" />
+                    </StackPanel>
+                    <ToggleSwitch Grid.Column="1"
+                                  IsChecked="{Binding IsReverseOrder}"
+                                  OffContent="" OnContent=""
+                                  VerticalAlignment="Center" />
+                </Grid>
+
+                <Separator Height="1"
+                           Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                <!-- Fast Key -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Fast Key auto-paste" Classes="settingTitle" />
+                        <TextBlock
+                            Text="Pressing the index number of an item automatically selects and pastes it."
+                            Classes="description" />
+                    </StackPanel>
+                    <ToggleSwitch Grid.Column="1"
+                                  IsChecked="{Binding IsFastKeyEnabled}"
+                                  OffContent="" OnContent=""
+                                  VerticalAlignment="Center" />
+                </Grid>
+
+                <Separator Height="1"
+                           Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                <!-- Save History -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Save history on exit" Classes="settingTitle" />
+                        <TextBlock Text="Persist your clipboard history when closing ScratchClip."
+                                   Classes="description" />
+                    </StackPanel>
+                    <ToggleSwitch Grid.Column="1"
+                                  IsChecked="{Binding IsSaveHistoryOnExitEnabled}"
+                                  OffContent="" OnContent=""
+                                  VerticalAlignment="Center" />
+                </Grid>
+
+                <Separator Height="1"
+                           Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+                <!-- Maximum History -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Maximum history items" Classes="settingTitle" />
+                        <TextBlock Text="Number of items to retain in history (20 to 200)."
+                                   Classes="description" />
+                    </StackPanel>
+                    <NumericUpDown Grid.Column="1"
+                                   Width="140"
+                                   Value="{Binding MaximumItemsInHistory, Mode=TwoWay}"
+                                   Maximum="300"
+                                   Minimum="20"
+                                   Increment="1"
+                                   VerticalAlignment="Center" />
+                </Grid>
+            </StackPanel>
+        </Border>
+</UserControl>

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -15,7 +17,7 @@ public partial class SettingPageControl : UserControl
     public SettingPageControl()
     {
         InitializeComponent();
-        UpdatePasswordControls();
+
         AddHandler(KeyDownEvent, InputElementOnKeyDown, RoutingStrategies.Tunnel);
     }
 
@@ -24,55 +26,6 @@ public partial class SettingPageControl : UserControl
     private void InputElementOnKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control)) OnSaveClick(sender, new RoutedEventArgs());
-    }
-
-
-    private static bool TryMapKeyToSharpHook(
-        Key key,
-        out KeyCode keyCode)
-    {
-        // Most keys have a matching VcXXX enum value.
-        if (Enum.TryParse(
-                $"Vc{key}",
-                true,
-                out keyCode))
-            return true;
-
-        // Avalonia D0-D9 -> SharpHook Vc0-Vc9.
-        if (key >= Key.D0 && key <= Key.D9)
-        {
-            keyCode = (KeyCode)(
-                (int)KeyCode.Vc0 +
-                (key - Key.D0));
-
-            return true;
-        }
-
-        keyCode = KeyCode.VcUndefined;
-        return false;
-    }
-
-    private static string BuildDisplayString(
-        KeyModifiers modifiers,
-        Key key)
-    {
-        var parts = new List<string>();
-
-        if (modifiers.HasFlag(KeyModifiers.Control))
-            parts.Add("Ctrl");
-
-        if (modifiers.HasFlag(KeyModifiers.Alt))
-            parts.Add("Alt");
-
-        if (modifiers.HasFlag(KeyModifiers.Shift))
-            parts.Add("Shift");
-
-        if (modifiers.HasFlag(KeyModifiers.Meta))
-            parts.Add("Super");
-
-        parts.Add(key.ToString());
-
-        return string.Join(" + ", parts);
     }
 
     private void OnSaveClick(
@@ -104,196 +57,71 @@ public partial class SettingPageControl : UserControl
             EventArgs.Empty);
     }
 
-    private void UpdatePasswordControls()
+
+    private async void SettingsNavButton_Click(object? sender, RoutedEventArgs e)
     {
-        var hasPassword = ApplicationKeyStore.HasPassword();
+        if (sender is not Button { Tag: Control target })
+            return;
 
-        SetPasswordButton.Content =
-            hasPassword
-                ? "Change password"
-                : "Set password";
+        // Get the target's position relative to the ScrollViewer
+        var point = target.TranslatePoint(
+            new Avalonia.Point(0, 0),
+            SettingsScrollViewer);
 
-        DeletePasswordButton.IsVisible = hasPassword;
+        if (point is null)
+            return;
 
-        PasswordTextBox.PlaceholderText =
-            hasPassword
-                ? "New password"
-                : "Password";
+        var start = SettingsScrollViewer.Offset.Y;
+        var end = Math.Max(0, start + point.Value.Y);
 
-        ConfirmPasswordTextBox.PlaceholderText =
-            hasPassword
-                ? "Confirm new password"
-                : "Confirm password";
-
-        PasswordStatusText.IsVisible = false;
+        await AnimateScrollAsync(start, end, TimeSpan.FromMilliseconds(350));
+        await BlinkSection(target);
     }
 
-    private void ShowPasswordStatus(string message)
+    private async Task AnimateScrollAsync(
+        double start,
+        double end,
+        TimeSpan duration)
     {
-        NotificationHelper.Success(
-            "Password status",
-            message);
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        while (stopwatch.Elapsed < duration)
+        {
+            var progress =
+                stopwatch.Elapsed.TotalMilliseconds /
+                duration.TotalMilliseconds;
+
+            // Ease-out
+            progress = 1 - Math.Pow(1 - progress, 3);
+
+            var value = start + (end - start) * progress;
+
+            SettingsScrollViewer.Offset =
+                new Avalonia.Vector(
+                    SettingsScrollViewer.Offset.X,
+                    value);
+
+            await Task.Delay(3000 / 60); // ~60 FPS
+        }
+
+        SettingsScrollViewer.Offset =
+            new Avalonia.Vector(
+                SettingsScrollViewer.Offset.X,
+                end);
     }
-
-    private void SetPasswordButtonOnClick(
-        object? sender,
-        RoutedEventArgs e)
+    private async Task BlinkSection(Control section)
     {
-        var password = PasswordTextBox.Text;
-        var confirmation = ConfirmPasswordTextBox.Text;
+        // Make it visible/normal first
+        section.Opacity = 1;
 
-        PasswordStatusText.IsVisible = false;
-
-        if (string.IsNullOrWhiteSpace(password))
+        // Blink 3 times
+        for (int i = 0; i < 1; i++)
         {
-            ShowPasswordStatus("Please enter a password.");
-            return;
+            section.Opacity = 0.6;
+            await Task.Delay(250);
+
+            section.Opacity = 1;
+            await Task.Delay(250);
         }
-
-        if (password.Length < 8)
-        {
-            ShowPasswordStatus(
-                "Password must be at least 8 characters.");
-            return;
-        }
-
-        if (password != confirmation)
-        {
-            ShowPasswordStatus(
-                "The passwords do not match.");
-            return;
-        }
-
-        try
-        {
-            ApplicationKeyStore.SetPassword(password);
-
-            PasswordTextBox.Clear();
-            ConfirmPasswordTextBox.Clear();
-
-            UpdatePasswordControls();
-
-            ShowPasswordStatus(
-                "Password updated successfully.");
-            ApplicationKeyStore.SetSessionPassword(password);
-            var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot();
-            ClipboardHistoryManager.Save(clipboardHistory, ApplicationKeyStore.GetSessionPassword());
-        }
-        catch (Exception)
-        {
-            ShowPasswordStatus(
-                "Unable to save the password.");
-        }
-    }
-
-    private void DeletePasswordButtonOnClick(
-        object? sender,
-        RoutedEventArgs e)
-    {
-        ApplicationKeyStore.DeletePassword();
-
-        PasswordTextBox.Clear();
-        ConfirmPasswordTextBox.Clear();
-
-        UpdatePasswordControls();
-
-        var clipboardHistory = ClipboardManager.GetClipboardHistorySnapshot();
-        ClipboardHistoryManager.Save(clipboardHistory, ApplicationKeyStore.GetSessionPassword());
-        ShowPasswordStatus("Password removed.");
-    }
-
-    private void HotkeyMenuTextBox_OnKeyDown(object? sender, KeyEventArgs e)
-    {
-        e.Handled = true;
-
-        if (DataContext is not SettingsViewModel vm)
-            return;
-
-        // Ignore modifier-only presses.
-        if (e.Key is
-            Key.LeftCtrl or
-            Key.RightCtrl or
-            Key.LeftAlt or
-            Key.RightAlt or
-            Key.LeftShift or
-            Key.RightShift or
-            Key.LWin or
-            Key.RWin)
-            return;
-
-        var mask = EventMask.None;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
-            mask |= EventMask.LeftCtrl;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Alt))
-            mask |= EventMask.LeftAlt;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
-            mask |= EventMask.LeftShift;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Meta))
-            mask |= EventMask.LeftMeta;
-
-        if (!TryMapKeyToSharpHook(e.Key, out var keyCode))
-            return;
-
-        var display = BuildDisplayString(
-            e.KeyModifiers,
-            e.Key);
-
-        vm.SetMenuHotkey(
-            mask,
-            keyCode,
-            display);
-    }
-
-
-    private void HotkeyTextBox_OnKeyDown(
-        object? sender,
-        KeyEventArgs e)
-    {
-        e.Handled = true;
-
-        if (DataContext is not SettingsViewModel vm)
-            return;
-
-        // Ignore modifier-only presses.
-        if (e.Key is
-            Key.LeftCtrl or
-            Key.RightCtrl or
-            Key.LeftAlt or
-            Key.RightAlt or
-            Key.LeftShift or
-            Key.RightShift or
-            Key.LWin or
-            Key.RWin)
-            return;
-
-        var mask = EventMask.None;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
-            mask |= EventMask.LeftCtrl;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Alt))
-            mask |= EventMask.LeftAlt;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Shift))
-            mask |= EventMask.LeftShift;
-
-        if (e.KeyModifiers.HasFlag(KeyModifiers.Meta))
-            mask |= EventMask.LeftMeta;
-
-        if (!TryMapKeyToSharpHook(e.Key, out var keyCode))
-            return;
-
-        var display = BuildDisplayString(
-            e.KeyModifiers,
-            e.Key);
-
-        vm.SetHotkey(
-            mask,
-            keyCode,
-            display);
     }
 }

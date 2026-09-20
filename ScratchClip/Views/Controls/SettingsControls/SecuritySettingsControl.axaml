@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ScratchClip.Views.Controls.SettingsControls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
+             x:DataType="viewModels:SettingsViewModel"
+             x:Class="ScratchClip.Views.Controls.SettingsControls.SecuritySettingsControl">
+    <Border Classes="settingsCard">
+        <StackPanel Spacing="14">
+            <StackPanel Spacing="2">
+                <TextBlock Text="Application Password" Classes="settingTitle" />
+                <TextBlock
+                    Text="Protect your clipboard history from unauthorized access with a master password."
+                    Classes="description" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBox x:Name="PasswordTextBox"
+                         PasswordChar="•"
+                         Watermark="Password" />
+                <TextBox x:Name="ConfirmPasswordTextBox"
+                         PasswordChar="•"
+                         Watermark="Confirm password" />
+            </StackPanel>
+
+            <TextBlock x:Name="PasswordStatusText"
+                       FontSize="12"
+                       Foreground="Red"
+                       IsVisible="False"
+                       TextWrapping="Wrap" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                <Button x:Name="DeletePasswordButton"
+                        Classes="actionButton"
+                        Click="DeletePasswordButtonOnClick"
+                        IsVisible="False">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <avalonia:FluentIcon Icon="Delete" />
+                        <TextBlock Text="Delete password" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="SetPasswordButton"
+                        Classes="actionButton accent"
+                        Click="SetPasswordButtonOnClick">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <avalonia:FluentIcon Icon="LockClosed" />
+                        <TextBlock Text="Set password" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+
+</UserControl>

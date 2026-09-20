@@ -85,5 +85,21 @@
             <DependentUpon>MenuWindow.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Controls\SettingsControls\MonitorSettingsControl.axaml.cs">
+          <DependentUpon>MonitorSettingsControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Controls\SettingsControls\KeyboardSettingsControl.axaml.cs">
+          <DependentUpon>KeyboardSettingsControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Controls\SettingsControls\SecuritySettingsControl.axaml.cs">
+          <DependentUpon>SecuritySettingsControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Controls\SettingsControls\ExportSettingsControl.axaml.cs">
+          <DependentUpon>ExportSettingsControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

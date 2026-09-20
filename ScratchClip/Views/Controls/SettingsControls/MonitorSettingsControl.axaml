@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ScratchClip.Views.Controls.SettingsControls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
+             x:DataType="viewModels:SettingsViewModel"
+             x:Class="ScratchClip.Views.Controls.SettingsControls.MonitorSettingsControl">
+
+
+    <Border Classes="settingsCard">
+        <StackPanel Spacing="16">
+
+            <!-- Text -->
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock Text="Text items" Classes="settingTitle" />
+                    <TextBlock Text="Capture text copied to the system clipboard."
+                               Classes="description" />
+                </StackPanel>
+                <ToggleSwitch Grid.Column="1"
+                              IsChecked="{Binding WillCaptureTextItems}"
+                              OffContent="" OnContent=""
+                              VerticalAlignment="Center" />
+            </Grid>
+
+            <Separator Height="1"
+                       Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+            <!-- Images -->
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock Text="Image items" Classes="settingTitle" />
+                    <TextBlock Text="Capture images copied to the system clipboard."
+                               Classes="description" />
+                </StackPanel>
+                <ToggleSwitch Grid.Column="1"
+                              IsChecked="{Binding WillCaptureImageItems}"
+                              OffContent="" OnContent=""
+                              VerticalAlignment="Center" />
+            </Grid>
+
+            <Separator Height="1"
+                       Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+            <!-- File System -->
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock Text="Files &amp; storage items" Classes="settingTitle" />
+                    <TextBlock Text="Capture files and folders copied to the system clipboard."
+                               Classes="description" />
+                </StackPanel>
+                <ToggleSwitch Grid.Column="1"
+                              IsChecked="{Binding WillCaptureStorageItems}"
+                              OffContent="" OnContent=""
+                              VerticalAlignment="Center" />
+            </Grid>
+
+        </StackPanel>
+    </Border>
+</UserControl>
