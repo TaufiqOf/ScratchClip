@@ -101,5 +101,9 @@
           <DependentUpon>ExportSettingsControl.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Controls\SettingsControls\LanguageSettingsControl.axaml.cs">
+          <DependentUpon>LangaugeSettingsControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 </Project>

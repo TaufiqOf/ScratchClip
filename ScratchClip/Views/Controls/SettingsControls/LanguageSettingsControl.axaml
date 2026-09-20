@@ -1,0 +1,197 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ScratchClip.Views.Controls.SettingsControls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
+             x:DataType="viewModels:SettingsViewModel"
+             x:Class="ScratchClip.Views.Controls.SettingsControls.LanguageSettingsControl">
+
+    <Border Classes="settingsCard">
+        <StackPanel Spacing="16">
+
+            <!-- Header -->
+            <StackPanel Spacing="2">
+                <TextBlock Text="Code Languages"
+                           Classes="settingTitle" />
+
+                <TextBlock Text="Configure the languages used by the code detector."
+                           Classes="description" />
+            </StackPanel>
+
+
+            <!-- Language selector -->
+            <StackPanel Spacing="8">
+
+                <TextBlock Text="Language"
+                           Classes="settingTitle" />
+
+                <ComboBox ItemsSource="{Binding LanguageDefinitions}"
+                          SelectedItem="{Binding SelectedLanguageDefinition}"
+                          HorizontalAlignment="Stretch">
+
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+
+                </ComboBox>
+
+            </StackPanel>
+
+
+            <Separator Height="1"
+                       Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+
+            <!-- Language Name -->
+            <StackPanel Spacing="8">
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Language name"
+                               Classes="settingTitle" />
+
+                    <TextBlock Text="The display name used when a language is detected."
+                               Classes="description" />
+                </StackPanel>
+
+                <TextBox Text="{Binding SelectedLanguageDefinition.Name}"
+                         PlaceholderText="e.g. C#"
+                         VerticalContentAlignment="Center" />
+
+            </StackPanel>
+
+
+            <!-- Native Library -->
+            <StackPanel Spacing="8">
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Native library"
+                               Classes="settingTitle" />
+
+                    <TextBlock Text="The Tree-sitter native library used to parse this language."
+                               Classes="description" />
+                </StackPanel>
+
+                <TextBox Text="{Binding SelectedLanguageDefinition.NativeLibrary}"
+                         PlaceholderText="e.g. libtree-sitter-c-sharp.so"
+                         VerticalContentAlignment="Center" />
+
+            </StackPanel>
+
+
+            <!-- Function Name -->
+            <StackPanel Spacing="8">
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Parser function"
+                               Classes="settingTitle" />
+
+                    <TextBlock Text="The Tree-sitter parser function exported by the native library."
+                               Classes="description" />
+                </StackPanel>
+
+                <TextBox Text="{Binding SelectedLanguageDefinition.FunctionName}"
+                         PlaceholderText="e.g. tree_sitter_c_sharp"
+                         VerticalContentAlignment="Center" />
+
+            </StackPanel>
+
+
+            <!-- Keywords -->
+            <StackPanel Spacing="8">
+
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Language keywords"
+                               Classes="settingTitle" />
+
+                    <TextBlock Text="Code fragments and keywords used to identify this language."
+                               Classes="description" />
+                </StackPanel>
+
+
+                <!-- Add keyword -->
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="8">
+
+                    <TextBox Text="{Binding NewLanguageKeyword}"
+                             PlaceholderText="Add keyword or code fragment..."
+                             VerticalContentAlignment="Center" />
+
+                    <Button Grid.Column="1"
+                            Command="{Binding AddLanguageKeywordCommand}"
+                            ToolTip.Tip="Add keyword"
+                            Padding="10,8">
+
+                        <avalonia:FluentIcon Icon="Add"
+                                             Width="16"
+                                             Height="16" />
+
+                    </Button>
+
+                </Grid>
+
+
+                <!-- Keyword list -->
+                <Border BorderBrush="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Padding="8">
+
+                    <StackPanel Spacing="8">
+
+                        <TextBlock Text="Keywords"
+                                   Classes="settingTitle" />
+
+                        <TextBlock Text="Enter keywords or code fragments separated by commas."
+                                   Classes="description" />
+
+                        <TextBox Text="{Binding LanguageKeywordsText, Mode=TwoWay}"
+                                 Watermark="e.g. class, public, namespace, using, Console."
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 MinHeight="100"
+                                 VerticalContentAlignment="Top" />
+
+                    </StackPanel>
+
+
+                </Border>
+
+            </StackPanel>
+
+
+            <Separator Height="1"
+                       Background="{DynamicResource SystemControlBackgroundBaseMediumLowBrush}" />
+
+
+            <!-- Actions -->
+            <Grid ColumnDefinitions="*,Auto,Auto"
+                  ColumnSpacing="8">
+
+                <Button Content="Reset"
+                        Command="{Binding ResetSelectedLanguageCommand}"
+                        HorizontalAlignment="Left"
+                        Padding="16,8" />
+
+                <Button Grid.Column="1"
+                        Content="Remove"
+                        Command="{Binding RemoveLanguageCommand}"
+                        Padding="16,8" />
+
+                <Button Grid.Column="2"
+                        Content="Add Language"
+                        Command="{Binding AddLanguageCommand}"
+                        Padding="16,8" />
+
+            </Grid>
+
+        </StackPanel>
+    </Border>
+
+</UserControl>

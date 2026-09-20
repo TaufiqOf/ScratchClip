@@ -1,3 +1,4 @@
+using System.Linq;
 using ScratchClip.Models;
 using SharpHook.Data;
 
@@ -23,4 +24,7 @@ public class AppSettings
     public bool WillCaptureImageItems { get; set; } = true;
     public bool WillCaptureTextItems { get; set; } = true;
     public bool WillCaptureStorageItems { get; set; } = true;
+
+    public CodeDetectionConfig.LanguageDefinition[] CodeDetectionLanguages { get; set; } =
+        CodeDetectionConfig.Languages.ToArray();
 }

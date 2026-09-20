@@ -2,8 +2,10 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using ScratchClip.Helper;
 using ScratchClip.Manager;
 using ScratchClip.Models.TextType;
 
@@ -42,7 +44,8 @@ public partial class TextClipboardItem : AClipboardItem
 
     public bool IsPassword => Type == TextClipboardItemType.Password;
 
-    public override string SuggestedFile { get; } = "text.txt";
+    public override string SuggestedFile =>
+        $"ScratchClip_{DateTime.Now:yyyyMMdd_HHmmss}{TextType?.SuggestedExtension ?? ".txt"}";
 
     [RelayCommand]
     private void ItemClicked()
@@ -59,6 +62,18 @@ public partial class TextClipboardItem : AClipboardItem
             DisplayText = new string('•', passwordTextType.Text.Length);
         await TextType.PopulateMetadataAsync(text);
         await TextType.UpdateTagsAsync(text);
+        await AdditionalTags();
+    }
+
+    private async Task AdditionalTags()
+    {
+        foreach (var tag in AutoTagSettings.Tags)
+        {
+            if (Regex.IsMatch(Text, tag.Regex, RegexOptions.IgnoreCase))
+            {
+                Tags.Add(tag.TagName);
+            }
+        }
     }
 
     private ATextType CreateTextType(string text)
@@ -133,10 +148,12 @@ public partial class TextClipboardItem : AClipboardItem
             Tags.Contains("MARKDOWN") ? new MarkdownTextType(Text, Tags, MataData) :
             Tags.Contains("PASSWORD") ? new PasswordTextType(Text, Tags, MataData) :
             new PlainTextType(Text, Tags, MataData);
-        if (TextType is PasswordTextType passwordTextType)
+         if (TextType is PasswordTextType passwordTextType)
+        {
             DisplayText = new string('•', passwordTextType.Text.Length);
-        else
-            DisplayText = TextType.Text.Length > 600 ? TextType.Text.Substring(0, 600) : TextType.Text;
+        }
+
+        DisplayText = TextType.Text.Length > 600 ? TextType.Text.Substring(0, 600) : TextType.Text;
 
         await TextType.PopulateMetadataAsync(Text);
     }
