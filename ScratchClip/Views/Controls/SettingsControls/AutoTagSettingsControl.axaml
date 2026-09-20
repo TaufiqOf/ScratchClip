@@ -48,20 +48,24 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
 
-                        <Grid ColumnDefinitions="180,*"
+                        <Grid ColumnDefinitions="Auto,150,*"
                               ColumnSpacing="8"
                               Margin="4">
+                            <!-- Tag Name -->
+                            <ToggleSwitch Grid.Column="0"
+                                     IsChecked="{Binding Enabled, Mode=TwoWay}"
+                                     VerticalContentAlignment="Center"/>
 
                             <!-- Tag Name -->
-                            <TextBox Grid.Column="0"
+                            <TextBox Grid.Column="1"
                                      Text="{Binding TagName, Mode=TwoWay}"
-                                     Watermark="TAG NAME"
+                                     PlaceholderText="TAG NAME"
                                      VerticalContentAlignment="Center"/>
 
                             <!-- Regex -->
-                            <TextBox Grid.Column="1"
+                            <TextBox Grid.Column="2"
                                      Text="{Binding Regex, Mode=TwoWay}"
-                                     Watermark="Regular expression"
+                                     PlaceholderText="Regular expression"
                                      VerticalContentAlignment="Center"/>
 
                         </Grid>
