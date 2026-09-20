@@ -378,8 +378,8 @@ public static class CodeDetectionConfig
     // ACTIVE / EDITABLE LANGUAGE DEFINITIONS
     // ========================================================
 
-    public static readonly ObservableCollection<LanguageDefinition> Languages =
-        new(DefaultLanguages.Select(CloneLanguage));
+    public static ObservableCollection<LanguageDefinition> Languages { get; set; }
+        = new ObservableCollection<LanguageDefinition>(DefaultLanguages.Select(CloneLanguage));
 
 
     // ========================================================

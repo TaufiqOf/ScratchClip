@@ -37,6 +37,9 @@ public partial class SettingsViewModel : ObservableObject
     private int _maximumItemsInHistory;
 
 
+
+    [ObservableProperty]
+    private AutoTag? _selectedAutoTag;
     // ========================================================
     // CODE LANGUAGE SETTINGS
     // ========================================================
@@ -59,6 +62,12 @@ public partial class SettingsViewModel : ObservableObject
 
     public ObservableCollection<string> SelectedLanguageKeywords =>
         SelectedLanguageDefinition?.Keywords ?? [];
+    
+    public ObservableCollection<AutoTag> AutoTags
+    {
+        get => AutoTagSettings.Tags;
+        set => AutoTagSettings.Tags = value;
+    }
 
     public string LanguageKeywordsText
     {
@@ -168,6 +177,7 @@ public partial class SettingsViewModel : ObservableObject
             "Dark" => "Dark",
             _ => "System"
         };
+        AutoTags = new ObservableCollection<AutoTag>(settings.AutoTags);
         LoadCodeDetectionLanguages(settings.CodeDetectionLanguages.ToArray());
         // Select the first language by default.
         SelectedLanguageDefinition =
@@ -540,7 +550,70 @@ public partial class SettingsViewModel : ObservableObject
         OnPropertyChanged(
             nameof(SelectedLanguageKeywords));
     }
+    [RelayCommand]
+    private void AddAutoTag()
+    {
+        var tag = new AutoTag
+        {
+            TagName = "NEW TAG",
+            Regex = string.Empty
+        };
 
+        AutoTagSettings.Tags.Add(tag);
+
+        SelectedAutoTag = tag;
+
+        OnPropertyChanged(nameof(AutoTags));
+    }
+
+    [RelayCommand]
+    private void RemoveAutoTag()
+    {
+        if (SelectedAutoTag == null)
+            return;
+
+        var index =
+            AutoTagSettings.Tags.IndexOf(SelectedAutoTag);
+
+        AutoTagSettings.Tags.Remove(SelectedAutoTag);
+
+        if (AutoTagSettings.Tags.Count == 0)
+        {
+            SelectedAutoTag = null;
+        }
+        else
+        {
+            var newIndex = Math.Min(
+                index,
+                AutoTagSettings.Tags.Count - 1);
+
+            SelectedAutoTag =
+                AutoTagSettings.Tags[newIndex];
+        }
+
+        OnPropertyChanged(nameof(AutoTags));
+    }
+
+    [RelayCommand]
+    private void ResetAutoTags()
+    {
+        AutoTagSettings.Tags.Clear();
+
+        foreach (var tag in AutoTagSettings.Tags)
+        {
+            AutoTagSettings.Tags.Add(
+                new AutoTag
+                {
+                    TagName = tag.TagName,
+                    Regex = tag.Regex
+                });
+        }
+
+        SelectedAutoTag =
+            AutoTagSettings.Tags.FirstOrDefault();
+
+        OnPropertyChanged(nameof(AutoTags));
+    }
 
     // ========================================================
     // EXPORT
@@ -1122,6 +1195,9 @@ public partial class SettingsViewModel : ObservableObject
 
         settings.Theme =
             SelectedTheme;
+        
+        settings.AutoTags =
+            AutoTags.ToList();
 
         settings.CodeDetectionLanguages =
             CodeDetectionConfig.Languages

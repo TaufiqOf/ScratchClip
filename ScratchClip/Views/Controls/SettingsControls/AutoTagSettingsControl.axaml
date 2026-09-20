@@ -1,0 +1,92 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:ScratchClip.ViewModels"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="500"
+             x:DataType="viewModels:SettingsViewModel"
+             x:Class="ScratchClip.Views.Controls.SettingsControls.AutoTagSettingsControl">
+
+    <Border Classes="settingsCard">
+        <StackPanel Spacing="16">
+
+            <!-- Header -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="Auto Tags"
+                           FontSize="18"
+                           FontWeight="SemiBold"/>
+
+                <TextBlock Text="Automatically tag clipboard content using regular expressions."
+                           Opacity="0.7"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+
+            <!-- Column headers -->
+            <Grid ColumnDefinitions="180,*"
+                  ColumnSpacing="8">
+
+                <TextBlock Grid.Column="0"
+                           Text="TAG NAME"
+                           FontWeight="SemiBold"
+                           Opacity="0.7"/>
+
+                <TextBlock Grid.Column="1"
+                           Text="REGULAR EXPRESSION"
+                           FontWeight="SemiBold"
+                           Opacity="0.7"/>
+
+            </Grid>
+
+            <!-- Auto Tags -->
+            <ListBox ItemsSource="{Binding AutoTags}"
+                     SelectedItem="{Binding SelectedAutoTag, Mode=TwoWay}"
+                     MinHeight="180"
+                     MaxHeight="350">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+
+                        <Grid ColumnDefinitions="180,*"
+                              ColumnSpacing="8"
+                              Margin="4">
+
+                            <!-- Tag Name -->
+                            <TextBox Grid.Column="0"
+                                     Text="{Binding TagName, Mode=TwoWay}"
+                                     Watermark="TAG NAME"
+                                     VerticalContentAlignment="Center"/>
+
+                            <!-- Regex -->
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding Regex, Mode=TwoWay}"
+                                     Watermark="Regular expression"
+                                     VerticalContentAlignment="Center"/>
+
+                        </Grid>
+
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+
+            </ListBox>
+
+            <!-- Buttons -->
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8">
+
+                <Button Content="Add"
+                        Command="{Binding AddAutoTagCommand}"/>
+
+                <Button Content="Remove"
+                        Command="{Binding RemoveAutoTagCommand}"/>
+
+                <Button Content="Reset"
+                        Command="{Binding ResetAutoTagsCommand}"/>
+
+            </StackPanel>
+
+        </StackPanel>
+    </Border>
+
+</UserControl>

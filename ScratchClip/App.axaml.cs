@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -55,6 +56,8 @@ public class App : Application
 
             // --- PRIMARY INSTANCE SETUP ---
             var settings = SettingsManager.Load();
+            AutoTagSettings.Tags = new ObservableCollection<AutoTag>(settings.AutoTags);
+            CodeDetectionConfig.Languages = new ObservableCollection<CodeDetectionConfig.LanguageDefinition>(settings.CodeDetectionLanguages);
 
 
             _hotkeyService = new GlobalHotkeyService(

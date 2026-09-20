@@ -93,6 +93,12 @@
                             Click="SettingsNavButton_Click">
                         <avalonia:FluentIcon Icon="Key" />
                     </Button>
+                    <Button ToolTip.Tip="Auto Tags"
+                            Classes="settingsNavButton"
+                            Tag="{Binding #AutoTagsSection}"
+                            Click="SettingsNavButton_Click">
+                        <avalonia:FluentIcon Icon="TagAdd" />
+                    </Button>
                     <Button ToolTip.Tip="Language Detection"
                             Classes="settingsNavButton"
                             Tag="{Binding #LanguageSection}"
@@ -155,6 +161,15 @@
                         </StackPanel>
 
                         <settingsControls:SecuritySettingsControl DataContext="{Binding }" />
+                    </StackPanel>
+                    <!-- AutoTags -->
+                    <StackPanel x:Name="AutoTagsSection" Spacing="10">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <avalonia:FluentIcon Icon="TagAdd"></avalonia:FluentIcon>
+                            <TextBlock Text="Auto Tags" Classes="sectionTitle" />
+                        </StackPanel>
+
+                        <settingsControls:AutoTagSettingsControl DataContext="{Binding }" />
                     </StackPanel>
                     <!-- Language -->
                     <StackPanel x:Name="LanguageSection" Spacing="10">

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using ScratchClip.Models;
 using SharpHook.Data;
@@ -27,4 +29,6 @@ public class AppSettings
 
     public CodeDetectionConfig.LanguageDefinition[] CodeDetectionLanguages { get; set; } =
         CodeDetectionConfig.Languages.ToArray();
+
+    public List<AutoTag> AutoTags { get; set; } = AutoTagSettings.Tags.ToList();
 }

@@ -39,6 +39,13 @@ public static class AutoTagSettings
             Regex = @"\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})\b"
         },
 
+        // Date with day of the week
+        new()
+        {
+            TagName = "DATE",
+            Regex =
+                @"\b(?:(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)(?:,\s*|\s+the\s+)?(?:(?:\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December)|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?)(?:,?\s+\d{4})?|(?:(?:\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December))(?:\s+\d{4})?|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?)\b"
+        },
         // Time
         new()
         {
@@ -82,17 +89,22 @@ public static class AutoTagSettings
         },
 
         // Twitter / X
-        new AutoTag
+        new()
         {
-            TagName = "SOCIAL",
+            TagName = "X",
             Regex = @"\b(?:https?://)?(?:www\.)?(?:twitter\.com|x\.com)(?:/[A-Za-z0-9_]+)?\b"
         },
-        // Date with day of the week
-        new AutoTag
+        new()
         {
-            TagName = "DATE",
-            Regex =
-                @"\b(?:(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)(?:,\s*|\s+the\s+)?(?:(?:\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December)|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?)(?:,?\s+\d{4})?|(?:(?:\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December))(?:\s+\d{4})?|(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s+\d{4})?)\b"
-        }
+            TagName = "FACEBOOK",
+            Regex = @"\b(?:https?://)?(?:www\.)?facebook\.com(?:/[A-Za-z0-9_.-]+)?\b"
+        },
+
+        new()
+        {
+            TagName = "INSTAGRAM",
+            Regex = @"\b(?:https?://)?(?:www\.)?instagram\.com(?:/[A-Za-z0-9_.-]+)?\b"
+        },
+
     ];
 }
