@@ -50,7 +50,7 @@ ScratchClip supports copying and managing files and folders directly from clipbo
 - Delete individual files and folders.
 - Support multiple files and folders in a single clipboard entry.
 
-### 🧠 Smart Content Recognition
+### 🧠 Smart Tagging
 
 ScratchClip automatically analyzes clipboard text and recognizes different types of content, including:
 
@@ -61,6 +61,7 @@ ScratchClip automatically analyzes clipboard text and recognizes different types
 - Markdown
 - Plain text
 - Programming languages
+- Configurable Custom Tags with regular expressions.
 
 Detected content can be displayed using specialized views and syntax highlighting.
 
