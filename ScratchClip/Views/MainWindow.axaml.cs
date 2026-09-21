@@ -278,10 +278,6 @@ public partial class MainWindow : Window
             _viewModel.UpdateTagsFilter(e.Key);
             return;
         }
-        else
-        {
-
-        }
     
         _viewModel.OnWindowKeyDown(e);
     }
