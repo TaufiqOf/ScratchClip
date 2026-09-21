@@ -220,6 +220,7 @@ When password protection is enabled:
 | `Alt` + `Q` | Pin/unpin the main screen to the top of the screen. |
 | `Alt` + `M` | Toggle clipboard monitoring on/off. |
 | `Alt` + `P` | Show the Preferences screen. |
+| `Ctrl` + `Super` + `A-Z` | Filter by tags. |
 | `1` – `200` | Instantly choose the corresponding item in the visible list and paste it. |
 | `Esc` | Hide the window to the system tray. From the Preferences or Edit screen, returns to the main screen. |
 

@@ -106,18 +106,25 @@
                                         <TextBlock Grid.Row="4" Grid.Column="1"
                                                    Text="Toggle Clipboard Monitoring On/Off" VerticalAlignment="Center"
                                                    FontSize="12" />
-
+                                        
                                         <Border Grid.Row="5" Grid.Column="0" Classes="keyBadge">
-                                            <TextBlock Text="1 – 200" />
+                                            <TextBlock Text="Ctrl + Super + (A-Z)" />
                                         </Border>
                                         <TextBlock Grid.Row="5" Grid.Column="1"
+                                                   Text="Filter By Tags" VerticalAlignment="Center"
+                                                   FontSize="12" />
+                                        
+                                        <Border Grid.Row="6" Grid.Column="0" Classes="keyBadge">
+                                            <TextBlock Text="1 – 200" />
+                                        </Border>
+                                        <TextBlock Grid.Row="6" Grid.Column="1"
                                                    Text="Select and paste the item corresponding to index"
                                                    VerticalAlignment="Center" FontSize="12" />
 
-                                        <Border Grid.Row="6" Grid.Column="0" Classes="keyBadge">
+                                        <Border Grid.Row="7" Grid.Column="0" Classes="keyBadge">
                                             <TextBlock Text="Esc" />
                                         </Border>
-                                        <TextBlock Grid.Row="6" Grid.Column="1"
+                                        <TextBlock Grid.Row="7" Grid.Column="1"
                                                    Text="Hide window to system tray or return to main view"
                                                    VerticalAlignment="Center" FontSize="12" />
                                     </Grid>
