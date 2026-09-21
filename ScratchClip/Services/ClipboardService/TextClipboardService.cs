@@ -34,10 +34,11 @@ internal class TextClipboardService : AClipboardService
             DisplayText = displayText,
             MataData = clipboardData?.Formats.Select(f => f.Identifier).ToList()
         };
+        await item.AdditionalTags();
         _ = item.PopulateMetadataAsync();
-
         return await Task.FromResult(item);
     }
+
 
 
     public override Task CreateSignature(AClipboardItem item)

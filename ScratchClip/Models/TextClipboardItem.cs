@@ -62,10 +62,10 @@ public partial class TextClipboardItem : AClipboardItem
             DisplayText = new string('•', passwordTextType.Text.Length);
         await TextType.PopulateMetadataAsync(text);
         await TextType.UpdateTagsAsync(text);
-        await AdditionalTags();
+
     }
 
-    private async Task AdditionalTags()
+    public async Task AdditionalTags()
     {
         foreach (var tag in AutoTagSettings.Tags.Where(t => t.Enabled))
         {
