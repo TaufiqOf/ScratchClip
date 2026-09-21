@@ -121,7 +121,7 @@ public partial class MainWindow : Window
         if (!ReferenceEquals(PageHost.Content, _mainPage))
             return;
 
-        if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        if (e.Key == Key.S && e.KeyModifiers == KeyModifiers.Alt)
         {
             e.Handled = true;
             var searchBox = SearchTextBoxControl;
@@ -129,7 +129,7 @@ public partial class MainWindow : Window
             searchBox?.SelectAll();
         }
 
-        if (e.Key == Key.P && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        if (e.Key == Key.P && e.KeyModifiers == KeyModifiers.Alt)
         {
             ShowSettingsPage();
             e.Handled = true;
@@ -137,20 +137,20 @@ public partial class MainWindow : Window
         }
 
 
-        if (e.Key == Key.L && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        if (e.Key == Key.L && e.KeyModifiers == KeyModifiers.Alt)
         {
             if (ApplicationKeyStore.HasPassword()) _viewModel.Lock();
 
             e.Handled = true;
         }
 
-        if (e.Key == Key.Q && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        if (e.Key == Key.Q && e.KeyModifiers == KeyModifiers.Alt)
         {
             _viewModel.IsPinned = !_viewModel.IsPinned;
             e.Handled = true;
         }
 
-        if (e.Key == Key.M && e.KeyModifiers.HasFlag(KeyModifiers.Alt))
+        if (e.Key == Key.M && e.KeyModifiers == KeyModifiers.Alt)
         {
             _viewModel.IsMonitoringClipboard = !_viewModel.IsMonitoringClipboard;
             e.Handled = true;
@@ -164,7 +164,7 @@ public partial class MainWindow : Window
         }
 
 
-        if (e.Key == Key.O && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        if (e.Key == Key.O && e.KeyModifiers == KeyModifiers.Control)
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -178,7 +178,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (e.Key == Key.E && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        if (e.Key == Key.E && e.KeyModifiers == KeyModifiers.Control)
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -192,7 +192,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (e.Key == Key.S && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        if (e.Key == Key.S &&e.KeyModifiers == KeyModifiers.Control)
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -206,7 +206,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (e.Key == Key.P && e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        if (e.Key == Key.P && e.KeyModifiers == KeyModifiers.Control)
         {
             if (HistoryListBox?.SelectedItem != null)
             {
@@ -262,6 +262,27 @@ public partial class MainWindow : Window
                     }
             }
 
+        if (e.KeyModifiers != KeyModifiers.Alt &&
+            e.KeyModifiers != KeyModifiers.Control &&
+            ((e.Key >= Key.A &&
+            e.Key <= Key.Z) || e.Key == Key.Back))
+        {
+            SearchTextBoxControl?.Focus();
+        }
+        var modifiers = e.KeyModifiers;
+        if ((modifiers & KeyModifiers.Control) != 0 &&
+            (modifiers & KeyModifiers.Meta) != 0 &&
+            ((e.Key >= Key.A &&
+            e.Key <= Key.Z) || e.Key == Key.Back))
+        {
+            _viewModel.UpdateTagsFilter(e.Key);
+            return;
+        }
+        else
+        {
+
+        }
+    
         _viewModel.OnWindowKeyDown(e);
     }
 
@@ -282,6 +303,11 @@ public partial class MainWindow : Window
                     var item = listBox.Items.FirstOrDefault(item =>
                         ((AClipboardItem)item).Signature == _viewModel.SelectedItem.Signature);
                     var container = listBox.ContainerFromItem(_viewModel.SelectedItem);
+                    if (container == null)
+                    {
+                        item = listBox.Items.FirstOrDefault();
+                        container = listBox.ContainerFromItem(item);
+                    }
 
                     container?.Focus(
                         NavigationMethod.Tab);

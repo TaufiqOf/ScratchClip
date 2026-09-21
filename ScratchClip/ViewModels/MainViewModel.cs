@@ -574,7 +574,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             FilteredHistory[i].DisplayIndex = FilteredHistory.Count - i;
     }
 
-    public void OnWindowKeyDown(KeyEventArgs keyEventArgs)
+    public void OnWindowKeyDown(KeyEventArgs e)
     {
         if (IsSearchFocused)
         {
@@ -582,12 +582,13 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             return;
         }
 
-        int? number = keyEventArgs.Key switch
+        int? number = e.Key switch
         {
-            >= Key.D0 and <= Key.D9 => (int)keyEventArgs.Key - (int)Key.D0,
-            >= Key.NumPad0 and <= Key.NumPad9 => (int)keyEventArgs.Key - (int)Key.NumPad0,
+            >= Key.D0 and <= Key.D9 => (int)e.Key - (int)Key.D0,
+            >= Key.NumPad0 and <= Key.NumPad9 => (int)e.Key - (int)Key.NumPad0,
             _ => null
         };
+        _tagsSearchText = string.Empty;
 
         if (number.HasValue)
         {
@@ -598,6 +599,8 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             _searchDebounceTimer.Start();
         }
     }
+
+    private string _tagsSearchText = string.Empty;
 
     private async void SearchDebounceTimerOnElapsed(object? sender, ElapsedEventArgs e)
     {
@@ -637,6 +640,37 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     public void WindowActivated()
     {
         ShowEditButtons();
+    }
+
+    public void UpdateTagsFilter(Key key)
+    {
+        List<string> tags = new List<string>();
+        if (key == Key.Back)
+        {
+            _tagsSearchText = string.Empty;
+        }
+        else
+        {
+            _tagsSearchText += key.ToString();
+            tags = TagFilterOptions
+                .Where(option => option.Name.StartsWith(_tagsSearchText, StringComparison.OrdinalIgnoreCase))
+                .Select(option => option.Name)
+                .ToList();
+        }
+
+        if (tags.Count > 0)
+        {
+            foreach (var option in TagFilterOptions)
+                option.IsSelected = tags.Contains(option.Name);
+            ApplyFilter();
+        }
+        else
+        {
+            _tagsSearchText = string.Empty;
+            foreach (var option in TagFilterOptions)
+                option.IsSelected = false;
+            ApplyFilter();
+        }
     }
 }
 
