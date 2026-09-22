@@ -599,7 +599,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         AutoTagSettings.Tags.Clear();
 
-        foreach (var tag in AutoTagSettings.Tags)
+        foreach (var tag in AutoTagSettings.DefaultTags)
         {
             AutoTagSettings.Tags.Add(
                 new AutoTag
