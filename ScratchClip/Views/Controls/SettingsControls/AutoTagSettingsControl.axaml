@@ -24,15 +24,20 @@
             </StackPanel>
 
             <!-- Column headers -->
-            <Grid ColumnDefinitions="180,*"
+            <Grid ColumnDefinitions="100,180,*"
                   ColumnSpacing="8">
-
                 <TextBlock Grid.Column="0"
+                           Text="Enable"
+                           FontWeight="SemiBold"
+                           Opacity="0.7"/>
+
+
+                <TextBlock Grid.Column="1"
                            Text="TAG NAME"
                            FontWeight="SemiBold"
                            Opacity="0.7"/>
 
-                <TextBlock Grid.Column="1"
+                <TextBlock Grid.Column="2"
                            Text="REGULAR EXPRESSION"
                            FontWeight="SemiBold"
                            Opacity="0.7"/>
