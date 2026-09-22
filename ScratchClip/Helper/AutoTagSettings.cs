@@ -118,6 +118,27 @@ public static class AutoTagSettings
             TagName = "INSTAGRAM",
             Regex = @"(?<![\w@])(?:https?://)?(?:www\.)?instagram\.com(?:/[A-Za-z0-9_.-]+)*/*"
         },
+        // Example User Email
+        new AutoTag
+        {
+            Enabled = false,
+            TagName = "USER1_EMAIL",
+            Regex = @"(?<!\S)user1@example\.com(?!\S)"
+        },
+        // Example User Email
+        new AutoTag
+        {
+            Enabled = false,
+            TagName = "CHAT",
+            Regex = @"^\[\d{1,2}:\d{2},\s*\d{1,2}/\d{1,2}/\d{4}\]\s*[^:]+:"
+        },
+        // Example User Email
+        new AutoTag
+        {
+            Enabled = false,
+            TagName = "CHAT_FROM_USER",
+            Regex = @"^(?mi)^\[\d{2}:\d{2},\s*\d{1,2}/\d{1,2}/\d{4}\]\s*.*(?:User).*$"
+        },
     ];
 
 }

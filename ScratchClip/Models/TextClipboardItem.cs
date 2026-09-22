@@ -69,9 +69,16 @@ public partial class TextClipboardItem : AClipboardItem
     {
         foreach (var tag in AutoTagSettings.Tags.Where(t => t.Enabled))
         {
-            if (Regex.IsMatch(Text, tag.Regex, RegexOptions.IgnoreCase))
+            try
             {
-                Tags.Add(tag.TagName);
+                if (Regex.IsMatch(Text, tag.Regex, RegexOptions.IgnoreCase))
+                {
+                    Tags.Add(tag.TagName);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

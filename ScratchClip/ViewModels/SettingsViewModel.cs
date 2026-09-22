@@ -604,6 +604,7 @@ public partial class SettingsViewModel : ObservableObject
             AutoTagSettings.Tags.Add(
                 new AutoTag
                 {
+                    Enabled = tag.Enabled,
                     TagName = tag.TagName,
                     Regex = tag.Regex
                 });
