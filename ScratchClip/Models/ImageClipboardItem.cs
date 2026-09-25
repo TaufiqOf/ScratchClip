@@ -21,8 +21,17 @@ public class ImageClipboardItem : AClipboardItem
         {
             if (Equals(value, field)) return;
             field = value;
+            UpdateTags(value);
             OnPropertyChanged();
         }
+    }
+
+    private void UpdateTags(Bitmap? value)
+    {
+        var sizeTag = value != null ? $"{value.PixelSize.Width}x{value.PixelSize.Height}" : "No Image";
+        if (Tags.Contains(sizeTag))
+            return;
+        Tags.Insert(1, sizeTag);
     }
 
     public override string SuggestedFile { get; } = "image.png";

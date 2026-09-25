@@ -249,4 +249,9 @@ public abstract partial class AClipboardItem : ViewModelBase
     {
         OnDoubleTapped?.Invoke(this);
     }
+
+    public void SetApplicationName(string getForegroundApplicationName)
+    {
+        Tags.Insert(1, getForegroundApplicationName.ToUpper());
+    }
 }

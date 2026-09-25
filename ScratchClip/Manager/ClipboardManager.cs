@@ -14,6 +14,7 @@ namespace ScratchClip.Manager;
 
 public static class ClipboardManager
 {
+
     private static string? _lastSignature;
     public static Action<AClipboardItem>? OnClipboardItemAdded;
     public static Action<AClipboardItem?>? OnSelectExistingClipboardItem;
@@ -24,7 +25,7 @@ public static class ClipboardManager
     private static readonly Dictionary<ClipboardDataFormat, AClipboardService> ClipboardServices;
 
     private static AClipboardItem? _selectedClipboardItem;
-
+    private static IClipboardSourceProvider? _clipboardSourceProvider;
     public static bool IsCheckingClipboard;
     public static string CheckingClipboardSignature = string.Empty;
 
@@ -34,6 +35,7 @@ public static class ClipboardManager
         ClipboardServices[ClipboardDataFormat.Text] = new TextClipboardService();
         ClipboardServices[ClipboardDataFormat.Image] = new ImageClipboardService();
         ClipboardServices[ClipboardDataFormat.Storage] = new StorageClipboardService();
+        _clipboardSourceProvider = new LinuxClipboardSourceProvider();
     }
 
     public static bool IsLoaded { get; set; } = false;
@@ -156,9 +158,12 @@ public static class ClipboardManager
         var settings = SettingsManager.Load();
         var data = await clipboard.TryGetDataAsync();
         if (data == null) return null;
-        if (data.Formats.Any(q => q == DataFormat.File) && settings.WillCaptureStorageItems) return ClipboardDataFormat.Storage;
-        if (data.Formats.Any(q => q == DataFormat.Bitmap) && settings.WillCaptureImageItems) return ClipboardDataFormat.Image;
-        if (data.Formats.Any(q => q == DataFormat.Text) && settings.WillCaptureTextItems) return ClipboardDataFormat.Text;
+        if (data.Formats.Any(q => q == DataFormat.File) && settings.WillCaptureStorageItems)
+            return ClipboardDataFormat.Storage;
+        if (data.Formats.Any(q => q == DataFormat.Bitmap) && settings.WillCaptureImageItems)
+            return ClipboardDataFormat.Image;
+        if (data.Formats.Any(q => q == DataFormat.Text) && settings.WillCaptureTextItems)
+            return ClipboardDataFormat.Text;
         return null;
     }
 
@@ -170,6 +175,7 @@ public static class ClipboardManager
             item = await service.GetItemAsync(type);
             if (item == null) return item;
             await service.CreateSignature(item);
+            item.SetApplicationName(_clipboardSourceProvider?.GetApplicationName()?? string.Empty);
             item.OnDelete += DeleteClipboardItem;
             item.OnEdit += EditClipboardItem;
             item.OnDoubleTapped += OnDoubleTapped;
@@ -177,6 +183,8 @@ public static class ClipboardManager
 
         return item;
     }
+
+
 
     private static void OnDoubleTapped(AClipboardItem obj)
     {

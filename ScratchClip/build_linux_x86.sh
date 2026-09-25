@@ -27,13 +27,11 @@ DESKTOP_FILE="$APPDIR/$ICON_NAME.desktop"
 APPIMAGETOOL="$OUTPUT_DIR/appimagetool"
 APPIMAGETOOL_URL="https://github.com/AppImage/appimagetool/releases/latest/download/appimagetool-x86_64.AppImage"
 
-
 echo
 echo "============================================================"
 echo " Building $APP_NAME AppImage"
 echo "============================================================"
 echo
-
 
 # ============================================================
 # Check prerequisites
@@ -62,6 +60,15 @@ if ! command -v xclip >/dev/null 2>&1; then
     exit 1
 fi
 
+if ! command -v xdotool >/dev/null 2>&1; then
+    echo "ERROR: xdotool was not found."
+    echo
+    echo "Install with:"
+    echo
+    echo "  sudo apt install xdotool"
+    exit 1
+fi
+
 if [ ! -f "$PROJECT_FILE" ]; then
     echo "ERROR: $PROJECT_FILE was not found."
     exit 1
@@ -72,7 +79,6 @@ if [ ! -f "$ICON_SOURCE" ]; then
     echo "  $ICON_SOURCE"
     exit 1
 fi
-
 
 # ============================================================
 # Clean
@@ -86,7 +92,6 @@ mkdir -p "$PUBLISH_DIR"
 mkdir -p "$APPDIR/usr/bin"
 mkdir -p "$APPDIR/usr/share/icons/hicolor/256x256/apps"
 
-
 # ============================================================
 # Restore
 # ============================================================
@@ -96,7 +101,6 @@ echo "==> Restoring dependencies..."
 
 dotnet restore "$PROJECT_FILE" \
     -r "$RUNTIME"
-
 
 # ============================================================
 # Publish
@@ -118,7 +122,6 @@ dotnet publish "$PROJECT_FILE" \
     -p:DebugSymbols=false \
     -o "$PUBLISH_DIR"
 
-
 # ============================================================
 # Check executable
 # ============================================================
@@ -131,7 +134,6 @@ if [ ! -f "$GENERATED_EXECUTABLE" ]; then
     exit 1
 fi
 
-
 # ============================================================
 # Copy executable & Native Libraries
 # ============================================================
@@ -141,7 +143,6 @@ echo "==> Installing executable and native dependencies..."
 
 cp -a "$PUBLISH_DIR/." "$APPDIR/usr/bin/"
 
-# Copy any extracted or unmanaged native libraries from NuGet cache if missing
 NUGET_NATIVE_DIR="$HOME/.nuget/packages/treesitter.dotnet"
 
 if [ -d "$NUGET_NATIVE_DIR" ]; then
@@ -154,31 +155,37 @@ fi
 
 chmod +x "$APPDIR/usr/bin/$APP_NAME"
 
-
 # ============================================================
-# Copy xclip
+# Copy xclip + xdotool
 # ============================================================
 
 echo
-echo "==> Bundling xclip..."
+echo "==> Bundling xclip and xdotool..."
 
 XCLIP_PATH="$(command -v xclip)"
+XDOTOOL_PATH="$(command -v xdotool)"
 
 if [ -z "$XCLIP_PATH" ]; then
     echo "ERROR: xclip was not found."
     exit 1
 fi
 
+if [ -z "$XDOTOOL_PATH" ]; then
+    echo "ERROR: xdotool was not found."
+    exit 1
+fi
+
 echo "    System xclip:"
 echo "      $XCLIP_PATH"
 
+echo "    System xdotool:"
+echo "      $XDOTOOL_PATH"
+
 cp "$XCLIP_PATH" "$APPDIR/usr/bin/xclip"
+cp "$XDOTOOL_PATH" "$APPDIR/usr/bin/xdotool"
 
 chmod +x "$APPDIR/usr/bin/xclip"
-
-echo "    Bundled xclip:"
-echo "      $APPDIR/usr/bin/xclip"
-
+chmod +x "$APPDIR/usr/bin/xdotool"
 
 # ============================================================
 # Create AppRun
@@ -192,15 +199,13 @@ cat > "$APPDIR/AppRun" <<EOF
 
 HERE="\$(dirname "\$(readlink -f "\$0")")"
 
-# Export shared library paths so DllImport finds TreeSitter
-# and other bundled native libraries.
+export PATH="\$HERE/usr/bin:\$PATH"
 export LD_LIBRARY_PATH="\$HERE/usr/bin:\$LD_LIBRARY_PATH"
 
 exec "\$HERE/usr/bin/$APP_NAME" "\$@"
 EOF
 
 chmod +x "$APPDIR/AppRun"
-
 
 # ============================================================
 # Install icon
@@ -209,12 +214,10 @@ chmod +x "$APPDIR/AppRun"
 echo
 echo "==> Installing icon..."
 
-cp "$ICON_SOURCE" \
-    "$APPDIR/$APP_NAME.png"
+cp "$ICON_SOURCE" "$APPDIR/$APP_NAME.png"
 
 cp "$ICON_SOURCE" \
     "$APPDIR/usr/share/icons/hicolor/256x256/apps/$APP_NAME.png"
-
 
 # ============================================================
 # Create desktop file
@@ -237,7 +240,6 @@ Categories=Utility;
 StartupNotify=true
 EOF
 
-
 # ============================================================
 # Show AppDir
 # ============================================================
@@ -249,7 +251,6 @@ echo
 find "$APPDIR" -type f -printf '  %P\n'
 
 echo
-
 
 # ============================================================
 # Download appimagetool
@@ -271,7 +272,6 @@ else
 
 fi
 
-
 # ============================================================
 # Create AppImage
 # ============================================================
@@ -285,7 +285,6 @@ ARCH=x86_64 "$APPIMAGETOOL" \
     "$APPDIR" \
     "$APPIMAGE"
 
-
 # ============================================================
 # Verify
 # ============================================================
@@ -298,7 +297,6 @@ fi
 
 chmod +x "$APPIMAGE"
 
-
 # ============================================================
 # Cleanup
 # ============================================================
@@ -309,7 +307,6 @@ echo "==> Cleaning temporary files..."
 rm -rf "$PUBLISH_DIR"
 rm -rf "$APPDIR"
 rm -f "$APPIMAGETOOL"
-
 
 # ============================================================
 # Result
