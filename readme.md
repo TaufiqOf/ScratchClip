@@ -19,7 +19,7 @@ ScratchClip supports **text, images, links, code, files, and folders**, with aut
 - **Edit & Delete** — Edit or remove clipboard entries directly from the application.
 - **Quick Selection** — Press `1`–`200` to instantly select a visible clipboard entry.
 
-### 🔗 Link Previews
+### 🔗 Link & YouTube Previews
 
 ScratchClip automatically recognizes copied URLs and provides rich metadata previews.
 
@@ -29,6 +29,32 @@ Link previews can include:
 - Page description
 - Website icon
 - Link destination
+
+#### ▶️ YouTube Video Support
+
+When a copied URL is a YouTube video, ScratchClip can display detailed video information before downloading.
+
+YouTube video details can include:
+
+- Video title
+- Video description
+- Channel name
+- Video thumbnail
+- Video duration
+- Video URL
+- Available download formats and quality
+- File format and estimated file size when available
+
+Users can review the video details and choose whether to download the video.
+
+During a YouTube download, ScratchClip displays the current download state, including:
+
+- Downloading
+- Download progress
+- Completed
+- Failed
+
+After the download is completed, ScratchClip displays the downloaded file details and provides a **downloaded file link/action** so the user can open the file directly or open its containing folder.
 
 ### 🖼️ Image Support
 
@@ -428,3 +454,4 @@ By using ScratchClip, you acknowledge and accept these limitations.
 ## 📄 License
 
 All rights reserved to the authors and contributors.
+

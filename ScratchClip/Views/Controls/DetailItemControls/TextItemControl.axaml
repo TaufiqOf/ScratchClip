@@ -10,6 +10,14 @@
         <StackPanel Spacing="8">
             <ContentControl Content="{Binding TextType}">
                 <ContentControl.DataTemplates>
+                    
+                    <DataTemplate DataType="textType:YoutubeLinkTextType">
+                        <textTypeControls:YoutubeLinkTypeControl />
+                    </DataTemplate>
+                    
+                    <DataTemplate DataType="textType:DownloadLinkTextType">
+                        <textTypeControls:DownloadLinkTypeControl />
+                    </DataTemplate>
 
                     <DataTemplate DataType="textType:PlainTextType">
                         <textTypeControls:PlainTextTypeControl />

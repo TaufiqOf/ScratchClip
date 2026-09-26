@@ -33,6 +33,8 @@ public partial class TextClipboardItem : AClipboardItem
 
     public TextClipboardItemType Type => TextType switch
     {
+        YoutubeLinkTextType => TextClipboardItemType.YoutubeLink,
+        DownloadLinkTextType => TextClipboardItemType.DownloadLink,
         WebsiteTextType => TextClipboardItemType.Website,
         CodeTextType => TextClipboardItemType.Code,
         XmlTextType => TextClipboardItemType.Xml,
@@ -62,7 +64,6 @@ public partial class TextClipboardItem : AClipboardItem
             DisplayText = new string('•', passwordTextType.Text.Length);
         await TextType.PopulateMetadataAsync(text);
         await TextType.UpdateTagsAsync(text);
-
     }
 
     public async Task AdditionalTags()
@@ -87,6 +88,8 @@ public partial class TextClipboardItem : AClipboardItem
     {
         var candidates = new ATextType[]
         {
+            new DownloadLinkTextType(text, Tags, MataData),
+            new YoutubeLinkTextType(text, Tags, MataData),
             new WebsiteTextType(text, Tags, MataData),
             new JsonTextType(text, Tags, MataData),
             new XmlTextType(text, Tags, MataData),
@@ -121,7 +124,7 @@ public partial class TextClipboardItem : AClipboardItem
     public override Task OpenItem()
     {
         //get temporary file path
-        if (TextType is WebsiteTextType)
+        if (TextType is WebsiteTextType || TextType is YoutubeLinkTextType || TextType is DownloadLinkTextType)
         {
             //open the website in the default browser
             if (Uri.TryCreate(Text, UriKind.Absolute, out var uri))
@@ -148,14 +151,17 @@ public partial class TextClipboardItem : AClipboardItem
 
     public async Task UpdateByTags()
     {
-        TextType = Tags.Contains("WEBSITE") ? new WebsiteTextType(Text, Tags, MataData) :
+        TextType = 
+            Tags.Contains("YOUTUBELINK") ? new YoutubeLinkTextType(Text, Tags, MataData) :
+            Tags.Contains("DOWNLOADLINK") ? new DownloadLinkTextType(Text, Tags, MataData) :
+            Tags.Contains("WEBSITE") ? new WebsiteTextType(Text, Tags, MataData) :
             Tags.Contains("JSON") ? new JsonTextType(Text, Tags, MataData) :
             Tags.Contains("XML") ? new XmlTextType(Text, Tags, MataData) :
             Tags.Contains("CODE") ? new CodeTextType(Text, Tags, MataData) :
             Tags.Contains("MARKDOWN") ? new MarkdownTextType(Text, Tags, MataData) :
             Tags.Contains("PASSWORD") ? new PasswordTextType(Text, Tags, MataData) :
             new PlainTextType(Text, Tags, MataData);
-         if (TextType is PasswordTextType passwordTextType)
+        if (TextType is PasswordTextType passwordTextType)
         {
             DisplayText = new string('•', passwordTextType.Text.Length);
         }

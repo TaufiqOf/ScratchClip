@@ -10,5 +10,7 @@ public enum TextClipboardItemType
     [Description("XML")] Xml,
     [Description("JSON")] Json,
     [Description("MARKDOWN")] Markdown,
-    [Description("PASSWORD")] Password
+    [Description("PASSWORD")] Password,
+    [Description("YOUTUBE")] YoutubeLink,
+    [Description("DOWNLOAD")] DownloadLink
 }

@@ -11,7 +11,8 @@
             Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
 
         <Grid ColumnDefinitions="Auto,*"
-              ColumnSpacing="10">
+              ColumnSpacing="10"
+              >
 
             <!-- Type Icon -->
             <Border Width="42"

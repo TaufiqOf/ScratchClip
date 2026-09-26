@@ -5,8 +5,8 @@
         <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
         <Nullable>enable</Nullable>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AssemblyVersion>0.0.52</AssemblyVersion>
-        <FileVersion>0.0.52</FileVersion>
+        <AssemblyVersion>0.0.53</AssemblyVersion>
+        <FileVersion>0.0.53</FileVersion>
         <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
 
@@ -37,6 +37,8 @@
         <PackageReference Include="Xaml.Behaviors.Avalonia" Version="12.0.7"/>
         <PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0"/>
         <PackageReference Include="AvaloniaEdit.TextMate" Version="12.0.0"/>
+        <PackageReference Include="YoutubeExplode" Version="6.6.2" />
+        <PackageReference Include="YoutubeExplode.Converter" Version="6.6.2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -103,6 +105,10 @@
         </Compile>
         <Compile Update="Views\Controls\SettingsControls\LanguageSettingsControl.axaml.cs">
           <DependentUpon>LangaugeSettingsControl.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Controls\TextTypeControls\YoutubeLinkTypeControl.axaml.cs">
+          <DependentUpon>YoutubeLinkTypeControl.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
     </ItemGroup>

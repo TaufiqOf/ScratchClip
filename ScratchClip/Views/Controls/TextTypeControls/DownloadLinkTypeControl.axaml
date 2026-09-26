@@ -1,0 +1,94 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+             xmlns:textType="clr-namespace:ScratchClip.Models.TextType"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
+             x:Class="ScratchClip.Views.Controls.TextTypeControls.DownloadLinkTypeControl"
+             x:DataType="textType:DownloadLinkTextType">
+
+    <Border Padding="10"
+            CornerRadius="8"
+            Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+
+        <Grid ColumnDefinitions="Auto,*"
+              ColumnSpacing="10">
+
+            <!-- Download icon -->
+            <Border Width="42"
+                    Height="42"
+                    CornerRadius="8"
+                    VerticalAlignment="Top"
+                    Background="Transparent">
+
+                <avalonia:FluentIcon Icon="ArrowDownload"
+                                     FontSize="35"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
+            </Border>
+
+            <StackPanel Grid.Column="1"
+                        Spacing="6">
+
+                <!-- File / link information -->
+                <TextBlock Text="{Binding FileName}"
+                           FontWeight="SemiBold"
+                           FontSize="14"
+                           TextWrapping="Wrap"
+                           MaxLines="2"
+                           TextTrimming="CharacterEllipsis" />
+
+                <TextBlock Text="{Binding FileSize}"
+                           FontSize="11"
+                           Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                           TextTrimming="CharacterEllipsis" />
+
+                <!-- URL -->
+                <Border Padding="8"
+                        CornerRadius="6"
+                        Background="#14000000">
+
+                    <SelectableTextBlock Text="{Binding Text}"
+                                         TextWrapping="Wrap"
+                                         FontSize="11"
+                                         Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+                </Border>
+
+
+                <!-- Download -->
+                <Grid ColumnDefinitions="*,Auto"
+                      ColumnSpacing="8">
+
+                    <Button Grid.Column="0"
+                            Content="Download"
+                            Command="{Binding DownloadCommand}"
+                            IsEnabled="{Binding !IsDownloading}"
+                            HorizontalAlignment="Left"
+                            Padding="12,6" />
+
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding DownloadProgress, StringFormat={}{0:0}%}"
+                               VerticalAlignment="Center"
+                               FontSize="11"
+                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"
+                               IsVisible="{Binding IsDownloading}" />
+
+                </Grid>
+
+                <!-- Progress -->
+                <ProgressBar Minimum="0"
+                             Maximum="100"
+                             Value="{Binding DownloadProgress}"
+                             Height="5"
+                             IsVisible="{Binding IsDownloading}" />
+
+            </StackPanel>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>
