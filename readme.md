@@ -219,11 +219,17 @@ When password protection is enabled:
 
 ### Files & Folders &  Context Menu
 
-
 | File and Folder support |          Context Menu          |
 |:---:|:------------------------------:|
 | ![ScratchClip file and folder support](Docs/dark-7.2.png)| ![Context Menu](Docs/dark-6.2.png) |
 
+### YouTube Video and File / Download Support
+
+| File and Folder support |
+|:---:|
+| ![ScratchClip file and folder support](Docs/dark-8.1.png) |
+
+---
 ---
 
 ## ⌨️ Keyboard Shortcuts
