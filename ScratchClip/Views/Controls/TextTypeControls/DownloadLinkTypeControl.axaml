@@ -82,8 +82,7 @@
                 <ProgressBar Minimum="0"
                              Maximum="100"
                              Value="{Binding DownloadProgress}"
-                             Height="5"
-                             IsVisible="{Binding IsDownloading}" />
+                             Height="5" />
 
             </StackPanel>
 
