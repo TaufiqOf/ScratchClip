@@ -90,8 +90,9 @@ public partial class SecuritySettingsControl : UserControl
         }
         catch (Exception)
         {
-            ShowPasswordStatus(
-                "Unable to save the password.");
+            NotificationHelper.Error(
+                "Error",
+                "Failed to set password. Please try again.");
         }
     }
 

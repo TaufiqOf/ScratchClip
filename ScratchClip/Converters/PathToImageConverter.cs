@@ -4,6 +4,7 @@ using System.IO;
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Svg.Skia;
+using ScratchClip.Helper;
 
 namespace ScratchClip.Converters;
 
@@ -30,7 +31,7 @@ public class PathToImageConverter : IValueConverter
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[PathToImageConverter] Failed to load image at '{iconPath}': {ex.Message}");
+            NotificationHelper.Error("Error",$"Failed to load image at '{iconPath}': {ex.Message}");
             return null;
         }
     }

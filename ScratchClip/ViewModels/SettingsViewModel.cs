@@ -819,7 +819,9 @@ public partial class SettingsViewModel : ObservableObject
                                 }
                                 catch (Exception e)
                                 {
-                                    Console.WriteLine(e);
+                                    NotificationHelper.Error(
+                                        "Error",
+                                        $"Failed to copy file '{file}' to '{storageFilePath}': {e.Message}");
                                 }
                             }
                         }
@@ -890,7 +892,7 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (Exception e)
         {
-            NotificationHelper.Success(
+            NotificationHelper.Error(
                 "Export Failed",
                 e.Message);
 
@@ -934,7 +936,9 @@ public partial class SettingsViewModel : ObservableObject
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                NotificationHelper.Error(
+                    "Error",
+                    $"Failed to copy file '{file}' to '{destinationFile}': {e.Message}");
             }
         }
 

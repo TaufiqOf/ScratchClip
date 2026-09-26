@@ -311,6 +311,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
         catch (Exception ex)
         {
+            NotificationHelper.Error("Clipboard Check Error", ex.Message);
             Console.WriteLine(ex);
         }
         finally
@@ -420,6 +421,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private void ClearHistory()
     {
         ClipboardManager.ClearClipboardHistory();
+        NotificationHelper.Info(
+            "Clipboard History Cleared",
+            "All clipboard history items have been successfully cleared.");
     }
 
     [RelayCommand]
@@ -427,6 +431,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     {
         SelectedItem = null;
         await ClipboardManager.ClearClipboardData();
+        NotificationHelper.Info(
+            "Clipboard Cleared",
+            "The clipboard has been successfully cleared.");
     }
 
     [RelayCommand]

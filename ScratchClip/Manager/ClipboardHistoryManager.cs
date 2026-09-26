@@ -61,9 +61,7 @@ public static class ClipboardHistoryManager
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(
-                $"Failed to load clipboard history: {ex.Message}");
-
+            NotificationHelper.Error("Error",$"Failed to load clipboard history: {ex.Message}");
             return Array.Empty<AClipboardItem>();
         }
     }
@@ -102,8 +100,7 @@ public static class ClipboardHistoryManager
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(
-                $"Failed to save clipboard history: {ex.Message}");
+            NotificationHelper.Error("Error",$"Failed to save clipboard history: {ex.Message}");
         }
     }
 

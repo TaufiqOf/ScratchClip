@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
+using ScratchClip.Helper;
 using ScratchClip.Models;
 using ScratchClip.Services;
 using ScratchClip.Services.ClipboardService;
@@ -145,7 +146,7 @@ public static class ClipboardManager
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            NotificationHelper.Error("Error",$"Failed to check clipboard: {e.Message}");
         }
         finally
         {

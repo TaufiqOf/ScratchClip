@@ -58,6 +58,7 @@ public static class ApplicationKeyStore
             }
             catch (FormatException)
             {
+                NotificationHelper.Error("Error",$"Invalid encryption secret in keyring.");
                 // Invalid keyring value.
                 // Generate a new secret below.
             }

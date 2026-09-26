@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
+using ScratchClip.Helper;
 using ScratchClip.Models;
 
 namespace ScratchClip.Views.Controls.StorageTypeControls;
@@ -42,8 +43,9 @@ public partial class StorageItemsViewerControl : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine(
-                $"Failed to open '{item.FullPath}': {ex}");
+            NotificationHelper.Error(
+                "Open file error",
+                $"Failed to open '{item.FullPath}': {ex.Message}");
         }
     }
 
@@ -80,8 +82,9 @@ public partial class StorageItemsViewerControl : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine(
-                $"Failed to copy '{item.FullPath}': {ex}");
+            NotificationHelper.Error(
+                "Copy file error",
+                $"Failed to copy '{item.FullPath}': {ex.Message}");
         }
     }
 
@@ -118,8 +121,9 @@ public partial class StorageItemsViewerControl : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine(
-                $"Failed to move '{item.FullPath}': {ex}");
+            NotificationHelper.Error(
+                "Move file error",
+                $"Failed to move '{item.FullPath}': {ex.Message}");
         }
     }
 
@@ -155,8 +159,9 @@ public partial class StorageItemsViewerControl : UserControl
         }
         catch (Exception ex)
         {
-            Console.WriteLine(
-                $"Failed to delete '{item.FullPath}': {ex}");
+            NotificationHelper.Error(
+                "Delete file error",
+                $"Failed to delete '{item.FullPath}': {ex.Message}");
         }
     }
 

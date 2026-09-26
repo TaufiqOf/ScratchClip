@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Platform.Storage;
+using ScratchClip.Helper;
 using ScratchClip.Models;
 
 namespace ScratchClip.Services.ClipboardService;
@@ -268,14 +269,16 @@ internal class StorageClipboardService : AClipboardService
                 process.Kill();
 
                 if (!process.WaitForExit(1000))
-                    Console.WriteLine(
+                    NotificationHelper.Error(
+                        "Error",
                         "xclip did not exit within 1 second.");
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(
-                $"Error stopping xclip: {ex.Message}");
+            NotificationHelper.Error(
+                "Error",
+                $"Failed to stop xclip: {ex.Message}");
         }
         finally
         {

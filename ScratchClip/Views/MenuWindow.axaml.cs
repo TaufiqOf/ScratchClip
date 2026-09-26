@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using AvaloniaEdit.Utils;
 using FuzzySharp;
+using ScratchClip.Helper;
 using ScratchClip.Manager;
 using ScratchClip.Models;
 using ScratchClip.Models.TextType;
@@ -147,6 +148,7 @@ public partial class MenuWindow : Window
         }
         catch (Exception e)
         {
+            NotificationHelper.Error("Failed to paste item", e.Message);
             Console.WriteLine(e);
         }
     }

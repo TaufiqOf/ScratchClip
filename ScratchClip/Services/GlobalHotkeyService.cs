@@ -357,7 +357,7 @@ public class GlobalHotkeyService : IDisposable
         catch (Exception ex)
         {
             Console.WriteLine(
-                $"[ScratchClip] Failed to run {fileName}: {ex.Message}");
+                $"Failed to run process '{fileName} {args}': {ex.Message}");
         }
     }
 }

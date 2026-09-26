@@ -78,7 +78,7 @@ public partial class TextClipboardItem : AClipboardItem
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                NotificationHelper.Error("Error", $"Failed to apply tag '{tag.TagName}': {e.Message}");
             }
         }
     }

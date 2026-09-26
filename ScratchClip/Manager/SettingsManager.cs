@@ -54,7 +54,7 @@ public static class SettingsManager
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to save settings: {ex.Message}");
+            NotificationHelper.Error("Error",$"Failed to save settings: {ex.Message}");
         }
     }
 }

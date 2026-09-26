@@ -226,7 +226,9 @@ public abstract partial class AClipboardItem : ViewModelBase
         }
         catch (Exception e)
         {
+            NotificationHelper.Error("Failed to save item", e.Message);
             Console.WriteLine(e);
+            return;
         }
     }
 
