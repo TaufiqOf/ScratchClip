@@ -34,6 +34,7 @@ public partial class MainWindow : Window
         ApplicationReference.MainWindow = this;
         _hotkeyService = hotkeyService;
         InitializeComponent();
+        NotificationHelper.Initialize(this);
         _viewModel = new MainViewModel(hotkeyService);
         _viewModel.OnHideToTray += HideToTray;
         _viewModel.OnOpenSettings += ShowSettingsPage;
@@ -58,7 +59,6 @@ public partial class MainWindow : Window
         Activated += OnActivated;
         // Use Tunnel routing strategy to catch key presses before ListBox consumes them
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
-        NotificationHelper.Initialize(this);
     }
 
     private TextBox? SearchTextBoxControl =>

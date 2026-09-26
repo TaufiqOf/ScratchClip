@@ -1,0 +1,54 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonia="clr-namespace:FluentIcons.Avalonia;assembly=FluentIcons.Avalonia"
+    Width="400"
+    SizeToContent="Height"
+    WindowStartupLocation="Manual"
+    ShowInTaskbar="False"
+    Topmost="True"
+    ShowActivated="False"
+    CanMinimize="False"
+    CanMaximize="False"
+    WindowDecorations="None"
+    Title="ScratchClip"
+    x:Class="ScratchClip.Views.NotificationWindow">
+
+    <Border
+        PointerPressed="OnPointerPressed"
+        Padding="15"
+        Background="#252525"
+        CornerRadius="8">
+
+        <Grid
+            ColumnDefinitions="Auto,*"
+            RowDefinitions="Auto,Auto">
+
+            <avalonia:FluentIcon
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Grid.Column="0"
+                x:Name="Icon"
+                Width="48"
+                Height="48"
+                FontSize="48"
+                Margin="0,0,12,0" />
+
+            <TextBlock
+                Grid.Row="0"
+                Grid.Column="1"
+                x:Name="TitleTextBlock"
+                FontWeight="Bold" />
+
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                x:Name="MessageTextBlock"
+                TextWrapping="Wrap"
+                Margin="0,5,0,0" />
+
+        </Grid>
+
+    </Border>
+
+</Window>
