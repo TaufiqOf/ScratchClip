@@ -63,11 +63,12 @@
                       ColumnSpacing="8">
 
                     <Button Grid.Column="0"
-                            Content="Download"
                             Command="{Binding DownloadCommand}"
                             IsEnabled="{Binding !IsDownloading}"
                             HorizontalAlignment="Left"
-                            Padding="12,6" />
+                            Padding="12,6" >
+                        <avalonia:FluentIcon Icon="ArrowDownload"/>
+                    </Button>
 
                     <TextBlock Grid.Column="1"
                                Text="{Binding DownloadProgress, StringFormat={}{0:0}%}"
