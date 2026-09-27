@@ -18,8 +18,8 @@
     "--filesystem=home",
     "--talk-name=org.freedesktop.Notifications",
     "--talk-name=org.freedesktop.portal.Desktop",
-    "--talk-name=org.kde.StatusNotifier",
-    "--talk-name=org.freedesktop.secrets"
+    "--talk-name=org.freedesktop.secrets",
+    "--talk-name=org.kde.StatusNotifier"
   ],
   "cleanup": [
     "/include",
@@ -45,16 +45,27 @@
       "name": "libsecret",
       "buildsystem": "meson",
       "config-opts": [
+        "-Dlibdir=lib",
         "-Dvapi=false",
         "-Dgtk_doc=false",
-        "-Dintrospection=false",
-        "-Dman=false"
+        "-Dintrospection=false"
       ],
       "sources": [
         {
           "type": "archive",
           "url": "https://download.gnome.org/sources/libsecret/0.21/libsecret-0.21.4.tar.xz",
-          "sha256": "3fb3033230c30953a5c1be7fae448b3b3aee1ef1dcb8dd1b8a514d4834ff4c00"
+          "sha256": "163d08d783be6d4ab9a979ceb5a4fecbc1d9660d3c34168c581301cd53912b20"
+        }
+      ]
+    },
+    {
+      "name": "libxmu",
+      "buildsystem": "autotools",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://www.x.org/archive/individual/lib/libXmu-1.1.4.tar.xz",
+          "sha256": "210de3ab9c3e9382572c25d17c2518a854ce6e2c62c5f8315deac7579e758244"
         }
       ]
     },
@@ -65,7 +76,7 @@
         {
           "type": "archive",
           "url": "https://github.com/astrand/xclip/archive/refs/tags/0.13.tar.gz",
-          "sha256": "ca1f4354fa821ea2cc1f681580aa136009ecb78ea97c38c8bc1e6cc72bb46ca0"
+          "sha256": "ca5b8804e3c910a66423a882d79bf3c9450b875ac8528791fb60ec9de667f758"
         }
       ]
     },
@@ -80,7 +91,7 @@
         {
           "type": "archive",
           "url": "https://github.com/jordansissel/xdotool/archive/refs/tags/v3.20211022.1.tar.gz",
-          "sha256": "27038a395c8038743a129ef31818dd1e3d37613ba2a4f488663ed8e583e74a88"
+          "sha256": "82b15a944a5e82fee15e0f6116bd9f642bc3d0bb6989fc0ca5ad9dfe35de0847"
         }
       ]
     },
@@ -90,19 +101,22 @@
       "build-options": {
         "build-args": [
           "--share=network"
-        ]
+        ],
+        "env": {
+          "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+          "DOTNET_ROOT": "/usr/lib/sdk/dotnet10",
+          "PATH": "/usr/lib/sdk/dotnet10/bin:/usr/bin:/bin"
+        }
       },
       "build-commands": [
         "mkdir -p /app/bin",
         "/usr/lib/sdk/dotnet10/bin/dotnet publish -c Release -r linux-x64 --self-contained false -o /app/bin ScratchClip/ScratchClip.csproj",
-        "find /var/data/nuget /root/.nuget/packages ~/.nuget/packages -name '*.so*' -exec cp {} /app/bin/ \\; 2>/dev/null || true",
+        "find /root/.nuget/packages -type f \\( -name '*skeychain*.so*' -o -name '*treesitter*.so*' \\) -exec cp -f {} /app/bin/ \\; 2>/dev/null || true",
         "ln -sf /app/bin/ScratchClip /app/bin/scratchclip",
-        "chmod +x /app/bin/*",
+        "chmod +x /app/bin/ScratchClip /app/bin/scratchclip",
         "mkdir -p /app/share/applications",
         "mkdir -p /app/share/icons/hicolor/128x128/apps",
-        "mkdir -p /app/share/icons/hicolor/256x256/apps",
-        "magick ScratchClip/Assets/icon-dark.png -background none -gravity center -extent 256x256 /app/share/icons/hicolor/256x256/apps/com.github.taufiq.scratchclip.png",
-        "magick ScratchClip/Assets/icon-light.png -background none -gravity center -extent 128x128 /app/share/icons/hicolor/128x128/apps/com.github.taufiq.scratchclip.png"
+        "mkdir -p /app/share/icons/hicolor/256x256/apps"
       ],
       "sources": [
         {

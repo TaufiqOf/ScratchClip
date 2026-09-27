@@ -151,7 +151,6 @@ public abstract partial class AClipboardItem : ViewModelBase
             var file = await window.StorageProvider.SaveFilePickerAsync(
                 new FilePickerSaveOptions
                 {
-
                     Title = "Save Clipboard Item",
                     SuggestedFileName = SuggestedFile,
                     SuggestedStartLocation = startFolder,
@@ -161,11 +160,12 @@ public abstract partial class AClipboardItem : ViewModelBase
                 return;
             ApplicationReference.LastPath = Path.GetDirectoryName(file.Path.LocalPath) ?? startPath;
             var data = await GetData();
-            if(data == null)
+            if (data == null)
             {
-                NotificationHelper.Error("Failed","Failed to retrieve clipboard data for saving.");
+                NotificationHelper.Error("Failed", "Failed to retrieve clipboard data for saving.");
                 return;
             }
+
             switch (data)
             {
                 case string text:
@@ -254,6 +254,8 @@ public abstract partial class AClipboardItem : ViewModelBase
 
     public void SetApplicationName(string getForegroundApplicationName)
     {
+        if (string.IsNullOrWhiteSpace(getForegroundApplicationName))
+            return;
         Tags.Insert(1, getForegroundApplicationName.ToUpper());
     }
 }

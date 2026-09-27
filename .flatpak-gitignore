@@ -1,0 +1,9 @@
+# Flathub-specific .gitignore entries
+.flatpak-builder/
+build-dir/
+*.flatpak
+*.flatpakref
+
+# Flathub repository specific
+repo/
+
