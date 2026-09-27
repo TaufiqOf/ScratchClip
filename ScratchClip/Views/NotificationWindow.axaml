@@ -12,12 +12,15 @@
     CanMaximize="False"
     WindowDecorations="None"
     Title="ScratchClip"
+    Background="Transparent"
     x:Class="ScratchClip.Views.NotificationWindow">
 
     <Border
         PointerPressed="OnPointerPressed"
         Padding="15"
-        Background="#252525"
+        BorderThickness="2"
+        BorderBrush="{DynamicResource SystemControlBackgroundAltHighBrush}"
+        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
         CornerRadius="8">
 
         <Grid

@@ -11,40 +11,54 @@
         Icon="avares://ScratchClip/Assets/icon-dark.ico"
         CanMinimize="False"
         CanMaximize="False"
+        Background="Transparent"
         WindowDecorations="None"
         Title="ScratchClip">
-    <Grid RowDefinitions="Auto,*,Auto">
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
-            <Border Grid.Column="0" Width="30" Height="30" Background="Transparent">
-                <avalonia:FluentIcon Icon="Search" Width="20" Height="20" />
-            </Border>
-            <TextBox x:Name="SearchTextBox"
-                     Grid.Column="1"
-                     BorderThickness="0"
-                     Background="Transparent"
-                     TextChanged="SearchTextBoxOnTextChanged">
-                <TextBox.Styles>
-                    <!-- Removes the internal template border and background across all states -->
-                    <Style Selector="TextBox /template/ Border#PART_BorderElement">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="BorderBrush" Value="Transparent" />
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="BorderBrush" Value="Transparent" />
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="BorderBrush" Value="Transparent" />
-                        <Setter Property="Background" Value="Transparent" />
-                    </Style>
-                </TextBox.Styles>
-            </TextBox>
-        </Grid>
-        <controls:MenuViewModeControl x:Name="MenuViewModeControl" Grid.Row="1" VerticalAlignment="Stretch"
-                                      HorizontalAlignment="Stretch" />
+    <Border
+        CornerRadius="8"
+        BorderThickness="2"
+        BorderBrush="{DynamicResource SystemControlBackgroundAltHighBrush}"
+        Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}">
+        <Grid RowDefinitions="Auto,Auto,*,Auto">
 
-    </Grid>
+            <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
+                <Border Grid.Column="0" Width="30" Height="30" Background="Transparent">
+                    <avalonia:FluentIcon Icon="Search" Width="20" Height="20" />
+                </Border>
+                <TextBox x:Name="SearchTextBox"
+                         Grid.Column="1"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         TextChanged="SearchTextBoxOnTextChanged">
+                    <TextBox.Styles>
+                        <!-- Removes the internal template border and background across all states -->
+                        <Style Selector="TextBox /template/ Border#PART_BorderElement">
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                        <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </TextBox.Styles>
+                </TextBox>
+            </Grid>
+            <Border Grid.Row="1" 
+                    BorderBrush="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                    BorderThickness="0,2" 
+                    Height="2"/>
+            <controls:MenuViewModeControl x:Name="MenuViewModeControl" 
+                                          Grid.Row="2" 
+                                          Margin="2"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalAlignment="Stretch" />
+        </Grid>
+    </Border>
 </Window>
