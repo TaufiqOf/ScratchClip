@@ -202,8 +202,9 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
         foreach (var option in TagFilterOptions)
             option.PropertyChanged -= OnTagOptionPropertyChanged;
-
-        StopMonitoringClipboard();
+        _monitorCts?.Cancel();
+        _monitorCts?.Dispose();
+        _monitorCts = null;
     }
 
     private async void OnDoubleTappedExistingClipboardItem(AClipboardItem obj)
@@ -252,8 +253,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     private void StartMonitoringClipboard()
     {
-        StopMonitoringClipboard(false);
-
         _monitorCts = new CancellationTokenSource();
         _token = _monitorCts.Token;
 
@@ -320,15 +319,14 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 
-    private void StopMonitoringClipboard(bool showNotification = true)
+    private void StopMonitoringClipboard()
     {
         _monitorCts?.Cancel();
         _monitorCts?.Dispose();
         _monitorCts = null;
-        if (showNotification)
-            NotificationHelper.Info(
-                "Monitoring Stopped",
-                "The clipboard monitoring has been successfully stopped.");
+        NotificationHelper.Info(
+            "Monitoring Stopped",
+            "The clipboard monitoring has been successfully stopped.");
     }
 
     private void OnClipboardItemAdded(AClipboardItem clipboardItem)
