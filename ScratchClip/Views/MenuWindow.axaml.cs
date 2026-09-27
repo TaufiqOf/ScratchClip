@@ -109,6 +109,11 @@ public partial class MenuWindow : Window
             _indexNumber = null;
         }
 
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Alt) || e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            e.Handled = true;
+            return;
+        }
         SearchTextBox.Focus();
     }
 

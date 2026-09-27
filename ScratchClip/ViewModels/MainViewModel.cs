@@ -48,6 +48,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     private bool _isUpdatingTagOptions;
     private CancellationTokenSource? _monitorCts;
     private string _registerNumber = string.Empty;
+    private string _tagsSearchText = string.Empty;
 
     private CancellationToken _token;
 
@@ -605,7 +606,6 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         }
     }
 
-    private string _tagsSearchText = string.Empty;
 
     private async void SearchDebounceTimerOnElapsed(object? sender, ElapsedEventArgs e)
     {

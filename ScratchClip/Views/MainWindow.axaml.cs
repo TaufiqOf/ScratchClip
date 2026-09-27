@@ -140,20 +140,22 @@ public partial class MainWindow : Window
         if (e.Key == Key.L && e.KeyModifiers == KeyModifiers.Alt)
         {
             if (ApplicationKeyStore.HasPassword()) _viewModel.Lock();
-
             e.Handled = true;
+            return;
         }
 
         if (e.Key == Key.Q && e.KeyModifiers == KeyModifiers.Alt)
         {
             _viewModel.IsPinned = !_viewModel.IsPinned;
             e.Handled = true;
+            return;
         }
 
         if (e.Key == Key.M && e.KeyModifiers == KeyModifiers.Alt)
         {
             _viewModel.IsMonitoringClipboard = !_viewModel.IsMonitoringClipboard;
             e.Handled = true;
+            return;
         }
 
 
@@ -161,6 +163,7 @@ public partial class MainWindow : Window
         {
             SetListFocus();
             e.Handled = true;
+            return;
         }
 
 
@@ -262,13 +265,7 @@ public partial class MainWindow : Window
                     }
             }
 
-        if (e.KeyModifiers != KeyModifiers.Alt &&
-            e.KeyModifiers != KeyModifiers.Control &&
-            ((e.Key >= Key.A &&
-            e.Key <= Key.Z) || e.Key == Key.Back))
-        {
-            SearchTextBoxControl?.Focus();
-        }
+  
         var modifiers = e.KeyModifiers;
         if ((modifiers & KeyModifiers.Control) != 0 &&
             (modifiers & KeyModifiers.Meta) != 0 &&
@@ -276,9 +273,23 @@ public partial class MainWindow : Window
             e.Key <= Key.Z) || e.Key == Key.Back))
         {
             _viewModel.UpdateTagsFilter(e.Key);
+            e.Handled = true;
+            return;
+
+        }
+        if (e.KeyModifiers != KeyModifiers.Alt &&
+            e.KeyModifiers != KeyModifiers.Control &&
+            ((e.Key >= Key.A &&
+              e.Key <= Key.Z) || e.Key == Key.Back))
+        {
+            SearchTextBoxControl?.Focus();
+        }
+
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Alt) || e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            e.Handled = true;
             return;
         }
-    
         _viewModel.OnWindowKeyDown(e);
     }
 

@@ -84,7 +84,6 @@ public class GlobalHotkeyService : IDisposable
         var currentMask = e.RawEvent.Mask;
         var keyCode = e.Data.KeyCode;
 
-        // Main hotkey
         var mainModifiersMatch =
             (currentMask & TargetModifiers) == TargetModifiers;
 
@@ -93,19 +92,24 @@ public class GlobalHotkeyService : IDisposable
 
         if (mainModifiersMatch && mainKeyMatches)
         {
+            e.SuppressEvent = true;
+
             Dispatcher.UIThread.Post(_onHotKeyPressed);
             return;
         }
 
-
-        // Menu hotkey
         var menuModifiersMatch =
             (currentMask & MenuTargetModifiers) == MenuTargetModifiers;
 
         var menuKeyMatches =
             keyCode == MenuTargetKey;
 
-        if (menuModifiersMatch && menuKeyMatches) Dispatcher.UIThread.Post(_onMenuHotKeyPressed);
+        if (menuModifiersMatch && menuKeyMatches)
+        {
+            e.SuppressEvent = true;
+
+            Dispatcher.UIThread.Post(_onMenuHotKeyPressed);
+        }
     }
 
 
