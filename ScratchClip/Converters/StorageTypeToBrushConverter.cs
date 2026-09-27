@@ -8,7 +8,7 @@ namespace ScratchClip.Converters;
 
 public class StorageTypeToBrushConverter : IValueConverter
 {
-    public object? Convert(
+    public object Convert(
         object? value,
         Type targetType,
         object? parameter,
@@ -26,7 +26,7 @@ public class StorageTypeToBrushConverter : IValueConverter
         return new SolidColorBrush(Colors.LightPink);
     }
 
-    public object? ConvertBack(
+    public object ConvertBack(
         object? value,
         Type targetType,
         object? parameter,

@@ -3,9 +3,11 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using ScratchClip.Models;
 
+namespace ScratchClip.Converters;
+
 public class VisibilityByTypeConverter : IValueConverter
 {
-    public object? Convert(
+    public object Convert(
         object? value,
         Type targetType,
         object? parameter,
@@ -18,7 +20,7 @@ public class VisibilityByTypeConverter : IValueConverter
         return false;
     }
 
-    public object? ConvertBack(
+    public object ConvertBack(
         object? value,
         Type targetType,
         object? parameter,

@@ -35,7 +35,7 @@
                         HorizontalAlignment="Left">
 
                     <Image Source="{Binding VideoThumbnail}"
-                           Stretch="UniformToFill" />
+                           Stretch="Uniform" />
                 </Border>
                 <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="4">
                     <TextBlock Text="{Binding VideoTitle}"

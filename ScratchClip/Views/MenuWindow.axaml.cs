@@ -193,6 +193,7 @@ public partial class MenuWindow : Window
             .ThenByDescending(x => x.Item.Timestamp)
             .Select(x => x.Item);
         _listViewModel.FilteredHistory.AddRange(filteredItems);
+        
         UpdateDisplayIndexes();
         HideEditButtons();
     }

@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
-using Avalonia.Media;
 using ScratchClip.Models;
 
 namespace ScratchClip.Converters;
@@ -26,7 +25,7 @@ public class StorageTypeToVisibilityConverter : IValueConverter
         return false;
     }
 
-    public object? ConvertBack(
+    public object ConvertBack(
         object? value,
         Type targetType,
         object? parameter,

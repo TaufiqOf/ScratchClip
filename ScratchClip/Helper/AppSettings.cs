@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using ScratchClip.Models;
 using SharpHook.Data;
@@ -21,7 +20,7 @@ public class AppSettings
     public int MaxItemsInHistory { get; set; } = 200;
     public bool IsPinned { get; set; } = false;
     public bool IsReverseOrder { get; set; }
-    public string Theme { get; set; }
+    public string Theme { get; set; } = "System";
     public bool IsFastKeyEnabled { get; set; }
     public bool WillCaptureImageItems { get; set; } = true;
     public bool WillCaptureTextItems { get; set; } = true;
