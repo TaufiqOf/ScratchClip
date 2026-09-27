@@ -1,5 +1,5 @@
 {
-  "app-id": "com.github.taufiq.scratchclip",
+  "app-id": "io.github.TaufiqOf.ScratchClip",
   "runtime": "org.freedesktop.Platform",
   "runtime-version": "24.08",
   "sdk": "org.freedesktop.Sdk",
@@ -13,11 +13,9 @@
     "--socket=wayland",
     "--socket=system-bus",
     "--socket=session-bus",
-    "--share=network",
     "--device=all",
     "--filesystem=home",
     "--talk-name=org.freedesktop.Notifications",
-    "--talk-name=org.freedesktop.portal.Desktop",
     "--talk-name=org.freedesktop.secrets",
     "--talk-name=org.kde.StatusNotifier"
   ],
@@ -30,16 +28,6 @@
     "*.la",
     "*.a"
   ],
-  "build-options": {
-    "build-args": [
-      "--share=network"
-    ],
-    "env": {
-      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
-      "DOTNET_ROOT": "/usr/lib/sdk/dotnet10",
-      "PATH": "/usr/lib/sdk/dotnet10/bin:/usr/bin:/bin"
-    }
-  },
   "modules": [
     {
       "name": "libsecret",
@@ -99,34 +87,32 @@
       "name": "scratchclip",
       "buildsystem": "simple",
       "build-options": {
-        "build-args": [
-          "--share=network"
-        ],
         "env": {
           "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
           "DOTNET_ROOT": "/usr/lib/sdk/dotnet10",
-          "PATH": "/usr/lib/sdk/dotnet10/bin:/usr/bin:/bin"
+          "PATH": "/usr/lib/sdk/dotnet10/bin:/usr/bin:/bin",
+          "NUGET_PACKAGES": "/run/build/scratchclip/nuget-packages"
         }
       },
       "build-commands": [
-        "mkdir -p /app/bin",
-        "/usr/lib/sdk/dotnet10/bin/dotnet publish -c Release -r linux-x64 --self-contained false -o /app/bin ScratchClip/ScratchClip.csproj",
-        "find /root/.nuget/packages -type f \\( -name '*skeychain*.so*' -o -name '*treesitter*.so*' \\) -exec cp -f {} /app/bin/ \\; 2>/dev/null || true",
+        "mkdir -p /run/build/scratchclip/nuget-packages",
+        "/usr/lib/sdk/dotnet10/bin/dotnet restore ScratchClip/ScratchClip.csproj --source nuget-sources --packages /run/build/scratchclip/nuget-packages",
+        "/usr/lib/sdk/dotnet10/bin/dotnet publish -c Release --self-contained false --no-restore -o /app/bin ScratchClip/ScratchClip.csproj",
+        "find /run/build/scratchclip/nuget-packages -type f \\( -name '*skeychain*.so*' -o -name '*treesitter*.so*' \\) -exec cp -f {} /app/bin/ \\; 2>/dev/null || true",
         "ln -sf /app/bin/ScratchClip /app/bin/scratchclip",
-        "chmod +x /app/bin/ScratchClip /app/bin/scratchclip",
-        "mkdir -p /app/share/applications",
-        "mkdir -p /app/share/icons/hicolor/128x128/apps",
-        "mkdir -p /app/share/icons/hicolor/256x256/apps"
+        "chmod +x /app/bin/ScratchClip /app/bin/scratchclip"
       ],
       "sources": [
         {
           "type": "dir",
           "path": "."
-        }
+        },
+        "nuget-sources.json"
       ],
       "post-install": [
-        "install -Dm644 com.github.taufiq.scratchclip.desktop /app/share/applications/com.github.taufiq.scratchclip.desktop",
-        "install -Dm644 com.github.taufiq.scratchclip.appdata.xml /app/share/app-info/xmls/com.github.taufiq.scratchclip.appdata.xml"
+        "install -Dm644 io.github.TaufiqOf.ScratchClip.desktop /app/share/applications/io.github.TaufiqOf.ScratchClip.desktop",
+        "install -Dm644 io.github.TaufiqOf.ScratchClip.metainfo.xml /app/share/metainfo/io.github.TaufiqOf.ScratchClip.metainfo.xml",
+        "install -Dm644 -t /app/share/licenses/io.github.TaufiqOf.ScratchClip LICENSE 2>/dev/null || true"
       ]
     }
   ]

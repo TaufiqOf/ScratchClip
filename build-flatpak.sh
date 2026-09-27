@@ -1,6 +1,6 @@
 #!/bin/bash
-# Quick Flatpak Build and Test Script for ScratchClip
-# This script builds and tests the ScratchClip Flatpak locally
+# ScratchClip Flatpak Build and Test Script
+# Builds, installs, and optionally runs ScratchClip locally.
 
 set -e
 
@@ -8,99 +8,222 @@ echo "🔧 ScratchClip Flatpak Build and Test"
 echo "======================================"
 echo ""
 
-# Check if flatpak is installed
-if ! command -v flatpak &> /dev/null; then
+# ------------------------------------------------------------
+# Check dependencies
+# ------------------------------------------------------------
+
+if ! command -v flatpak >/dev/null 2>&1; then
     echo "❌ flatpak is not installed"
-    echo "Install it with: sudo apt install flatpak flatpak-builder"
+    echo "Install it with:"
+    echo "  sudo apt install flatpak"
     exit 1
 fi
 
-# Check if flatpak-builder is installed
-if ! command -v flatpak-builder &> /dev/null; then
+if ! command -v flatpak-builder >/dev/null 2>&1; then
     echo "❌ flatpak-builder is not installed"
-    echo "Install it with: sudo apt install flatpak-builder"
+    echo "Install it with:"
+    echo "  sudo apt install flatpak-builder"
     exit 1
 fi
 
-# Add Flathub repo if not present
-if ! flatpak remote-list --system | grep -q "flathub"; then
-    echo "📦 Adding Flathub repository..."
-    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-fi
+# ------------------------------------------------------------
+# Paths
+# ------------------------------------------------------------
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$SCRIPT_DIR/flatpak-build-dir"
-MANIFEST="$SCRIPT_DIR/com.github.taufiq.scratchclip.json"
+MANIFEST="$SCRIPT_DIR/io.github.TaufiqOf.ScratchClip.json"
 
 if [ ! -f "$MANIFEST" ]; then
-    echo "❌ Manifest file not found: $MANIFEST"
+    echo "❌ Manifest file not found:"
+    echo "   $MANIFEST"
     exit 1
 fi
 
-echo "📁 Working directory: $SCRIPT_DIR"
-echo "📋 Manifest file: $MANIFEST"
+echo "📁 Working directory:"
+echo "   $SCRIPT_DIR"
+echo ""
+echo "📋 Manifest:"
+echo "   $MANIFEST"
 echo ""
 
-# Clean previous build if requested
-if [ "$1" = "clean" ] || [ "$1" = "--clean" ]; then
+# ------------------------------------------------------------
+# Flatpak / Flathub
+# ------------------------------------------------------------
+
+echo "🔎 Checking Flathub..."
+
+if ! flatpak remote-list --system | awk '{print $1}' | grep -qx "flathub"; then
+    echo "📦 Adding Flathub repository..."
+
+    sudo flatpak remote-add \
+        --if-not-exists \
+        flathub \
+        https://flathub.org/repo/flathub.flatpakrepo
+fi
+
+echo "✅ Flathub available"
+echo ""
+
+# ------------------------------------------------------------
+# Arguments
+# ------------------------------------------------------------
+
+CLEAN_BUILD=false
+RUN_APP=true
+VERBOSE=false
+
+for arg in "$@"; do
+    case "$arg" in
+        clean|--clean)
+            CLEAN_BUILD=true
+            ;;
+        --no-run)
+            RUN_APP=false
+            ;;
+        --verbose)
+            VERBOSE=true
+            ;;
+        --help|-h)
+            echo "Usage:"
+            echo "  ./build-flatpak.sh"
+            echo "  ./build-flatpak.sh clean"
+            echo "  ./build-flatpak.sh --no-run"
+            echo "  ./build-flatpak.sh --verbose"
+            echo "  ./build-flatpak.sh clean --verbose"
+            exit 0
+            ;;
+        *)
+            echo "⚠️ Unknown argument: $arg"
+            echo "Use --help for usage information."
+            exit 1
+            ;;
+    esac
+done
+
+# ------------------------------------------------------------
+# Clean
+# ------------------------------------------------------------
+
+if [ "$CLEAN_BUILD" = true ]; then
     echo "🧹 Cleaning previous build..."
+
     rm -rf "$BUILD_DIR"
-    echo "✅ Clean complete"
+
+    echo "✅ Build directory cleaned"
     echo ""
 fi
 
-# Build the Flatpak
+# ------------------------------------------------------------
+# Build
+# ------------------------------------------------------------
+
 echo "🔨 Building ScratchClip Flatpak..."
 echo "This may take several minutes..."
 echo ""
 
-if flatpak-builder --user --install --force-clean "$BUILD_DIR" "$MANIFEST"; then
+BUILD_ARGS=(
+    --user
+    --install
+    --force-clean
+    "$BUILD_DIR"
+    "$MANIFEST"
+)
+
+if [ "$VERBOSE" = true ]; then
+    BUILD_ARGS=(
+        --verbose
+        "${BUILD_ARGS[@]}"
+    )
+fi
+
+if flatpak-builder "${BUILD_ARGS[@]}"; then
     echo ""
-    echo "✅ Build successful!"
+    echo "✅ Flatpak build successful!"
     echo ""
-    
-    # Ask if user wants to run the app
-    read -p "Would you like to run ScratchClip now? (y/n) " -n 1 -r
-    echo
-    
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        echo "🚀 Launching ScratchClip..."
-        echo ""
-        
-        if flatpak run com.github.taufiq.scratchclip; then
-            echo "✅ Application closed successfully"
-        else
-            echo "⚠️ Application exited with an error"
-            echo ""
-            echo "For debugging, run with:"
-            echo "  flatpak run --devel com.github.taufiq.scratchclip"
-        fi
-    fi
 else
     echo ""
-    echo "❌ Build failed!"
+    echo "❌ Flatpak build failed!"
     echo ""
-    echo "Troubleshooting steps:"
-    echo "1. Check the error messages above"
-    echo "2. Ensure you have the latest Flatpak:"
-    echo "   flatpak update"
-    echo "3. Try again with verbose output:"
-    echo "   flatpak-builder --verbose --user --install --force-clean \"$BUILD_DIR\" \"$MANIFEST\""
+    echo "Try:"
     echo ""
+    echo "  ./build-flatpak.sh clean --verbose"
+    echo ""
+    echo "Or manually:"
+    echo ""
+    echo "  flatpak-builder --verbose --user --install --force-clean \\"
+    echo "    \"$BUILD_DIR\" \\"
+    echo "    \"$MANIFEST\""
+    echo ""
+
     exit 1
 fi
+
+# ------------------------------------------------------------
+# Verify installation
+# ------------------------------------------------------------
+
+echo "🔍 Verifying installed application..."
+
+if flatpak info com.github.taufiq.scratchclip >/dev/null 2>&1; then
+    echo "✅ ScratchClip is installed"
+else
+    echo "❌ ScratchClip was not found after installation"
+    exit 1
+fi
+
+echo ""
+
+# ------------------------------------------------------------
+# Run application
+# ------------------------------------------------------------
+
+if [ "$RUN_APP" = true ]; then
+    echo "🚀 ScratchClip is ready"
+    echo ""
+
+    read -r -p "Would you like to run ScratchClip now? (y/n) " REPLY
+    echo ""
+
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+        echo "🚀 Launching ScratchClip..."
+        echo ""
+
+        if flatpak run com.github.taufiq.scratchclip; then
+            echo ""
+            echo "✅ ScratchClip exited normally"
+        else
+            echo ""
+            echo "⚠️ ScratchClip exited with an error"
+            echo ""
+            echo "Run the debug version with:"
+            echo ""
+            echo "  flatpak run --devel com.github.taufiq.scratchclip"
+            echo ""
+            echo "Or open a shell inside the Flatpak:"
+            echo ""
+            echo "  flatpak run --command=sh --devel com.github.taufiq.scratchclip"
+        fi
+    fi
+fi
+
+# ------------------------------------------------------------
+# Finish
+# ------------------------------------------------------------
 
 echo ""
 echo "======================================"
 echo "✨ Done!"
 echo ""
-echo "To run ScratchClip manually:"
+echo "Run manually:"
 echo "  flatpak run com.github.taufiq.scratchclip"
 echo ""
-echo "To uninstall:"
-echo "  flatpak uninstall com.github.taufiq.scratchclip"
-echo ""
-echo "To view logs:"
+echo "Debug:"
 echo "  flatpak run --devel com.github.taufiq.scratchclip"
 echo ""
-
+echo "Debug shell:"
+echo "  flatpak run --command=sh --devel com.github.taufiq.scratchclip"
+echo ""
+echo "Uninstall:"
+echo "  flatpak uninstall com.github.taufiq.scratchclip"
+echo ""
