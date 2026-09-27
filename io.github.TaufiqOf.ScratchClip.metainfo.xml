@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.github.taufiq.scratchclip</id>
-  <launchable type="desktop-id">com.github.taufiq.scratchclip.desktop</launchable>
+  <id>io.github.TaufiqOf.ScratchClip</id>
+  <launchable type="desktop-id">io.github.TaufiqOf.ScratchClip.desktop</launchable>
   <name>ScratchClip</name>
   <summary>Lightweight clipboard history manager for Linux</summary>
   <description>

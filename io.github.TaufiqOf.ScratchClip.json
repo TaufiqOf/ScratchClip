@@ -112,6 +112,7 @@
       "post-install": [
         "install -Dm644 io.github.TaufiqOf.ScratchClip.desktop /app/share/applications/io.github.TaufiqOf.ScratchClip.desktop",
         "install -Dm644 io.github.TaufiqOf.ScratchClip.metainfo.xml /app/share/metainfo/io.github.TaufiqOf.ScratchClip.metainfo.xml",
+        "install -Dm644 ScratchClip/Assets/icon-light.png /app/share/icons/hicolor/512x512/apps/io.github.TaufiqOf.ScratchClip.png",
         "install -Dm644 -t /app/share/licenses/io.github.TaufiqOf.ScratchClip LICENSE 2>/dev/null || true"
       ]
     }

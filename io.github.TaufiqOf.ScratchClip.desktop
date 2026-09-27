@@ -3,10 +3,10 @@ Type=Application
 Name=ScratchClip
 Comment=A lightweight, modern clipboard history manager
 Exec=scratchclip %u
-Icon=com.github.taufiq.scratchclip
+Icon=io.github.TaufiqOf.ScratchClip
 Categories=Utility;Application;
 Terminal=false
 StartupNotify=true
-X-Flatpak=com.github.taufiq.scratchclip
+X-Flatpak=io.github.TaufiqOf.ScratchClip
 Keywords=clipboard;history;manager;paste;copy;
 
