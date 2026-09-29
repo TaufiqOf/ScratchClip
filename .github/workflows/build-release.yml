@@ -1,0 +1,75 @@
+name: Build Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-linux:
+    name: Linux x64 (AppImage)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget xclip xdotool fuse libfuse2
+
+      - name: Build Linux AppImage
+        working-directory: ScratchClip
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: 1
+        run: bash build_linux_x86.sh
+
+      - name: Verify AppImage
+        run: |
+          if [ ! -f "ScratchClip/dist/linux/ScratchClip-x86_64.AppImage" ]; then
+            echo "ERROR: AppImage was not created."
+            exit 1
+          fi
+          ls -lh ScratchClip/dist/linux/ScratchClip-x86_64.AppImage
+
+      - name: Upload Linux AppImage artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: ScratchClip-linux-x64
+          path: ScratchClip/dist/linux/ScratchClip-x86_64.AppImage
+          if-no-files-found: error
+
+  upload-release:
+    name: Upload files to Release
+    needs: [build-linux]
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v5
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Display downloaded files
+        run: ls -lh artifacts/
+
+      - name: Upload artifact to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: artifacts/ScratchClip-x86_64.AppImage
+          overwrite_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
