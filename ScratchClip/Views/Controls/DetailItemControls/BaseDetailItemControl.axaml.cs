@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using ScratchClip.Models;
 
@@ -35,4 +36,6 @@ public partial class BaseDetailItemControl : UserControl
 
         e.Handled = true;
     }
+
+
 }

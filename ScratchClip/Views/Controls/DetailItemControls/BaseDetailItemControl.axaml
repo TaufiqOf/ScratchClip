@@ -5,6 +5,7 @@
              xmlns:converters="clr-namespace:ScratchClip.Converters"
              x:Name="BaseControl"
              x:DataType="models:AClipboardItem"
+             
              x:Class="ScratchClip.Views.Controls.DetailItemControls.BaseDetailItemControl">
     <UserControl.Resources>
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
@@ -32,6 +33,7 @@
                 Margin="0,6,0,0"
                 Padding="4"
                 CornerRadius="4"
+                Height="30"
                 Background="{DynamicResource SystemControlBackgroundAltMediumBrush}">
 
             <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto"
@@ -100,107 +102,115 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
-                <!-- ================================= -->
-                <!-- Pin -->
-                <!-- ================================= -->
-                <ToggleButton Grid.Column="2"
-                              IsChecked="{Binding IsPinned, Mode=TwoWay}"
-                              Background="Transparent"
-                              BorderThickness="0"
-                              CornerRadius="3"
-                              Padding="5"
-                              Width="26"
-                              Height="26"
-                              VerticalAlignment="Center"
-                              HorizontalAlignment="Center"
-                              ToolTip.Tip="Toggle Pinned(Ctrl+P)">
+                <StackPanel 
+                    x:Name="ControlButtonsPanel"
+                    IsVisible="False"
+                    Grid.Column="2" 
+                    Orientation="Horizontal" 
+                    Spacing="4" 
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+                    <!-- ================================= -->
+                    <!-- Pin -->
+                    <!-- ================================= -->
+                    <ToggleButton
+                        IsChecked="{Binding IsPinned, Mode=TwoWay}"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  CornerRadius="3"
+                                  Padding="5"
+                                  Width="26"
+                                  Height="26"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  ToolTip.Tip="Toggle Pinned(Ctrl+P)">
 
-                    <avalonia:FluentIcon
-                        Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
-                        FontSize="14" />
+                        <avalonia:FluentIcon
+                            Icon="{Binding IsPinned, Converter={StaticResource PinIconConverter}}"
+                            FontSize="14" />
 
 
-                </ToggleButton>
-                <!-- ================================= -->
-                <!-- Open -->
-                <!-- ================================= -->
-                <Button Grid.Column="3"
+                    </ToggleButton>
+                    <!-- ================================= -->
+                    <!-- Open -->
+                    <!-- ================================= -->
+                    <Button
                         Command="{Binding OpenCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        CornerRadius="3"
-                        Padding="5"
-                        Width="26"
-                        Height="26"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        ToolTip.Tip="Open Item(Ctrl+O)">
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="3"
+                            Padding="5"
+                            Width="26"
+                            Height="26"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            ToolTip.Tip="Open Item(Ctrl+O)">
 
-                    <avalonia:FluentIcon
-                        Icon="Open"
-                        FontSize="14" />
+                        <avalonia:FluentIcon
+                            Icon="Open"
+                            FontSize="14" />
 
 
-                </Button>
-                <!-- ================================= -->
-                <!-- Save -->
-                <!-- ================================= -->
-                <Button Grid.Column="4"
+                    </Button>
+                    <!-- ================================= -->
+                    <!-- Save -->
+                    <!-- ================================= -->
+                    <Button
                         Command="{Binding SaveAsCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        CornerRadius="3"
-                        Padding="5"
-                        Width="26"
-                        Height="26"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        ToolTip.Tip="Save To File(Ctrl+S)">
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="3"
+                            Padding="5"
+                            Width="26"
+                            Height="26"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            ToolTip.Tip="Save To File(Ctrl+S)">
 
-                    <avalonia:FluentIcon Icon="Save"
-                                         FontSize="14" />
+                        <avalonia:FluentIcon Icon="Save"
+                                             FontSize="14" />
 
-                </Button>
-                <!-- ================================= -->
-                <!-- Edit -->
-                <!-- ================================= -->
-                <Button Grid.Column="5"
+                    </Button>
+                    <!-- ================================= -->
+                    <!-- Edit -->
+                    <!-- ================================= -->
+                    <Button
                         Command="{Binding EditCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        CornerRadius="3"
-                        Padding="5"
-                        Width="26"
-                        Height="26"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        ToolTip.Tip="Edit(Ctrl+E)">
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="3"
+                            Padding="5"
+                            Width="26"
+                            Height="26"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            ToolTip.Tip="Edit(Ctrl+E)">
 
-                    <avalonia:FluentIcon Icon="Edit"
-                                         FontSize="14" />
+                        <avalonia:FluentIcon Icon="Edit"
+                                             FontSize="14" />
 
-                </Button>
-                <!-- ================================= -->
-                <!-- Delete -->
-                <!-- ================================= -->
+                    </Button>
+                    <!-- ================================= -->
+                    <!-- Delete -->
+                    <!-- ================================= -->
 
-                <Button Grid.Column="6"
+                    <Button
                         Command="{Binding DeleteCommand}"
-                        Background="Transparent"
-                        BorderThickness="0"
-                        CornerRadius="3"
-                        Padding="5"
-                        Width="26"
-                        Height="26"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        ToolTip.Tip="Delete(Del)">
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="3"
+                            Padding="5"
+                            Width="26"
+                            Height="26"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            ToolTip.Tip="Delete(Del)">
 
-                    <avalonia:FluentIcon Icon="Delete"
-                                         FontSize="14" />
+                        <avalonia:FluentIcon Icon="Delete"
+                                             FontSize="14" />
 
-                </Button>
-
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
     </Grid>
