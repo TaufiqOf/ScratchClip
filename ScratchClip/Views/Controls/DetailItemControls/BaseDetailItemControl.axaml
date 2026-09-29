@@ -104,7 +104,6 @@
                 </StackPanel>
                 <StackPanel 
                     x:Name="ControlButtonsPanel"
-                    IsVisible="False"
                     Grid.Column="2" 
                     Orientation="Horizontal" 
                     Spacing="4" 
