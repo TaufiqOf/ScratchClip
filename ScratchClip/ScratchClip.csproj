@@ -25,8 +25,8 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
-        <PackageReference Include="FluentIcons.Avalonia" Version="2.1.341"/>
-        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.1.341"/>
+        <PackageReference Include="FluentIcons.Avalonia" Version="2.1.343" />
+        <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.1.343" />
         <PackageReference Include="FuzzySharp" Version="2.0.2"/>
         <PackageReference Include="KeySharp" Version="1.0.5"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
