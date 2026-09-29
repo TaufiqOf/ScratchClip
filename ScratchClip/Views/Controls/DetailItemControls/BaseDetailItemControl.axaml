@@ -5,7 +5,8 @@
              xmlns:converters="clr-namespace:ScratchClip.Converters"
              x:Name="BaseControl"
              x:DataType="models:AClipboardItem"
-             
+             PointerEntered="OnPointerEntered"
+             PointerExited="OnPointerExited"
              x:Class="ScratchClip.Views.Controls.DetailItemControls.BaseDetailItemControl">
     <UserControl.Resources>
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
@@ -104,6 +105,7 @@
                 </StackPanel>
                 <StackPanel 
                     x:Name="ControlButtonsPanel"
+                    IsVisible="False"
                     Grid.Column="2" 
                     Orientation="Horizontal" 
                     Spacing="4" 

@@ -54,7 +54,9 @@ public static class ClipboardManager
 
             if (value != _selectedClipboardItem)
             {
+                _selectedClipboardItem?.IsSelected = false;
                 _selectedClipboardItem = value;
+                _selectedClipboardItem?.IsSelected = true;
                 OnSelectExistingClipboardItem?.Invoke(value);
             }
         }

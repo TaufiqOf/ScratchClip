@@ -46,6 +46,18 @@ public partial class MenuWindow : Window
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
         _debounceTimer.Elapsed += DebounceTimerOnElapsed;
         Search();
+        
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        HistoryListBoxControl?.SelectionChanged += HistoryListBoxControlOnSelectionChanged;
+        base.OnLoaded(e);
+    }
+
+    private void HistoryListBoxControlOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        ClipboardManager.SelectedClipboardItem = _listViewModel.SelectedItem;
     }
 
     private ListBox? HistoryListBoxControl =>

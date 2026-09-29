@@ -5,6 +5,8 @@
              xmlns:converters="clr-namespace:ScratchClip.Converters"
              x:Name="BaseControl"
              x:DataType="models:AClipboardItem"
+             PointerEntered="OnPointerEntered"
+             PointerExited="OnPointerExited"
              x:Class="ScratchClip.Views.Controls.MenuItemControls.BaseMenuItemControl">
     <UserControl.Resources>
         <converters:ToUpperConverter x:Key="ToUpperConverter" />
@@ -139,6 +141,8 @@
                     BorderThickness="0,1"
                     Height="1" />
             <ItemsControl Grid.Row="2"
+                          x:Name="TagsItemsControl"
+                          IsVisible="False"
                           Margin="5,2,0,5"
                           ItemsSource="{Binding Tags}">
                 <ItemsControl.ItemsPanel>

@@ -26,7 +26,8 @@ public abstract partial class AClipboardItem : ViewModelBase
     public ObservableCollection<string> Tags { get; set; } = new();
 
     public ClipboardType ClipboardType { get; set; }
-
+    
+    [ObservableProperty] private bool _isSelected = false;
     public bool IsPinned
     {
         get;
