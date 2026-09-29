@@ -7,6 +7,9 @@ It runs quietly in the system tray, keeps track of your recently copied content,
 ScratchClip supports **text, images, links, code, files, and folders**, with automatic content recognition and specialized previews for different types of clipboard data.
 
 ---
+[![ScratchClip YouTube video](https://img.youtube.com/vi/hzppdMBnhys/maxresdefault.jpg)](https://www.youtube.com/watch?v=hzppdMBnhys)
+
+**Watch on YouTube:** https://www.youtube.com/watch?v=hzppdMBnhys
 
 ## ✨ Features
 
@@ -460,4 +463,5 @@ By using ScratchClip, you acknowledge and accept these limitations.
 ## 📄 License
 
 All rights reserved to the authors and contributors.
+
 
