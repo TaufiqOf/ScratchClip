@@ -71,6 +71,7 @@ public static class ClipboardManager
     {
         ClipboardHistory.Clear();
         _selectedClipboardItem = null;
+        OnClearExistingClipboardItem?.Invoke();
 
         foreach (var item in items.OrderBy(q => q.Timestamp).Take(MaxItemsInHistory))
         {

@@ -258,40 +258,57 @@
 
 
                 <!-- Search -->
-                <Grid
-                    Grid.Column="1"
-                    MinWidth="180"
-                    MaxWidth="600"
-                    Height="32"
-                    HorizontalAlignment="Stretch"
-                    ColumnDefinitions="*,Auto">
-
-                    <TextBox
-                        x:Name="SearchTextBox"
-                        Grid.Column="0"
+                <Border
+                    Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"
+                    Grid.Column="1">
+                    <Grid
                         Height="32"
-                        Text="{Binding SearchText, Mode=TwoWay}"
-                        GotFocus="SearchTextBoxOnGotFocus"
-                        LostFocus="SearchTextBoxOnLostFocus"
-                        PlaceholderText="Search clipboard history..."
-                        VerticalContentAlignment="Center" />
-
-                    <Button
-                        Grid.Column="1"
-                        Width="32"
-                        Height="32"
-                        Margin="-38,0,2,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Command="{Binding ClearSearchCommand}"
-                        ToolTip.Tip="Clear Search">
-
-                        <avalonia:FluentIcon
-                            Icon="Dismiss"
-                            FontSize="14" />
-
-                    </Button>
-                </Grid>
+                        HorizontalAlignment="Stretch"
+                        ColumnDefinitions="*,Auto">
+                        <TextBox
+                            x:Name="SearchTextBox"
+                            Grid.Column="0"
+                            Height="32"
+                            BorderThickness="0"
+                            Text="{Binding SearchText, Mode=TwoWay}"
+                            GotFocus="SearchTextBoxOnGotFocus"
+                            LostFocus="SearchTextBoxOnLostFocus"
+                            Background="Transparent"
+                            PlaceholderText="Search clipboard history..."
+                            VerticalContentAlignment="Center">
+                            <TextBox.Styles>
+                                <!-- Removes the internal template border and background across all states -->
+                                <Style Selector="TextBox /template/ Border#PART_BorderElement">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                                <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                                <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </TextBox.Styles>
+                        </TextBox>
+                        <Button
+                            Grid.Column="1"
+                            Width="32"
+                            Height="32"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Command="{Binding ClearSearchCommand}"
+                            ToolTip.Tip="Clear Search">
+                            <avalonia:FluentIcon
+                                Icon="Dismiss"
+                                FontSize="14" />
+                        </Button>
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
 
