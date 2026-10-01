@@ -301,51 +301,7 @@ public class App : Application
         var showAppItem = new NativeMenuItem("Show App");
         showAppItem.Click += ShowApp_OnClick;
         rootMenu.Items.Add(showAppItem);
-        rootMenu.Items.Add(new NativeMenuItemSeparator());
-
-        if (history.Count == 0)
-        {
-            rootMenu.Items.Add(new NativeMenuItem("No clipboard items") { IsEnabled = false });
-        }
-        else
-        {
-            for (var i = 0; i < Math.Min(MaxRootItems, history.Count); i++)
-            {
-                var clipboardItem = history[i];
-                var menuItem = new NativeMenuItem(BuildItemHeader(i + 1, clipboardItem));
-                menuItem.Click += async (_, _) => await PasteItemToFocusedWindowAsync(clipboardItem);
-                rootMenu.Items.Add(menuItem);
-            }
-
-            var currentItems = MaxRootItems;
-            var moreRootMenuItems = rootMenu.Items;
-            while (currentItems < history.Count)
-            {
-                if (moreRootMenuItems == null)
-                    break;
-                var moreItemsItem = new NativeMenuItem($"_More items({history.Count - currentItems})...");
-                moreRootMenuItems.Add(moreItemsItem);
-                moreItemsItem.Menu = new NativeMenu();
-                moreRootMenuItems = moreItemsItem.Menu?.Items;
-                if (moreRootMenuItems != null)
-                    for (var i = currentItems; i < Math.Min(MaxRootItems + currentItems, history.Count); i++)
-                    {
-                        var clipboardItem = history[i];
-                        var menuItem = new NativeMenuItem(BuildItemHeader(i - currentItems + 1, clipboardItem));
-                        menuItem.Click += async (_, _) => await PasteItemToFocusedWindowAsync(clipboardItem);
-                        moreRootMenuItems.Add(menuItem);
-                    }
-
-                currentItems += MaxRootItems;
-            }
-        }
-
-        rootMenu.Items.Add(new NativeMenuItemSeparator());
-
-        var tagsRoot = BuildTagsMenu(history);
-        rootMenu.Items.Add(tagsRoot);
-
-        rootMenu.Items.Add(new NativeMenuItemSeparator());
+        
         var exitItem = new NativeMenuItem("Exit");
         exitItem.Click += ExitApp_OnClick;
         rootMenu.Items.Add(exitItem);
