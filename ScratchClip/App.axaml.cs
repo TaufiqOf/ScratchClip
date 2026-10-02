@@ -363,6 +363,7 @@ public class App : Application
     {
         await ClipboardManager.SetClipboardItemAsync(item);
         await Task.Delay(120);
+        Console.WriteLine("PasteItemToFocusedWindowAsync App");
 
         if (_hotkeyService is { IsSupported: true })
             await _hotkeyService.SimulatePasteAsync();

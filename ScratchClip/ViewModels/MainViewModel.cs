@@ -248,6 +248,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     public async Task SimulatePasteAsync()
     {
+        Console.WriteLine("SimulatePasteAsync MainViewModel");
         await _hotkeyService.SimulatePasteAsync();
     }
 
@@ -630,6 +631,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
                 if (SettingsManager.Load().IsFastKeyEnabled)
                 {
                     OnHideToTray?.Invoke();
+                    Console.WriteLine("SimulatePasteAsync MainViewModel");
                     await _hotkeyService.SimulatePasteAsync();
                 }
 

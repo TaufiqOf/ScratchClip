@@ -217,6 +217,7 @@ public class GlobalHotkeyService : IDisposable
 
             _simulator.SimulateKeyPress(modifierKey);
             _simulator.SimulateKeyPress(KeyCode.VcV);
+            await Task.Delay(30);
             _simulator.SimulateKeyRelease(KeyCode.VcV);
             _simulator.SimulateKeyRelease(modifierKey);
         }

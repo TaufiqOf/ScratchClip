@@ -162,6 +162,7 @@ public partial class MenuWindow : Window
             await ClipboardManager.SetClipboardItemAsync(obj);
             Close();
             _hotkeyService?.SimulatePasteAsync();
+            Console.WriteLine("OnDoubleTappedExistingClipboardItem MenuWindow");
         }
         catch (Exception e)
         {
