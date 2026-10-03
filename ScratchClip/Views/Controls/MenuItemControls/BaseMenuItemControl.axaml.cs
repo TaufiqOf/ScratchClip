@@ -16,22 +16,15 @@ public partial class BaseMenuItemControl : UserControl
             nameof(ItemContent));
 
     private AClipboardItem? _clipboardItem;
-    private readonly Timer _timer;
     private bool _isPointerOver;
 
     public BaseMenuItemControl()
     {
         InitializeComponent();
         DataContextChanged += OnDataContextChanged;
-        _timer = new System.Timers.Timer(200);
-        _timer.Elapsed += TimerOnElapsed;
     }
 
-    private void TimerOnElapsed(object? sender, ElapsedEventArgs e)
-    {
-        _timer.Stop();
-        Application.Current?.Dispatcher.Invoke(() => { TagsItemsControl.IsVisible = _isPointerOver; });
-    }
+
 
     private void OnDataContextChanged(object? sender, EventArgs e)
     {
@@ -72,20 +65,5 @@ public partial class BaseMenuItemControl : UserControl
         e.Handled = true;
     }
 
-    private void OnPointerEntered(object? sender, PointerEventArgs e)
-    {
-        _timer.Stop();
-        _timer.Start();
-        _isPointerOver = true;
-    }
 
-    private void OnPointerExited(object? sender, PointerEventArgs e)
-    {
-        if (DataContext is AClipboardItem clipboardItem &&
-            clipboardItem.IsSelected)
-            return;
-        _timer.Stop();
-        _timer.Start();
-        _isPointerOver = false;
-    }
 }
