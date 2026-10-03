@@ -76,7 +76,6 @@ public class App : Application
 
             var mainWindow = new MainWindow(_hotkeyService);
             desktop.MainWindow = mainWindow;
-
             desktop.ShutdownRequested += OnShutdownRequested;
             desktop.Exit += OnDesktopExit;
 

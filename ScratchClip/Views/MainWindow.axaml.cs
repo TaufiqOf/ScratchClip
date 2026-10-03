@@ -406,7 +406,6 @@ public partial class MainWindow : Window
     public void ShowFromTray()
     {
         _isActivated = false;
-        //ShowMainPage();
         ShowInTaskbar = true;
         Show();
         var settings = SettingsManager.Load();
@@ -448,11 +447,13 @@ public partial class MainWindow : Window
         if (ClipboardManager.IsLoaded)
             return;
         ClipboardManager.IsLoaded = true;
+        Task.Factory.StartNew(async () =>
+        {
+            var persistedItems = await ClipboardHistoryManager.Load(ApplicationKeyStore.GetSessionPassword());
+            ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
+            ClipboardManager.LoadClipboardHistory(persistedItems);
+        });
 
-
-        var persistedItems = await ClipboardHistoryManager.Load(ApplicationKeyStore.GetSessionPassword());
-        ClipboardManager.MaxItemsInHistory = settings.MaxItemsInHistory;
-        ClipboardManager.LoadClipboardHistory(persistedItems);
     }
 
     private void ShowSettingsPage()
