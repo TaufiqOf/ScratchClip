@@ -361,8 +361,8 @@ public partial class MainWindow : Window
     private void PositionInBottomRight()
     {
         // Wayland compositors usually ignore app-requested absolute position.
-        if (IsWayland())
-            return;
+        // if (IsWayland())
+        //     return;
 
         var screen = Screens.Primary;
         if (screen == null) return;
