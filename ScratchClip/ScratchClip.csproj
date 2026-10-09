@@ -5,8 +5,8 @@
         <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
         <Nullable>enable</Nullable>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AssemblyVersion>0.0.65</AssemblyVersion>
-        <FileVersion>0.0.65</FileVersion>
+        <AssemblyVersion>0.0.66</AssemblyVersion>
+        <FileVersion>0.0.66</FileVersion>
         <NeutralLanguage>en</NeutralLanguage>
     </PropertyGroup>
 
@@ -111,5 +111,31 @@
           <DependentUpon>YoutubeLinkTypeControl.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="publish-debug\System.Resources.Reader.dll" />
+      <None Remove="publish-debug\System.Resources.ResourceManager.dll" />
+      <None Remove="publish-debug\System.Resources.Writer.dll" />
+      <None Remove="publish-debug\System.Runtime.InteropServices.dll" />
+      <None Remove="publish-debug\System.Security.AccessControl.dll" />
+      <None Remove="publish-debug\System.Security.SecureString.dll" />
+      <None Remove="publish-debug\System.ServiceModel.Web.dll" />
+      <None Remove="publish-debug\System.Text.Encoding.Extensions.dll" />
+      <None Remove="publish-debug\System.Threading.AccessControl.dll" />
+      <None Remove="publish-debug\System.Threading.Channels.dll" />
+      <None Remove="publish-debug\System.Threading.Tasks.Dataflow.dll" />
+      <None Remove="publish-debug\System.Xml.Serialization.dll" />
+      <None Remove="publish-debug\System.Xml.XPath.XDocument.dll" />
+      <None Remove="publish-debug\Xaml.Behaviors.Interactions.DragAndDrop.dll" />
+      <None Remove="publish-debug\createdump" />
+      <None Remove="publish-debug\libSystem.IO.Compression.Native.so" />
+      <None Remove="publish-debug\libtree-sitter-bash.so" />
+      <None Remove="publish-debug\libtree-sitter-html.so" />
+      <None Remove="publish-debug\netstandard.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="publish-debug\zh-Hans\" />
     </ItemGroup>
 </Project>

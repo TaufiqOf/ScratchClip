@@ -44,12 +44,24 @@ public class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var args = desktop.Args ?? Array.Empty<string>();
-            var isToggleRequested = args.Contains("--toggle-window", StringComparer.OrdinalIgnoreCase);
 
-            // Check if a primary instance is already running
-            if (CanConnectToExistingInstance(isToggleRequested))
+            Console.WriteLine($"Args: [{string.Join(", ", args)}]");
+
+            var isToggleRequested =
+                args.Contains("--toggle-window", StringComparer.OrdinalIgnoreCase);
+
+            var isContextRequested =
+                args.Contains("--context-menu", StringComparer.OrdinalIgnoreCase);
+
+            Console.WriteLine(
+                $"Toggle: {isToggleRequested}, Context: {isContextRequested}");
+            var connected = CanConnectToExistingInstance(
+                isToggleRequested, isContextRequested);
+
+            Console.WriteLine($"Connected to existing instance: {connected}");
+
+            if (connected)
             {
-                // Exit the secondary process immediately before Avalonia starts its MainLoop
                 Environment.Exit(0);
                 return;
             }
@@ -57,7 +69,8 @@ public class App : Application
             // --- PRIMARY INSTANCE SETUP ---
             var settings = SettingsManager.Load();
             AutoTagSettings.Tags = new ObservableCollection<AutoTag>(settings.AutoTags);
-            CodeDetectionConfig.Languages = new ObservableCollection<CodeDetectionConfig.LanguageDefinition>(settings.CodeDetectionLanguages);
+            CodeDetectionConfig.Languages =
+                new ObservableCollection<CodeDetectionConfig.LanguageDefinition>(settings.CodeDetectionLanguages);
 
 
             _hotkeyService = new GlobalHotkeyService(
@@ -112,31 +125,54 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private static bool CanConnectToExistingInstance(bool isToggleRequested)
+
+   
+    private static bool CanConnectToExistingInstance(
+        bool isToggleRequested,
+        bool isContextRequested)
     {
+        var message = isContextRequested
+            ? "--context-menu"
+            : isToggleRequested
+                ? "--toggle-window"
+                : null;
+
         try
         {
-            using var client = new NamedPipeClientStream(".", PipeName, PipeDirection.Out);
-            client.Connect(150); // Short timeout check
+            using var client = new NamedPipeClientStream(
+                ".", PipeName, PipeDirection.Out);
 
-            if (isToggleRequested)
+            client.Connect(1000);
+            Console.WriteLine($"IPC client connected; command: [{message}]");
+
+            if (message != null)
             {
                 using var writer = new StreamWriter(client);
-                writer.WriteLine("--toggle-window");
+                writer.WriteLine(message);
                 writer.Flush();
+
+                Console.WriteLine($"IPC client sent: [{message}]");
+            }
+            else
+            {
+                Console.WriteLine("IPC client has no command to send.");
             }
 
-            return true; // Connection succeeded -> Secondary instance
+            return true;
         }
-        catch
+        catch (Exception ex)
         {
-            return false; // Connection failed -> Primary instance
+            Console.Error.WriteLine($"IPC client error: {ex}");
+            return false;
         }
     }
+
+
 
     private async Task StartIpcListenerAsync()
     {
         while (!IsShuttingDown)
+        {
             try
             {
                 using var server = new NamedPipeServerStream(
@@ -146,18 +182,34 @@ public class App : Application
                     PipeTransmissionMode.Byte,
                     PipeOptions.Asynchronous);
 
+                Console.WriteLine("IPC: waiting for connection");
                 await server.WaitForConnectionAsync();
 
                 using var reader = new StreamReader(server);
                 var message = await reader.ReadLineAsync();
 
-                if (message == "--toggle-window") Dispatcher.UIThread.Post(ToggleMainWindow);
+                Console.WriteLine(
+                    $"IPC received: [{message ?? "<null>"}]");
+
+                switch (message)
+                {
+                    case "--toggle-window":
+                        Dispatcher.UIThread.Post(ToggleMainWindow);
+                        break;
+
+                    case "--context-menu":
+                        Dispatcher.UIThread.Post(ToggleMenuWindow);
+                        break;
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore pipe interrupts during application shutdown
+                if (!IsShuttingDown)
+                    Console.Error.WriteLine($"IPC server error: {ex}");
             }
+        }
     }
+
 
     private void OnActualThemeVariantChanged(object? sender, EventArgs e)
     {
@@ -182,9 +234,9 @@ public class App : Application
             {
                 using var stream = AssetLoader.Open(uri);
                 var newIcon = new WindowIcon(stream);
-            
+
                 // Force property change notification
-                desktop.MainWindow.Icon = null; 
+                desktop.MainWindow.Icon = null;
                 desktop.MainWindow.Icon = newIcon;
             }
         });
@@ -300,7 +352,7 @@ public class App : Application
         var showAppItem = new NativeMenuItem("Show App");
         showAppItem.Click += ShowApp_OnClick;
         rootMenu.Items.Add(showAppItem);
-        
+
         var exitItem = new NativeMenuItem("Exit");
         exitItem.Click += ExitApp_OnClick;
         rootMenu.Items.Add(exitItem);
